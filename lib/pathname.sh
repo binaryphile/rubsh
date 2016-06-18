@@ -9,8 +9,8 @@
 
 source "$_rubsh_lib"/core.sh
 
-_rubsh_pathname.present? && return 0
-# shellcheck disable=SC2034
+_rubsh_pathname.present? 2>/dev/null && return 0
+# shellcheck disable=SC2046
 _String.new _rubsh_pathname "$(set -- $(sha1sum "${BASH_SOURCE}"); printf "%s" "$1")"
 # shellcheck disable=SC2034
 declare -r _rubsh_pathname

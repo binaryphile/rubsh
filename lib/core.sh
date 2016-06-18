@@ -2,20 +2,21 @@
 # Core functions used by other modules
 
 [[ -z $_rubsh_core ]] || return 0
+# shellcheck disable=SC2046
 _rubsh_core="$(set -- $(sha1sum "${BASH_SOURCE}"); printf "%s" "$1")"
 declare -r _rubsh_core
 
 # https://stackoverflow.com/questions/10582763/how-to-return-an-array-in-bash-without-using-globals/15982208#15982208
 # Print array definition to use with assignments, for loops, etc.
 #   varname: the name of an array variable.
-_Array.use() {
+_Array.to_s() {
     local r
 
     r=$( declare -p $1 )
     r=${r#declare\ -a\ *=}
     # Strip keys so printed definition will be a simple list (like when using
     # "${array[@]}").  One side effect of having keys in the definition is
-    # that when appending arrays (i.e. `a1+=$( use_array a2 )`), values at
+    # that when appending arrays (i.e. `a1+=$( my_a.to_s a2 )`), values at
     # matching indices merge instead of pushing all items onto array.
     printf "%s" "${r//\[[0-9]\]=}"
 }
@@ -33,7 +34,7 @@ _core.alias_method() {
   eval "$1.$2 () { $3.$2 $1 \"\$@\" ;}"
 }
 
-_Hash.use() {
+_Hash.to_s() {
     local r
 
     r=$( declare -p $1 )

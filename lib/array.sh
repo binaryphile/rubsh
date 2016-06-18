@@ -20,8 +20,7 @@ _rubsh_init() {
 
   # shellcheck disable=SC2034
   read -d "" -a aliases <<EOS
-use
-asc_use
+to_s
 EOS
 
   _core.alias_core Array aliases
@@ -98,6 +97,7 @@ index
 join
 remove
 slice
+to_s
 EOS
 
   for method in "${methods[@]}"; do
