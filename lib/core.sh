@@ -2,9 +2,8 @@
 # Core functions used by other modules
 
 [[ -z $_rubsh_core ]] || return 0
-# shellcheck disable=SC2046
-_rubsh_core="$(set -- $(sha1sum "${BASH_SOURCE}"); printf "%s" "$1")"
-declare -r _rubsh_core
+# shellcheck disable=SC2155,2046
+declare -r _rubsh_core="$(set -- $(sha1sum "${BASH_SOURCE}"); printf "%s" "$1")"
 
 # https://stackoverflow.com/questions/10582763/how-to-return-an-array-in-bash-without-using-globals/15982208#15982208
 # Print array definition to use with assignments, for loops, etc.

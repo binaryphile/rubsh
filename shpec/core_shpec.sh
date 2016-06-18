@@ -9,6 +9,16 @@ source "$_lib_dir"/core.sh
 
 sample_f() { echo "hello"; }
 
+# describe "_Array.to_s"
+#   it "renders a string version of an array"
+#     # shellcheck disable=SC2034
+#     Object sample_a = _Array.new "a" "b" "c"
+#     Object expected_s = _String.new '( "a" "b" "c" )'
+#     expected_s.== sample_a.to_s
+#     assert equal $? 0
+#   end
+# end
+
 describe "_core.alias_core"
   it "aliases String.blank? function to core"
     # shellcheck disable=SC2034

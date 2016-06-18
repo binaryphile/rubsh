@@ -7,13 +7,11 @@
   declare -r _rubsh_lib
 }
 
-source "$_rubsh_lib"/core.sh
+[[ -z $_rubsh ]] || return 0
+# shellcheck disable=SC2046,SC2155
+declare -r _rubsh="$(set -- $(sha1sum "${BASH_SOURCE}"); printf "%s" "$1")"
 
-_rubsh.present? 2>/dev/null && return 0
-# shellcheck disable=SC2046
-_String.new _rubsh "$(set -- $(sha1sum "${BASH_SOURCE}"); printf "%s" "$1")"
-# shellcheck disable=SC2034
-declare -r _rubsh
+source "$_rubsh_lib"/core.sh
 
 _rubsh_init() {
   local module
