@@ -55,4 +55,8 @@ EOS
   for method in "${methods[@]}"; do
     _core.alias_method "$1" "$method" "String"
   done
+
+  [[ ${#@} -gt 1 ]] || return 0
+
+  local "$1" && _sh.upvar "$1" "$2"
 }

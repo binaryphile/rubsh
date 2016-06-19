@@ -32,6 +32,15 @@ describe "String.blank?"
 end
 
 describe "String.new"
+  it "allows an initializer"
+    # shellcheck disable=SC2034
+    declare sample_s
+    String.new sample_s "text"
+    # shellcheck disable=SC2034
+    sample_s.eql? "text"
+    assert equal $? 0
+  end
+
   it "adds a blank? method"
     # shellcheck disable=SC2034
     sample_s=""

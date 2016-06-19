@@ -12,8 +12,8 @@ sample_f() { echo "hello"; }
 # describe "_Array.to_s"
 #   it "renders a string version of an array"
 #     # shellcheck disable=SC2034
-#     Object sample_a = _Array.new "a" "b" "c"
-#     Object expected_s = _String.new '( "a" "b" "c" )'
+#     var sample_a = _Array.new "a" "b" "c"
+#     var expected_s = _String.new '( "a" "b" "c" )'
 #     expected_s.== sample_a.to_s
 #     assert equal $? 0
 #   end
@@ -30,6 +30,14 @@ describe "_core.alias_core"
     assert equal $? 0
   end
 end
+
+describe "_core.require"
+  it "sources a file in bash path"
+    export RUBSH_PATH="$_lib_dir"
+    _core.require string
+    String.blank? RUBSH_PATH
+    assert equal $? 1
+  end
 
 describe "_sh.alias_function"
   it "aliases a function"
@@ -133,12 +141,4 @@ describe "_sh.value"
     assert equal "$(_sh.value sample_a)" "$(printf "%s " "${sample_a[@]}")"
   end
 end
-
-describe "require"
-  it "sources a file in bash path"
-    export BASH_PATH="$_lib_dir"
-    require string
-    String.blank? BASH_PATH
-    assert equal $? 1
-  end
 end

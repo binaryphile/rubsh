@@ -205,10 +205,10 @@ EOS
 
 _String.present? () { ! _String.blank? "$@" ;}
 
-require() {
+_core.require() {
   local path="$PATH"
 
-  export PATH="${BASH_PATH}${BASH_PATH:+:}$PATH"
+  export PATH="${RUBSH_PATH}${RUBSH_PATH:+:}$PATH"
   source "$1".sh
   export PATH="$path"
 }

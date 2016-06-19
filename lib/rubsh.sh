@@ -19,6 +19,7 @@ _rubsh_init() {
 
   read -d "" -a modules <<EOS
 array
+keywords
 string
 file
 pathname
