@@ -33,6 +33,6 @@ EOS
 _rubsh_init
 unset -f _rubsh_init
 
-var() {
+new() {
   eval "$3" "$1" "$4"
 }

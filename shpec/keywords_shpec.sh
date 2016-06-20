@@ -5,12 +5,12 @@
 
 source "$_shpec_dir"/../lib/keywords.sh
 export RUBSH_PATH="$_shpec_dir"/../lib
-require string
-require array
+require "string"
+require "array"
 
-describe "var"
+describe "new"
   it "assigns a string object"
-    var sample_s = String.new "text"
+    new sample_s = String.new "text"
     # shellcheck disable=SC2154
     assert equal "$sample_s" "text"
   end

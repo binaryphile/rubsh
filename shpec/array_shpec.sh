@@ -4,9 +4,9 @@
 [[ -d ${BASH_SOURCE%/*} ]] && _shpec_dir="${BASH_SOURCE%/*}" || _shpec_dir="$PWD"
 _lib_dir="$_shpec_dir"/../lib
 source "$_lib_dir"/core.sh
-export BASH_PATH="$_lib_dir"
+export RUBSH_PATH="$_lib_dir"
 
-require "array"
+_core.require "array"
 
 describe "Array.=="
   it "tests equality of two arrays"

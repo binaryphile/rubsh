@@ -26,7 +26,7 @@ pathname
 EOS
 
   for module in "${modules[@]}"; do
-    require "$module"
+    _core.require "$module"
   done
 }
 
