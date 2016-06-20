@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 
 # https://stackoverflow.com/questions/192292/bash-how-best-to-include-other-scripts/12694189#12694189
-[[ -d ${BASH_SOURCE%/*} ]] && _shpec_dir="${BASH_SOURCE%/*}" || _shpec_dir="$PWD"
-_lib_dir="$_shpec_dir"/../lib
+if [[ -d ${BASH_SOURCE%/*} ]]; then
+  declare -r _shpec_dir="${BASH_SOURCE%/*}"
+else
+  declare -r _shpec_dir="$PWD"
+fi
+declare -r _lib_dir="$_shpec_dir"/../lib
 source "$_lib_dir"/core.sh
 export RUBSH_PATH="$_lib_dir"
 
@@ -160,5 +164,15 @@ describe "Array.slice"
     result_a=( $(Array.slice sample_a 1 1) )
     expected_a=( "b" )
     assert equal "${result_a[*]}" "${expected_a[*]}"
+  end
+end
+
+describe "Array.to_s"
+  it "exists"
+    # shellcheck disable=SC2034
+    sample_a=( "a" "b" "c" )
+    # shellcheck disable=SC2034
+    result="$(Array.to_s sample_a)"
+    assert equal $? 0
   end
 end

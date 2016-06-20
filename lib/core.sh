@@ -17,7 +17,8 @@ _Array.to_s() {
     # "${array[@]}").  One side effect of having keys in the definition is
     # that when appending arrays (i.e. `a1+=$( my_a.to_s a2 )`), values at
     # matching indices merge instead of pushing all items onto array.
-    printf "%s" "${r//\[[0-9]\]=}"
+    r=${r//\[[0-9]\]=}
+    printf "%s" "${r:1:-1}"
 }
 
 # Same as ary.use() but preserves keys.
