@@ -1,16 +1,11 @@
 #!/usr/bin/env bash
 
-# https://stackoverflow.com/questions/192292/bash-how-best-to-include-other-scripts/12694189#12694189
-if [[ -d ${BASH_SOURCE%/*} ]]; then
-  declare -r _shpec_dir="${BASH_SOURCE%/*}"
-else
-  declare -r _shpec_dir="$PWD"
-fi
-declare -r _lib_dir="$_shpec_dir"/../lib
-source "$_lib_dir"/core.sh
-export RUBSH_PATH="$_lib_dir"
+source "${BASH_SOURCE%/*}"/../lib/core.sh 2>/dev/null || source ../lib/core.sh
 
-_core.require "array"
+RUBSH_PATH="$(_rubsh_core.abspath "$(_rubsh_core.source_location "${BASH_SOURCE%/*}")"/../lib)"
+export RUBSH_PATH
+
+_rubsh_core.require "array"
 
 describe "Array.=="
   it "tests equality of two arrays"

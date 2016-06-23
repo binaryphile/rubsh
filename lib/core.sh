@@ -2,8 +2,26 @@
 # Core functions used by other modules
 
 [[ -z $_rubsh_core ]] || return 0
-# shellcheck disable=SC2155,2046
+
+# shellcheck disable=SC2046,SC2155
 declare -r _rubsh_core="$(set -- $(sha1sum "${BASH_SOURCE}"); printf "%s" "$1")"
+
+_rubsh_core.source_location() {
+  local dir
+
+  if [[ -d $1 ]]; then
+    dir="$1"
+  else
+    dir="$PWD"
+  fi
+  printf "%s" "$dir"
+}
+
+_rubsh_core.abspath() { pushd "$1" >/dev/null && pwd; popd >/dev/null; }
+
+# https://stackoverflow.com/questions/192292/bash-how-best-to-include-other-scripts/12694189#12694189
+# shellcheck disable=SC2155
+[[ -n $_rubsh_lib ]]  || declare -r _rubsh_lib="$(_rubsh_core.abspath "$(_rubsh_core.source_location "${BASH_SOURCE%/*}")")"
 
 # https://stackoverflow.com/questions/10582763/how-to-return-an-array-in-bash-without-using-globals/15982208#15982208
 # Print array definition to use with assignments, for loops, etc.
@@ -22,7 +40,7 @@ _Array.to_s() {
 }
 
 # Same as ary.use() but preserves keys.
-_core.alias_core() {
+_rubsh_core.alias_core() {
   local alias
 
   for alias in $(_sh.value "$2"); do
@@ -30,7 +48,7 @@ _core.alias_core() {
   done
 }
 
-_core.alias_method() {
+_rubsh_core.alias_method() {
   eval "$1.$2 () { $3.$2 $1 \"\$@\" ;}"
 }
 
@@ -40,6 +58,7 @@ _Hash.to_s() {
     r=$( declare -p $1 )
     printf "%s" "${r#declare\ -a\ *=}"
 }
+
 
 _sh.alias_function() { eval "$1 () { $2 \"\$@\" ;}" ;}
 
@@ -196,7 +215,7 @@ present?
 EOS
 
   for _rubsh_method in "${_rubsh_methods[@]}"; do
-    _core.alias_method "$1" "$_rubsh_method" "_String"
+    _rubsh_core.alias_method "$1" "$_rubsh_method" "_String"
   done
 
   [[ ${#@} -gt 1 ]] || return 0
@@ -206,10 +225,10 @@ EOS
 
 _String.present? () { ! _String.blank? "$@" ;}
 
-_core.require() {
+_rubsh_core.require() {
   local path="$PATH"
 
-  export PATH="${RUBSH_PATH}${RUBSH_PATH:+:}$PATH"
-  source "$1".sh
+  export PATH="$RUBSH_PATH${RUBSH_PATH:+:}$PATH"
+  source "$1".sh 2>/dev/null || source "$1"
   export PATH="$path"
 }

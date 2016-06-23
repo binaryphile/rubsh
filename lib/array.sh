@@ -1,20 +1,12 @@
 #!/usr/bin/env bash
 # Functions for array manipulation
 
-# https://stackoverflow.com/questions/192292/bash-how-best-to-include-other-scripts/12694189#12694189
-[[ -n $_rubsh_lib ]] || {
-  if [[ -d ${BASH_SOURCE%/*} ]]; then
-    declare -r _rubsh_lib="${BASH_SOURCE%/*}"
-  else
-    declare -r _rubsh_lib="$PWD"
-  fi
-}
-
 [[ -z $_rubsh_array ]] || return 0
+
 # shellcheck disable=SC2046,SC2155
 declare -r _rubsh_array="$(set -- $(sha1sum "${BASH_SOURCE}"); printf "%s" "$1")"
 
-source "$_rubsh_lib"/core.sh
+source "${BASH_SOURCE%/*}"/core.sh 2>/dev/null || source core.sh
 
 _rubsh_init() {
   local aliases
@@ -24,7 +16,7 @@ _rubsh_init() {
 to_s
 EOS
 
-  _core.alias_core Array aliases
+  _rubsh_core.alias_core Array aliases
 }
 
 _rubsh_init
@@ -102,7 +94,7 @@ to_s
 EOS
 
   for method in "${methods[@]}"; do
-    _core.alias_method "$1" "$method" "Array"
+    _rubsh_core.alias_method "$1" "$method" "Array"
   done
 
   [[ ${#@} -gt 1 ]] || return 0

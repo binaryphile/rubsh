@@ -21,11 +21,11 @@ describe "_Array.to_s"
   end
 end
 
-describe "_core.alias_core"
+describe "_rubsh_core.alias_core"
   it "aliases String.blank? function to core"
     # shellcheck disable=SC2034
     aliases_a=( "blank?" )
-    _core.alias_core String aliases_a
+    _rubsh_core.alias_core String aliases_a
     # shellcheck disable=SC2034
     blank_s=""
     String.blank? blank_s
@@ -33,10 +33,10 @@ describe "_core.alias_core"
   end
 end
 
-describe "_core.require"
+describe "_rubsh_core.require"
   it "sources a file in bash path"
     export RUBSH_PATH="$_lib_dir"
-    _core.require string
+    _rubsh_core.require string
     String.blank? RUBSH_PATH
     assert equal $? 1
   end
