@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 
-# https://stackoverflow.com/questions/192292/bash-how-best-to-include-other-scripts/12694189#12694189
-[[ -d ${BASH_SOURCE%/*} ]] && _shpec_dir="${BASH_SOURCE%/*}" || _shpec_dir="$PWD"
-
-source "$_shpec_dir"/../lib/string.sh
+source "${BASH_SOURCE%/*}"/../lib/string.sh 2>/dev/null || source ../lib/string.sh
 
 describe "String.split"
   it "splits on the specified delimiter"

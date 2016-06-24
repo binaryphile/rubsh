@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 
-source "${BASH_SOURCE%/*}"/../lib/core.sh 2>/dev/null || source ../lib/core.sh
-
-RUBSH_PATH="$(_rubsh_core.abspath "$(_rubsh_core.source_location "${BASH_SOURCE%/*}")"/../lib)"
-export RUBSH_PATH
-
-_rubsh_core.require "array"
+source "${BASH_SOURCE%/*}"/../lib/array.sh 2>/dev/null || source ../lib/array.sh
 
 describe "Array.=="
   it "tests equality of two arrays"

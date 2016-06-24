@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 
-# https://stackoverflow.com/questions/192292/bash-how-best-to-include-other-scripts/12694189#12694189
-[[ -d ${BASH_SOURCE%/*} ]] && _shpec_dir="${BASH_SOURCE%/*}" || _shpec_dir="$PWD"
-
-_lib_dir="$_shpec_dir/../lib"
-
-source "$_lib_dir"/core.sh
+source "${BASH_SOURCE%/*}"/../lib/core.sh 2>/dev/null || source ../lib/core.sh
 
 sample_f() { echo "hello"; }
 
@@ -35,7 +30,8 @@ end
 
 describe "_rubsh_core.require"
   it "sources a file in bash path"
-    export RUBSH_PATH="$_lib_dir"
+    # shellcheck disable=2154
+    export RUBSH_PATH="$_rubsh_lib"
     _rubsh_core.require string
     String.blank? RUBSH_PATH
     assert equal $? 1
