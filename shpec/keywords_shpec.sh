@@ -11,9 +11,9 @@ describe "new"
     assert equal "$sample_s" "text"
   end
 
-  it "assigns an array object"
-    source "$_rubsh_lib"/array.sh
-    new sample_a = Array.new "a" "b"
-    assert equal "$(sample_a.to_s)" '( "a" "b" )'
-  end
+  # it "assigns an array object"
+  #   source "$_rubsh_lib"/array.sh
+  #   new sample_a = Array.new "a" "b"
+  #   assert equal "$(sample_a.to_s)" '( "a" "b" )'
+  # end
 end
