@@ -17,6 +17,6 @@ describe "new"
 
   it "assigns an array object"
     new sample_a = Array.new "a" "b"
-    assert equal sample_a.to_s '( "a" "b" )'
+    assert equal "$(sample_a.to_s)" '( "a" "b" )'
   end
 end

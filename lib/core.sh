@@ -4,7 +4,7 @@
 [[ -z $_rubsh_core ]] || return 0
 
 # shellcheck disable=SC2046,SC2155
-declare -r _rubsh_core="$(set -- $(sha1sum "${BASH_SOURCE}"); printf "%s" "$1")"
+declare -r _rubsh_core="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
 
 _rubsh_core.source_location() {
   local dir
