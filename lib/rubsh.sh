@@ -14,14 +14,15 @@ _rubsh_init() {
 
   read -d "" -a modules <<EOS
 array
-keywords
-string
 file
+keyword
 pathname
+string
 EOS
 
   for module in "${modules[@]}"; do
-    source "$_rubsh_lib/$module".sh
+    # shellcheck disable=SC2154
+    source "$_rubsh_lib"/"$module".sh
   done
 }
 

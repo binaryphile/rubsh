@@ -6,7 +6,7 @@
 # shellcheck disable=SC2046,SC2155
 declare -r _rubsh_core="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
 
-_rubsh_core.source_location() {
+_rubsh.core.source_location() {
   local dir
 
   if [[ -d $1 ]]; then
@@ -17,16 +17,16 @@ _rubsh_core.source_location() {
   printf "%s" "$dir"
 }
 
-_rubsh_core.abspath() { ( cd "$1" >/dev/null && pwd ;) }
+_rubsh.core.abspath() { pushd "$1" >/dev/null && { pwd; popd >/dev/null ;} }
 
 # https://stackoverflow.com/questions/192292/bash-how-best-to-include-other-scripts/12694189#12694189
 # shellcheck disable=SC2155
-[[ -n $_rubsh_lib ]]  || declare -r _rubsh_lib="$(_rubsh_core.abspath "$(_rubsh_core.source_location "${BASH_SOURCE%/*}")")"
+[[ -n $_rubsh_lib ]]  || declare -r _rubsh_lib="$(_rubsh.core.abspath "$(_rubsh.core.source_location "${BASH_SOURCE%/*}")")"
 
 # https://stackoverflow.com/questions/10582763/how-to-return-an-array-in-bash-without-using-globals/15982208#15982208
 # Print array definition to use with assignments, for loops, etc.
 #   varname: the name of an array variable.
-_Array.to_s() {
+_rubsh.Array.to_s() {
     local r
 
     r=$( declare -p $1 )
@@ -40,29 +40,28 @@ _Array.to_s() {
 }
 
 # Same as ary.use() but preserves keys.
-_rubsh_core.alias_core() {
+_rubsh.core.alias() {
   local alias
 
-  for alias in $(_sh.value "$2"); do
-    _sh.alias_function "$1.$alias" "_$1.$alias"
+  for alias in $(_rubsh.sh.value "$2"); do
+    _rubsh.sh.alias_function "$1.$alias" "_rubsh.$1.$alias"
   done
 }
 
-_rubsh_core.alias_method() {
+_rubsh.core.alias_method() {
   eval "$1.$2 () { $3.$2 $1 \"\$@\" ;}"
 }
 
-_Hash.to_s() {
+_rubsh.core.Hash.to_s() {
     local r
 
     r=$( declare -p $1 )
     printf "%s" "${r#declare\ -a\ *=}"
 }
 
+_rubsh.sh.alias_function() { eval "$1 () { $2 \"\$@\" ;}" ;}
 
-_sh.alias_function() { eval "$1 () { $2 \"\$@\" ;}" ;}
-
-_sh.class() {
+_rubsh.sh.class() {
   case "$(declare -p $1)" in
     declare\ -a* )
       printf "array"
@@ -73,22 +72,22 @@ _sh.class() {
   esac
 }
 
-_sh.deref() {
-  set -- "$1" "$(_sh.value "$1")"
+_rubsh.sh.deref() {
+  set -- "$1" "$(_rubsh.sh.value "$1")"
 
-  case "$(_sh.class "$2")" in
+  case "$(_rubsh.sh.class "$2")" in
     "string" )
       # shellcheck disable=SC2046
-      local "$1" && _sh.upvar "$1" "$(_sh.value "$2")"
+      local "$1" && _rubsh.sh.upvar "$1" "$(_rubsh.sh.value "$2")"
       ;;
     "array" )
       # shellcheck disable=SC2046
-      local "$1" && _sh.upvar "$1" $(_sh.value "$2")
+      local "$1" && _rubsh.sh.upvar "$1" $(_rubsh.sh.value "$2")
       ;;
   esac
 }
 
-_sh.strict_mode() {
+_rubsh.sh.strict_mode() {
   case "$1" in
     on )
       set -o errexit
@@ -103,7 +102,7 @@ _sh.strict_mode() {
   esac
 }
 
-_sh.trace() {
+_rubsh.sh.trace() {
   case "$1" in
     "on" )
       set -o xtrace
@@ -115,7 +114,7 @@ _sh.trace() {
 }
 
 # Assign variable one scope above the caller
-# Usage: local "$1" && _sh.upvar $1 "value(s)"
+# Usage: local "$1" && _rubsh.core.sh.upvar $1 "value(s)"
 # Param: $1  Variable name to assign value to
 # Param: $*  Value(s) to assign.  If multiple values, an array is
 #            assigned, otherwise a single value is assigned.
@@ -123,7 +122,7 @@ _sh.trace() {
 #       use multiple 'upvar' calls, since one 'upvar' call might
 #       reassign a variable to be used by another 'upvar' call.
 # See: http://fvue.nl/wiki/Bash:_Passing_variables_by_reference
-_sh.upvar() {
+_rubsh.sh.upvar() {
     if unset -v "$1"; then           # Unset & validate varname
         if (( $# == 2 )); then
             eval "$1"=\"\$2\"          # Return single value
@@ -135,12 +134,12 @@ _sh.upvar() {
 
 # Assign variables one scope above the caller
 # Usage: local varname [varname ...] &&
-#        _sh.upvars [-v varname value] | [-aN varname [value ...]] ...
+#        _rubsh.core.sh.upvars [-v varname value] | [-aN varname [value ...]] ...
 # Available OPTIONS:
 #     -aN  Assign next N values to varname as array
 #     -v   Assign single value to varname
 # Return: 1 if error occurs
-_sh.upvars() {
+_rubsh.sh.upvars() {
     if ! (( $# )); then
         echo "${FUNCNAME[0]}: usage: ${FUNCNAME[0]} [-v varname"\
             "value] | [-aN varname [value ...]] ..." 1>&2
@@ -189,8 +188,8 @@ There is NO WARRANTY, to the extent permitted by law."
     done
 }
 
-_sh.value()     {
-  case "$(_sh.class "$1")" in
+_rubsh.sh.value()     {
+  case "$(_rubsh.sh.class "$1")" in
     "array" )
       eval printf \"%s \" \"\$\{"$1"[@]\}\"
       ;;
@@ -200,10 +199,10 @@ _sh.value()     {
   esac
 }
 
-_String.blank? ()  { eval "[[ -z \${$1:-} ]] || [[ \${$1:-} =~ ^[[:space:]]+$ ]]"  ;}
-_String.eql? ()    { eval "[[ \${$1:-} == \"$2\" ]]" ;}
+_rubsh.String.blank? ()  { eval "[[ -z \${$1:-} ]] || [[ \${$1:-} =~ ^[[:space:]]+$ ]]"  ;}
+_rubsh.String.eql? ()    { eval "[[ \${$1:-} == \"$2\" ]]" ;}
 
-_String.new() {
+_rubsh.String.new() {
   local _rubsh_method
   local _rubsh_methods
 
@@ -215,17 +214,17 @@ present?
 EOS
 
   for _rubsh_method in "${_rubsh_methods[@]}"; do
-    _rubsh_core.alias_method "$1" "$_rubsh_method" "_String"
+    _rubsh.core.alias_method "$1" "$_rubsh_method" "_rubsh.String"
   done
 
-  [[ ${#@} -gt 1 ]] || return 0
+  (( ${#@} > 1 )) || return 0
 
-  local "$1" && _sh.upvar "$1" "$2"
+  local "$1" && _rubsh.sh.upvar "$1" "$2"
 }
 
-_String.present? () { ! _String.blank? "$@" ;}
+_rubsh.String.present? () { ! _rubsh.String.blank? "$@" ;}
 
-_rubsh_core.require() {
+_rubsh.keyword.require() {
   local path="$PATH"
 
   export PATH="$RUBSH_PATH${RUBSH_PATH:+:}$PATH"

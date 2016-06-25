@@ -17,7 +17,7 @@ blank?
 eql?
 EOS
 
-  _rubsh_core.alias_core String aliases
+  _rubsh.core.alias String aliases
 }
 
 _rubsh_init
@@ -26,7 +26,7 @@ unset -f _rubsh_init
 String.split() {
   local array
 
-  IFS="$2" read -ra array <<< "$(_sh.value "$1")"
+  IFS="$2" read -ra array <<< "$(_rubsh.sh.value "$1")"
   cat <<< "${array[@]}"
 }
 
@@ -45,10 +45,10 @@ exit_if_blank?
 EOS
 
   for method in "${methods[@]}"; do
-    _rubsh_core.alias_method "$1" "$method" "String"
+    _rubsh.core.alias_method "$1" "$method" "String"
   done
 
   [[ ${#@} -gt 1 ]] || return 0
 
-  local "$1" && _sh.upvar "$1" "$2"
+  local "$1" && _rubsh.sh.upvar "$1" "$2"
 }

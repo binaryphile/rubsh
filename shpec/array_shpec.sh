@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-source "${BASH_SOURCE%/*}"/../lib/array.sh 2>/dev/null || source ../lib/array.sh
+library=../lib/array.sh
+source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
 
 describe "Array.=="
   it "tests equality of two arrays"
@@ -94,7 +95,16 @@ describe "Array.new"
     assert equal $? 1
   end
 
-  it "allows an initializer"
+  it "allows a set of values initializer"
+    # shellcheck disable=SC2034
+    declare sample_a
+    Array.new sample_a "a" "b" "c"
+    expected_a=( "a" "b" "c" )
+    sample_a.eql? expected_a
+    assert equal $? 0
+  end
+
+  it "allows a string initializer"
     # shellcheck disable=SC2034
     declare sample_a
     Array.new sample_a '( "a" "b" "c" )'

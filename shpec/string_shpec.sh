@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-source "${BASH_SOURCE%/*}"/../lib/string.sh 2>/dev/null || source ../lib/string.sh
+library=../lib/string.sh
+source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
 
 describe "String.split"
   it "splits on the specified delimiter"

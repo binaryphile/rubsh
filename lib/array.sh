@@ -16,21 +16,21 @@ _rubsh_init() {
 to_s
 EOS
 
-  _rubsh_core.alias_core Array aliases
+  _rubsh.core.alias Array aliases
 }
 
 _rubsh_init
 unset -f _rubsh_init
 
-_sh.alias_function Array.== Array.eql?
+_rubsh.sh.alias_function Array.== Array.eql?
 
 Array.eql? () {
   local _array1="$1"
   local _array2="$2"
   local i
 
-  _sh.deref _array1
-  _sh.deref _array2
+  _rubsh.sh.deref _array1
+  _rubsh.sh.deref _array2
   [[ ${#_array1[@]} -eq ${#_array2[@]} ]] || return 1
   for i in "${!_array1[@]}"; do
   [[ ${_array1["$i"]} == "${_array2["$i"]}" ]] || return 1
@@ -42,7 +42,7 @@ Array.include? () {
   local elem
   local array
 
-  array=( $(_sh.value "$1") )
+  array=( $(_rubsh.sh.value "$1") )
   for elem in "${array[@]}"; do
     if [[ $elem == "$2" ]]; then
       return 0
@@ -56,7 +56,7 @@ Array.index() {
   local i
   local item="$2"
 
-  array=( $( _sh.value "$1") )
+  array=( $( _rubsh.sh.value "$1") )
   for i in "${!array[@]}"; do
     if [[ ${array[${i}]} == "$item" ]]; then
       printf "%s" "$i"
@@ -71,7 +71,7 @@ Array.join() {
   local delim="$2"
 
   # shellcheck disable=SC2046
-  set -- $(_sh.value "$1")
+  set -- $(_rubsh.sh.value "$1")
   printf "%s" "$1"
   shift
   printf "%s" "${@/#/$delim}"
@@ -94,12 +94,19 @@ to_s
 EOS
 
   for method in "${methods[@]}"; do
-    _rubsh_core.alias_method "$1" "$method" "Array"
+    _rubsh.core.alias_method "$1" "$method" "Array"
   done
 
-  [[ ${#@} -gt 1 ]] || return 0
-
-  eval "$1=$2"
+  case ${#@} in
+    1 )
+      ;;
+    2 )
+      eval "$1=$2"
+      ;;
+    * )
+      local _rubsh_arg="$1" && shift && _rubsh.sh.upvar "$_rubsh_arg" "$@"
+      ;;
+  esac
 }
 
 Array.remove() {
@@ -109,12 +116,13 @@ Array.remove() {
 
   item="$2"
   # shellcheck disable=SC2046
-  set -- $(_sh.value "$1")
+  set -- $(_rubsh.sh.value "$1")
   result=( )
   for i in "$@"; do
     [[ $i == "$item" ]] || result+=( "$i" )
   done
-  echo "${result[@]}"
+  # TODO: use _Array.to_s?
+  cat <<< "${result[@]}"
 }
 
 Array.slice() {
