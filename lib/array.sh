@@ -78,11 +78,13 @@ Array.join() {
 }
 
 Array.new() {
-  local method
-  local methods
+  local _rubsh_arg
+  local _rubsh_method
+  local _rubsh_methods
+  local _rubsh_val
 
   # shellcheck disable=SC2034
-  read -d "" -a methods <<EOS
+  read -d "" -a _rubsh_methods <<EOS
 ==
 eql?
 include?
@@ -93,20 +95,21 @@ slice
 to_s
 EOS
 
-  for method in "${methods[@]}"; do
-    _rubsh.core.alias_method "$1" "$method" "Array"
+  for _rubsh_method in "${_rubsh_methods[@]}"; do
+    _rubsh.core.alias_method "$1" "$_rubsh_method" "Array"
   done
 
-  case ${#@} in
-    1 )
-      ;;
-    2 )
-      eval "$1=$2"
-      ;;
-    * )
-      local _rubsh_arg="$1" && shift && _rubsh.sh.upvar "$_rubsh_arg" "$@"
-      ;;
-  esac
+  (( ${#@} > 1 )) || return 0
+  local "$1" && {
+    _rubsh_arg="$1"
+    shift
+    (( ${#@} > 1 )) || {
+      eval "_rubsh_val=$1"
+      _rubsh.sh.upvar "$_rubsh_arg" "${_rubsh_val[@]}"
+      return 0
+    }
+    _rubsh.sh.upvar "$_rubsh_arg" "$@"
+  }
 }
 
 Array.remove() {
