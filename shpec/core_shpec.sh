@@ -3,8 +3,6 @@
 library=../lib/core.sh
 source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
 
-sample_f() { echo "hello"; }
-
 describe "_rubsh.Array.to_s"
   it "renders a string version of an array"
     # shellcheck disable=SC2034
@@ -37,9 +35,11 @@ describe "_rubsh.keyword.require"
     String.blank? RUBSH_PATH
     assert equal $? 1
   end
+end
 
 describe "_rubsh.sh.alias_function"
   it "aliases a function"
+    sample_f() { echo "hello"; }
     _rubsh.sh.alias_function sample2_f sample_f
     assert equal "$(sample2_f)" "hello"
   end
@@ -77,6 +77,25 @@ describe "_rubsh.sh.deref"
     _rubsh.sh.deref indirect_v
     assert equal "$(_rubsh.sh.class indirect_v)" "array"
     assert equal "${indirect_v[*]}" "${sample_a[*]}"
+  end
+end
+
+describe "_rubsh.sh.is_var"
+  it "detects a variable"
+    sample_s="test"
+    _rubsh.sh.is_var sample_s
+    assert equal $? 0
+  end
+
+  it "doesn't detect a function"
+    sample2_f() { echo hello ;}
+    _rubsh.sh.is_var sample2_f
+    assert equal $? 1
+  end
+
+  it "doesn't detect an undefined variable"
+    _rubsh.sh.is_var no_var
+    assert equal $? 1
   end
 end
 

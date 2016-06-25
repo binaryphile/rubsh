@@ -6,18 +6,22 @@
 # shellcheck disable=SC2046,SC2155
 declare -r _rubsh_core="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
 
+_rubsh.core.abspath() {
+  pushd "$1" >/dev/null && {
+    pwd
+    popd >/dev/null
+  }
+}
+
 _rubsh.core.source_location() {
   local dir
 
-  if [[ -d $1 ]]; then
-    dir="$1"
-  else
-    dir="$PWD"
-  fi
-  printf "%s" "$dir"
+  [[ -d $1 ]] || {
+    printf "%s" "$PWD"
+    return 0
+  }
+  printf "%s" "$1"
 }
-
-_rubsh.core.abspath() { pushd "$1" >/dev/null && { pwd; popd >/dev/null ;} }
 
 # https://stackoverflow.com/questions/192292/bash-how-best-to-include-other-scripts/12694189#12694189
 # shellcheck disable=SC2155
@@ -52,7 +56,7 @@ _rubsh.core.alias_method() {
   eval "$1.$2 () { $3.$2 $1 \"\$@\" ;}"
 }
 
-_rubsh.core.Hash.to_s() {
+_rubsh.Hash.to_s() {
     local r
 
     r=$( declare -p $1 )
@@ -86,6 +90,8 @@ _rubsh.sh.deref() {
       ;;
   esac
 }
+
+_rubsh.sh.is_var() { declare -p "$1" >/dev/null 2>&1 ;}
 
 _rubsh.sh.strict_mode() {
   case "$1" in
