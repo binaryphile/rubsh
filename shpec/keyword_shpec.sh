@@ -20,7 +20,7 @@ describe "new"
 
   it "assigns an array object with one initializer argument"
     source "$_rubsh_lib"/array.sh
-    new sample_a = Array.new "a" "b"
+    new sample_a = Array.new '( "a" "b" )'
     assert equal "$(sample_a.to_s)" '("a" "b")'
   end
 end
