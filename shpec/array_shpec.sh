@@ -79,6 +79,14 @@ describe "Array.join"
     assert equal "$(Array.join sample_a "|")" "a|b|c"
   end
 
+  it "allows a variable delimiter"
+    # shellcheck disable=SC2034
+    sample_a=( "a" "b" "c" )
+    # shellcheck disable=SC2034
+    delimiter_s="|"
+    assert equal "$(Array.join sample_a delimiter_s)" "a|b|c"
+  end
+
   it "allows a multicharacter delimiter"
   # shellcheck disable=SC2034
     sample_a=( "a" "b" "c" )

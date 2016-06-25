@@ -45,37 +45,6 @@ describe "_rubsh.sh.alias_function"
   end
 end
 
-describe "_rubsh.String.blank?"
-# TODO: fail undefined test
-  it "checks for empty string"
-    # shellcheck disable=SC2034
-    sample_s=""
-    _rubsh.String.blank? sample_s
-    assert equal $? 0
-  end
-
-  it "checks for string with only spaces"
-    # shellcheck disable=SC2034
-    sample_s=" "
-    _rubsh.String.blank? sample_s
-    assert equal $? 0
-  end
-
-  it "checks for string with only tabs"
-    # shellcheck disable=SC2034
-    sample_s=" 	"
-    _rubsh.String.blank? sample_s
-    assert equal $? 0
-  end
-
-  it "doesn't match strings with characters"
-    # shellcheck disable=SC2034
-    sample_s="ab "
-    _rubsh.String.blank? sample_s
-    assert equal $? 1
-  end
-end
-
 describe "_rubsh.sh.class"
   it "reports if it is an array"
     # shellcheck disable=SC2034
@@ -111,6 +80,51 @@ describe "_rubsh.sh.deref"
   end
 end
 
+describe "_rubsh.sh.value"
+  it "returns a scalar value"
+    # shellcheck disable=SC2034
+    sample_s="value text"
+    assert equal "$(_rubsh.sh.value sample_s)" "$sample_s"
+  end
+
+  it "returns an array value"
+    # shellcheck disable=SC2034
+    sample_a=( "one" "two" "three" )
+    assert equal "$(_rubsh.sh.value sample_a)" "$(printf "%s " "${sample_a[@]}")"
+  end
+end
+
+describe "_rubsh.String.blank?"
+# TODO: fail undefined test
+  it "checks for empty string"
+    # shellcheck disable=SC2034
+    sample_s=""
+    _rubsh.String.blank? sample_s
+    assert equal $? 0
+  end
+
+  it "checks for string with only spaces"
+    # shellcheck disable=SC2034
+    sample_s=" "
+    _rubsh.String.blank? sample_s
+    assert equal $? 0
+  end
+
+  it "checks for string with only tabs"
+    # shellcheck disable=SC2034
+    sample_s=" 	"
+    _rubsh.String.blank? sample_s
+    assert equal $? 0
+  end
+
+  it "doesn't match strings with characters"
+    # shellcheck disable=SC2034
+    sample_s="ab "
+    _rubsh.String.blank? sample_s
+    assert equal $? 1
+  end
+end
+
 describe "_rubsh.String.eql?"
   it "checks equality"
     # shellcheck disable=SC2034
@@ -124,19 +138,5 @@ describe "_rubsh.String.eql?"
     sample_s="abc"
     _rubsh.String.eql? sample_s ""
     assert equal $? 1
-  end
-end
-
-describe "_rubsh.sh.value"
-  it "returns a scalar value"
-    # shellcheck disable=SC2034
-    sample_s="value text"
-    assert equal "$(_rubsh.sh.value sample_s)" "$sample_s"
-  end
-
-  it "returns an array value"
-    # shellcheck disable=SC2034
-    sample_a=( "one" "two" "three" )
-    assert equal "$(_rubsh.sh.value sample_a)" "$(printf "%s " "${sample_a[@]}")"
   end
 end
