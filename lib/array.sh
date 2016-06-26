@@ -70,7 +70,7 @@ Array.index() {
 Array.join() {
   local delim="$2"
 
-  ! _rubsh.sh.is_var delim || _rubsh.sh.deref delim
+  ! _rubsh.sh.is_var "$delim" || _rubsh.sh.deref delim
   # shellcheck disable=SC2046
   set -- $(_rubsh.sh.value "$1")
   printf "%s" "$1"
