@@ -11,6 +11,36 @@ describe "String.split"
   end
 end
 
+describe "String.chomp"
+  it "leaves a non-whitespace-surrounded string alone"
+    sample_s="abc"
+    result_s="abc"
+    String.chomp sample_s
+    assert equal "$sample_s" "$result_s"
+  end
+
+  it "removes whitespace from the start of a string"
+    sample_s="	abc"
+    result_s="abc"
+    String.chomp sample_s
+    assert equal "$sample_s" "$result_s"
+  end
+
+  it "removes whitespace from the end of a string"
+    sample_s="abc 	"
+    result_s="abc"
+    String.chomp sample_s
+    assert equal "$sample_s" "$result_s"
+  end
+
+  it "removes whitespace from both ends  of a string"
+    sample_s=" abc 	"
+    result_s="abc"
+    String.chomp sample_s
+    assert equal "$sample_s" "$result_s"
+  end
+end
+
 describe "String.eql?"
   it "exists"
     # shellcheck disable=SC2034
@@ -26,6 +56,20 @@ describe "String.blank?"
     blank_s=""
     String.blank? blank_s
     assert equal $? 0
+  end
+end
+
+describe "String.end_with?"
+  it "affirms the positive"
+    sample_s="a test"
+    String.end_with? sample_s "t"
+    assert equal $? 0
+  end
+
+  it "denies the negative"
+    sample_s="a test"
+    String.end_with? sample_s "r"
+    assert equal $? 1
   end
 end
 
@@ -77,7 +121,13 @@ describe "String.new"
     String.new sample_s
     # shellcheck disable=SC2034
     result="$(sample_s.split)"
-    sample_s.exit_if_blank?
-    assert equal $? 0
+  end
+end
+
+describe "String.start_with?"
+  it "affirms the positive"
+  end
+
+  it "denies the negative"
   end
 end
