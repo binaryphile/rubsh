@@ -126,8 +126,14 @@ end
 
 describe "String.start_with?"
   it "affirms the positive"
+    sample_s="a test"
+    String.start_with? sample_s "a"
+    assert equal $? 0
   end
 
   it "denies the negative"
+    sample_s="a test"
+    String.start_with? sample_s "r"
+    assert equal $? 1
   end
 end

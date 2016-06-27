@@ -67,3 +67,9 @@ EOS
 
   local "$1" && _rubsh.sh.upvar "$1" "$2"
 }
+
+String.start_with? () {
+  var=$1
+  _rubsh.sh.deref var
+  [[ ${var:0:1} == "$2" ]]
+}
