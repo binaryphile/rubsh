@@ -38,13 +38,6 @@ String.end_with? () {
   [[ ${var: -1} == "$2" ]]
 }
 
-String.split() {
-  local array
-
-  IFS="$2" read -ra array <<< "$(_rubsh.sh.value "$1")"
-  cat <<< "${array[@]}"
-}
-
 String.new() {
   local method
   local methods
@@ -66,6 +59,13 @@ EOS
   [[ ${#@} -gt 1 ]] || return 0
 
   local "$1" && _rubsh.sh.upvar "$1" "$2"
+}
+
+String.split() {
+  local array
+
+  IFS="$2" read -ra array <<< "$(_rubsh.sh.value "$1")"
+  cat <<< "${array[@]}"
 }
 
 String.start_with? () {
