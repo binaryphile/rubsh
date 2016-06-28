@@ -63,6 +63,14 @@ _rubsh.Hash.to_s() {
     printf "%s" "${r#declare\ -a\ *=}"
 }
 
+_rubsh.keyword.require() {
+  local path="$PATH"
+
+  export PATH="$RUBSH_PATH${RUBSH_PATH:+:}$PATH"
+  source "$1".sh 2>/dev/null || source "$1"
+  export PATH="$path"
+}
+
 _rubsh.sh.alias_function() { eval "$1 () { $2 \"\$@\" ;}" ;}
 
 _rubsh.sh.class() {
@@ -206,6 +214,22 @@ _rubsh.sh.value()     {
 }
 
 _rubsh.String.blank? ()  { eval "[[ -z \${$1:-} ]] || [[ \${$1:-} =~ ^[[:space:]]+$ ]]"  ;}
+
+_rubsh.String.chomp() {
+  local _rubsh_var="$1"
+  _rubsh.sh.deref _rubsh_var
+
+  _rubsh_var="${_rubsh_var#"${_rubsh_var%%[![:space:]]*}"}"   # remove leading whitespace characters
+  _rubsh_var="${_rubsh_var%"${_rubsh_var##*[![:space:]]}"}"   # remove trailing whitespace characters
+  local "$1" && _rubsh.sh.upvar "$1" "$_rubsh_var"
+}
+
+_rubsh.String.end_with? () {
+  var=$1
+  _rubsh.sh.deref var
+  [[ ${var: -1} == "$2" ]]
+}
+
 _rubsh.String.eql? ()    { eval "[[ \${$1:-} == \"$2\" ]]" ;}
 
 _rubsh.String.new() {
@@ -215,8 +239,11 @@ _rubsh.String.new() {
   # shellcheck disable=SC2034
   read -d "" -a _rubsh_methods <<EOS
 blank?
+chomp
+end_with?
 eql?
 present?
+start_with?
 EOS
 
   for _rubsh_method in "${_rubsh_methods[@]}"; do
@@ -230,10 +257,8 @@ EOS
 
 _rubsh.String.present? () { ! _rubsh.String.blank? "$@" ;}
 
-_rubsh.keyword.require() {
-  local path="$PATH"
-
-  export PATH="$RUBSH_PATH${RUBSH_PATH:+:}$PATH"
-  source "$1".sh 2>/dev/null || source "$1"
-  export PATH="$path"
+_rubsh.String.start_with? () {
+  var=$1
+  _rubsh.sh.deref var
+  [[ ${var:0:1} == "$2" ]]
 }

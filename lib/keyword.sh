@@ -23,9 +23,13 @@ _rubsh_init
 unset -f _rubsh_init
 
 new() {
-  local one="$1"
-  local three="$3"
+  local varname="$1"
+  local constructor="$3"
+  local initializer="$4"
 
   shift; shift; shift
-  eval "$three" "$one" "$@"
+  _rubsh.String.new initializer
+  initializer.chomp
+  initializer.start_with? "(" && initializer.end_with? ")" && shift && set -- "\"$initializer\"" "$@"
+  eval "$constructor" "$varname" "$@"
 }

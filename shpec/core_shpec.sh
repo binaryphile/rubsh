@@ -144,6 +144,50 @@ describe "_rubsh.String.blank?"
   end
 end
 
+describe "_rubsh.String.chomp"
+  it "leaves a non-whitespace-surrounded string alone"
+    sample_s="abc"
+    result_s="abc"
+    _rubsh.String.chomp sample_s
+    assert equal "$sample_s" "$result_s"
+  end
+
+  it "removes whitespace from the start of a string"
+    sample_s="	abc"
+    result_s="abc"
+    _rubsh.String.chomp sample_s
+    assert equal "$sample_s" "$result_s"
+  end
+
+  it "removes whitespace from the end of a string"
+    sample_s="abc 	"
+    result_s="abc"
+    _rubsh.String.chomp sample_s
+    assert equal "$sample_s" "$result_s"
+  end
+
+  it "removes whitespace from both ends  of a string"
+    sample_s=" abc 	"
+    result_s="abc"
+    _rubsh.String.chomp sample_s
+    assert equal "$sample_s" "$result_s"
+  end
+end
+
+describe "_rubsh.String.end_with?"
+  it "affirms the positive"
+    sample_s="a test"
+    _rubsh.String.end_with? sample_s "t"
+    assert equal $? 0
+  end
+
+  it "denies the negative"
+    sample_s="a test"
+    _rubsh.String.end_with? sample_s "r"
+    assert equal $? 1
+  end
+end
+
 describe "_rubsh.String.eql?"
   it "checks equality"
     # shellcheck disable=SC2034
@@ -156,6 +200,20 @@ describe "_rubsh.String.eql?"
     # shellcheck disable=SC2034
     sample_s="abc"
     _rubsh.String.eql? sample_s ""
+    assert equal $? 1
+  end
+end
+
+describe "_rubsh.String.start_with?"
+  it "affirms the positive"
+    sample_s="a test"
+    _rubsh.String.start_with? sample_s "a"
+    assert equal $? 0
+  end
+
+  it "denies the negative"
+    sample_s="a test"
+    _rubsh.String.start_with? sample_s "r"
     assert equal $? 1
   end
 end
