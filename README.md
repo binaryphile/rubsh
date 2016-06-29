@@ -19,7 +19,7 @@ less annoying to work with.
 
 ## Some interactive examples
 
-~~~
+~~~bash
 > source rubsh.sh
 > new my_string = String.new " hello there " # Declare a String surrounded by spaces
 > echo $(my_string.class)
@@ -40,7 +40,7 @@ Array
 
 ## Using rubsh in a script
 
-~~~
+~~~bash
 #!/usr/bin/env bash
 
 # Source rubsh.  Provide the relative path from this script.  This
