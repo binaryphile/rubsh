@@ -1,6 +1,6 @@
-# Rubsh
+[TOC]
 
-[Rubsh][]
+# Rubsh
 
 Ruby-inspired datatype enhancements for bash - pronounced "rubbish"
 
