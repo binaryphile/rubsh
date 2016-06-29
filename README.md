@@ -1,5 +1,7 @@
 # Rubsh
 
+[Rubsh][]
+
 Ruby-inspired datatype enhancements for bash - pronounced "rubbish"
 
 Rubsh is a trashy attempt at making bash scripting a bit more ruby-ish.
@@ -36,6 +38,8 @@ True!
 Array
 > echo $(result.to_s)
 '("hello" "there")'
+> echo $(result.join " ")
+hello there
 ~~~
 
 ## Using rubsh in a script
