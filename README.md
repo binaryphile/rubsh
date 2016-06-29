@@ -16,3 +16,39 @@ This library is for you if you like watching people's heads explode.
 Why?  Bash is pretty annoying, but it's really good at system-level
 manipulation and it's on every platform.  Rubsh makes it just slightly
 less annoying to work with.
+
+## Some interactive examples
+
+~~~
+> source rubsh.sh
+> new my_string = String.new " hello there " # Declare a String surrounded by spaces
+> echo $(my_string.class)
+String
+> echo $my_string
+ hello there
+> my_string.chomp # Trim the surrounding spaces
+> echo $my_string
+hello there
+> if my_string.start_with? "h"; then echo "True!"; fi
+True!
+> new result = my_string.split
+> result.class
+Array
+> result.to_s
+'("hello" "there")'
+~~~
+
+## Using rubsh in a script
+
+~~~
+#!/usr/bin/env bash
+
+# Source rubsh.  Provide the relative path from this script.  This
+# expression makes sure rubsh gets sourced properly even if you run the
+# script from a location outside its directory.
+
+rubsh=../rubsh/lib/rubsh.sh
+source "${BASH_SOURCE%/*}/$rubsh" 2>/dev/null || source "$rubsh"
+
+[...do rubbishy stuff...]
+~~~
