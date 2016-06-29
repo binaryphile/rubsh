@@ -32,9 +32,9 @@ hello there
 > if my_string.start_with? "h"; then echo "True!"; fi
 True!
 > new result = my_string.split
-> result.class
+> echo $(result.class)
 Array
-> result.to_s
+> echo $(result.to_s)
 '("hello" "there")'
 ~~~
 
