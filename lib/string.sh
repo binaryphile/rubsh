@@ -26,6 +26,10 @@ EOS
 _rubsh_init
 unset -f _rubsh_init
 
+String.class() {
+  printf "String"
+}
+
 String.new() {
   local method
   local methods
@@ -33,6 +37,7 @@ String.new() {
   # shellcheck disable=SC2034
   read -d "" -a methods <<EOS
 blank?
+class
 chomp
 end_with?
 eql?

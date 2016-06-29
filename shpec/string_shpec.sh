@@ -3,6 +3,14 @@
 library=../lib/string.sh
 source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
 
+describe "String.class"
+  it "returns \"String\""
+    sample_s="text"
+    result_s="$(String.class sample_s)"
+    assert equal "$result_s" "String"
+  end
+end
+
 describe "String.split"
   it "splits on the specified delimiter"
     # shellcheck disable=SC2034
