@@ -49,14 +49,20 @@ EOS
     _rubsh.core.alias_method "$1" "$method" "String"
   done
 
-  [[ ${#@} -gt 1 ]] || return 0
+  (( ${#@} > 1 )) || return 0
 
   local "$1" && _rubsh.sh.upvar "$1" "$2"
 }
 
 String.split() {
   local array
+  local delimiter="$2"
 
-  IFS="$2" read -ra array <<< "$(_rubsh.sh.value "$1")"
+  ! _rubsh.sh.is_var "$delimiter" || _rubsh.sh.deref delimiter
+  if [[ -z $delimiter ]]; then
+    read -ra array <<< "$(_rubsh.sh.value "$1")"
+  else
+    IFS="$2" read -ra array <<< "$(_rubsh.sh.value "$1")"
+  fi
   cat <<< "${array[@]}"
 }

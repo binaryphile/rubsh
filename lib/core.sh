@@ -6,26 +6,22 @@
 # shellcheck disable=SC2046,SC2155
 declare -r _rubsh_core="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
 
-_rubsh.core.abspath() {
-  pushd "$1" >/dev/null && {
-    pwd
-    popd >/dev/null
-  }
-}
+_rubsh.core.abspath() { (cd "$1" >/dev/null 2>&1; printf "%s" "$PWD")                         ;}
+_rubsh.core.lib_dir() { printf "%s" "$(_rubsh.core.abspath "$(_rubsh.core.source_location)")" ;}
 
 _rubsh.core.source_location() {
-  local dir
+  local dir="${BASH_SOURCE%/*}"
 
-  [[ -d $1 ]] || {
+  [[ -d $dir ]] || {
     printf "%s" "$PWD"
     return 0
   }
-  printf "%s" "$1"
+  printf "%s" "$dir"
 }
 
 # https://stackoverflow.com/questions/192292/bash-how-best-to-include-other-scripts/12694189#12694189
 # shellcheck disable=SC2155
-[[ -n $_rubsh_lib ]]  || declare -r _rubsh_lib="$(_rubsh.core.abspath "$(_rubsh.core.source_location "${BASH_SOURCE%/*}")")"
+[[ -n $_rubsh_lib ]]  || declare -r _rubsh_lib="$(_rubsh.core.lib_dir)"
 
 # https://stackoverflow.com/questions/10582763/how-to-return-an-array-in-bash-without-using-globals/15982208#15982208
 # Print array definition to use with assignments, for loops, etc.

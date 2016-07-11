@@ -17,6 +17,20 @@ describe "String.split"
     sample_s="a/b/c"
     assert equal "$(String.split sample_s "/")" "a b c"
   end
+
+  it "splits on the specified variable if supplied"
+    # shellcheck disable=SC2034
+    sample_s="a/b/c"
+    # shellcheck disable=SC2034
+    delimiter_s="/"
+    assert equal "$(String.split sample_s delimiter)" "a b c"
+  end
+
+  it "splits on the shell IFS (normally whitespace) if nothing specified"
+    # shellcheck disable=SC2034
+    sample_s="a  b 	c"
+    assert equal "$(String.split sample_s)" "a b c"
+  end
 end
 
 describe "String.eql?"
