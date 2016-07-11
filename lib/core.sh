@@ -6,20 +6,6 @@
 # shellcheck disable=SC2046,SC2155
 declare -r _rubsh_core="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
 
-# TODO: move these three to the shell lib
-_rubsh.core.abspath() { (cd "$1" >/dev/null 2>&1; printf "%s" "$PWD")                         ;}
-_rubsh.core.lib_dir() { printf "%s" "$(_rubsh.core.abspath "$(_rubsh.core.source_location)")" ;}
-
-_rubsh.core.source_location() {
-  local dir="${BASH_SOURCE%/*}"
-
-  [[ -d $dir ]] || {
-    printf "%s" "$PWD"
-    return
-  }
-  printf "%s" "$dir"
-}
-
 # https://stackoverflow.com/questions/192292/bash-how-best-to-include-other-scripts/12694189#12694189
 # shellcheck disable=SC2155
 [[ -n $_rubsh_lib ]]  || declare -r _rubsh_lib="$(cd "${BASH_SOURCE%/*}" >/dev/null 2>&1; printf "%s" "$PWD")" # I think this doesn't work correctly if the declare -r comes after the assignment...weird scoping
@@ -40,7 +26,6 @@ _rubsh.Array.to_s() {
     printf "%s" "${r:1:-1}"
 }
 
-# Same as ary.use() but preserves keys.
 _rubsh.core.alias() {
   local alias
 
@@ -53,19 +38,12 @@ _rubsh.core.alias_method() {
   eval "$1.$2 () { $3.$2 $1 \"\$@\" ;}"
 }
 
+# Same as Array.to_s() but preserves keys.
 _rubsh.Hash.to_s() {
     local r
 
     r=$( declare -p $1 )
     printf "%s" "${r#declare\ -a\ *=}"
-}
-
-_rubsh.keyword.require() {
-  local path="$PATH"
-
-  export PATH="$RUBSH_PATH${RUBSH_PATH:+:}$PATH"
-  source "$1".sh 2>/dev/null || source "$1"
-  export PATH="$path"
 }
 
 _rubsh.sh.alias_function() { eval "$1 () { $2 \"\$@\" ;}" ;}
@@ -97,32 +75,6 @@ _rubsh.sh.deref() {
 }
 
 _rubsh.sh.is_var() { declare -p "$1" >/dev/null 2>&1 ;}
-
-_rubsh.sh.strict_mode() {
-  case "$1" in
-    on )
-      set -o errexit
-      set -o nounset
-      set -o pipefail
-      ;;
-    off )
-      set +o errexit
-      set +o nounset
-      set +o pipefail
-      ;;
-  esac
-}
-
-_rubsh.sh.trace() {
-  case "$1" in
-    "on" )
-      set -o xtrace
-      ;;
-    "off" )
-      set +o xtrace
-      ;;
-  esac
-}
 
 # Assign variable one scope above the caller
 # Usage: local "$1" && _rubsh.core.sh.upvar $1 "value(s)"

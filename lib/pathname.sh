@@ -7,17 +7,17 @@
 declare -r _rubsh_pathname="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
 
 source "${BASH_SOURCE%/*}"/core.sh 2>/dev/null || source core.sh
-
-_rubsh.keyword.require "file"
+# shellcheck disable=SC2154
+source "$_rubsh_lib"/file.sh
 
 # TODO: use alias_function
-path.basename() { file.basename "$@"  ;}
-path.dirname()  { file.dirname  "$@"  ;}
-path.exist? ()  { file.exist?   "$@"  ;}
-path.readlink() { file.readlink "$@"  ;}
+Pathname.basename() { File.basename "$@"  ;}
+Pathname.dirname()  { File.dirname  "$@"  ;}
+Pathname.exist? ()  { File.exist?   "$@"  ;}
+Pathname.readlink() { File.readlink "$@"  ;}
 
 # https://github.com/basecamp/sub/blob/master/libexec/sub
-path.realdirpath() {
+Pathname.realdirpath() {
   local cwd
   local name
   local path
@@ -25,11 +25,11 @@ path.realdirpath() {
   eval "local path=\"\$$1\""
   cwd="$(pwd)"
   while ! _String.blank? path; do
-    cd "$(file.dirname path)"
+    cd "$(File.dirname path)"
     # shellcheck disable=SC2034
-    name="$(path.basename path)"
+    name="$(Pathname.basename path)"
     # shellcheck disable=SC2034
-    path="$(file.readlink name || true)"
+    path="$(File.readlink name || true)"
   done
   pwd
   cd "$cwd"

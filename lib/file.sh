@@ -9,8 +9,9 @@ declare -r _rubsh_file="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
 source "${BASH_SOURCE%/*}"/core.sh 2>/dev/null || source core.sh
 
 # TODO: use _sh.value etc?
-file.basename()   { eval printf "%s" "\${$1##*/}" ;}
-file.dirname()    { eval printf "%s" "\${$1%/*}"  ;}
-file.exist? ()    { eval [[ -f \$"$1" ]]          ;}
-file.readlink()   { eval readlink "\$$1"          ;}
-file.symlink? ()  { eval [[ -h \$"$1" ]]          ;}
+File.absolute_path() { (cd "$1" >/dev/null 2>&1; printf "%s" "$PWD") ;}
+File.basename()   { eval printf "%s" "\${$1##*/}" ;}
+File.dirname()    { eval printf "%s" "\${$1%/*}"  ;}
+File.exist? ()    { eval [[ -f \$"$1" ]]          ;}
+File.readlink()   { eval readlink "\$$1"          ;}
+File.symlink? ()  { eval [[ -h \$"$1" ]]          ;}
