@@ -12,7 +12,7 @@
     "ruby"
   ],
   "license": "Apache 2.0",
-  "private": true,
+  "private": false,
   "ignore": [
     "**/.*",
     "node_modules",
