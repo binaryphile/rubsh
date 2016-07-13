@@ -3,8 +3,8 @@
 
 [[ -z $_rubsh_pathname ]] || return 0
 
-# shellcheck disable=SC2046,SC2155
-declare -r _rubsh_pathname="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
+# shellcheck disable=SC2046
+readonly _rubsh_pathname="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
 
 source "${BASH_SOURCE%/*}"/core.sh 2>/dev/null || source core.sh
 # shellcheck disable=SC2154

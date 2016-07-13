@@ -3,12 +3,11 @@
 
 [[ -z $_rubsh_core ]] || return 0
 
-# shellcheck disable=SC2046,SC2155
-declare -r _rubsh_core="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
+# shellcheck disable=SC2046
+readonly _rubsh_core="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
 
 # https://stackoverflow.com/questions/192292/bash-how-best-to-include-other-scripts/12694189#12694189
-# shellcheck disable=SC2155
-[[ -n $_rubsh_lib ]]  || declare -r _rubsh_lib="$(cd "${BASH_SOURCE%/*}" >/dev/null 2>&1; printf "%s" "$PWD")" # I think this doesn't work correctly if the declare -r comes after the assignment...weird scoping
+[[ -n $_rubsh_lib ]]  || readonly _rubsh_lib="$(cd "${BASH_SOURCE%/*}" >/dev/null 2>&1; printf "%s" "$PWD")"
 
 # https://stackoverflow.com/questions/10582763/how-to-return-an-array-in-bash-without-using-globals/15982208#15982208
 # Print array definition to use with assignments, for loops, etc.
