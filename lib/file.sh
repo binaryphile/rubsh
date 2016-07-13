@@ -13,9 +13,16 @@ File.absolute_path(){
   _rubsh.sh.deref _rubsh_var
 
   (
-  cd "$_rubsh_var" >/dev/null 2>&1
+  cd "${_rubsh_var%/*}" >/dev/null 2>&1
   printf "%s" "$PWD"
   )
+}
+
+File.append() {
+  local _rubsh_var="$1"
+  _rubsh.sh.deref _rubsh_var
+
+  cat <<<"$2" >>"$_rubsh_var"
 }
 
 File.basename() {

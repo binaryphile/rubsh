@@ -22,6 +22,17 @@ Dir.exist? () {
   [[ -d $_rubsh_var ]]
 }
 
+Dir.mkdir() {
+  local _rubsh_var="$1"
+  _rubsh.sh.deref _rubsh_var
+
+  (( ${#@} > 1 )) || {
+    mkdir -p "$_rubsh_var"
+    return
+  }
+  mkdir -pm "$2" "$_rubsh_var"
+}
+
 Dir.new() {
   local method
   local methods
