@@ -3,6 +3,20 @@
 library=../lib/core.sh
 source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
 
+init() {
+  _rubsh.IO.printf "%s" "$(mktemp --directory)"
+}
+
+cleanup() {
+  validate_dirname "$1"
+  rm -rf -- "$1"
+}
+
+validate_dirname() {
+  [[ $1 =~ ^/tmp/tmp\. ]]   || exit
+  [[ -d $1 ]]               || exit
+}
+
 describe "_rubsh.Array.to_s"
   it "renders a string version of an array"
     # shellcheck disable=SC2034
@@ -27,13 +41,79 @@ describe "_rubsh.core.alias"
   end
 end
 
-describe "_rubsh.keyword.require"
-  it "sources a file in bash path"
-    # shellcheck disable=2154
-    export RUBSH_PATH="$_rubsh_lib"
-    _rubsh.keyword.require string
-    String.blank? RUBSH_PATH
-    assert equal $? 1
+describe "_rubsh.File.dirname"
+  it "determines the directory name with multiple components by reference"
+    (
+    sample="/home/gumby/work/ruby.rb"
+    assert equal "$(_rubsh.File.dirname sample)" "/home/gumby/work"
+    )
+  end
+
+  it "determines the directory name without components by reference"
+    (
+    sample="ruby.rb"
+    assert equal "$(_rubsh.File.dirname sample)" "."
+    )
+  end
+
+  it "determines the directory name with multiple components by value"
+    (
+    sample="/home/gumby/work/ruby.rb"
+    assert equal "$(_rubsh.File.dirname "$sample")" "/home/gumby/work"
+    )
+  end
+
+  it "determines the directory name without components by value"
+    (
+    sample="ruby.rb"
+    assert equal "$(_rubsh.File.dirname "$sample")" "."
+    )
+  end
+end
+
+describe "_rubsh.File.realpath"
+  it "determines the directory name with multiple components without symlinks or dots by reference"
+    (
+    temp="$(init)"
+    validate_dirname "$temp"
+    mkdir "$temp"/dir2
+    touch "$temp"/dir2/file
+    ln -sf dir2 "$temp"/dir
+    sample="$temp"/../.."$temp"/dir/file
+    assert equal "$(_rubsh.File.realpath sample)" "$temp"/dir2/file
+    cleanup "$temp"
+    )
+  end
+
+  it "determines the directory name with multiple components without symlinks or dots by value"
+    (
+    temp="$(init)"
+    validate_dirname "$temp"
+    mkdir "$temp"/dir2
+    touch "$temp"/dir2/file
+    ln -sf dir2 "$temp"/dir
+    sample="$temp"/../.."$temp"/dir/file
+    assert equal "$(_rubsh.File.realpath "$sample")" "$temp"/dir2/file
+    cleanup "$temp"
+    )
+  end
+end
+
+describe "_rubsh.IO.printf"
+  it "printfs to stdout"
+  (
+  sample="test"
+  assert equal "$(_rubsh.IO.printf "%s\n" "$sample")" "$(printf "%s\n" "$sample")"
+  )
+  end
+end
+
+describe "_rubsh.IO.puts"
+  it "puts to stdout"
+  (
+  sample="test"
+  assert equal "$(_rubsh.IO.puts "$sample")" "$(printf "%s\n" "$sample")"
+  )
   end
 end
 

@@ -14,7 +14,10 @@ _rubsh_init() {
 
   read -d "" -a modules <<EOS
 array
+constant
+dir
 file
+io
 keyword
 pathname
 string

@@ -8,6 +8,12 @@ readonly _rubsh_keyword="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
 
 source "${BASH_SOURCE%/*}"/core.sh 2>/dev/null || source core.sh
 
+# shellcheck disable=SC2016
+export __dir__='_rubsh.File.dirname "$(_rubsh.File.realpath "$(eval "$__FILE__")")" "${BASH_SOURCE}"'
+
+# shellcheck disable=SC2016
+export __FILE__='_rubsh.IO.printf "${BASH_SOURCE}"'
+
 new() {
   local varname="$1"
   local constructor="$3"
@@ -24,6 +30,6 @@ require() {
   local path="$PATH"
 
   export PATH="$RUBSH_PATH${RUBSH_PATH:+:}$PATH"
-  source "$1".sh 2>/dev/null || source "$1"
+  source "$1".sh 2>/dev/null
   export PATH="$path"
 }

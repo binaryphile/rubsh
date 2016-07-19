@@ -41,12 +41,13 @@ Dir.new() {
   read -d "" -a methods <<'EOS'
 chmod
 exist?
+mkdir
 symlink?
 touch
 EOS
 
   for method in "${methods[@]}"; do
-    _rubsh.core.alias_method "$1" "$method" "File"
+    _rubsh.core.alias_method "$1" "$method" "Dir"
   done
 
   (( ${#@} > 1 )) || return 0

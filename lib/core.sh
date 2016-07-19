@@ -37,6 +37,21 @@ _rubsh.core.alias_method() {
   eval "$1.$2 () { $3.$2 $1 \"\$@\" ;}"
 }
 
+_rubsh.File.dirname() {
+  local _rubsh_var="$1"
+  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.sh.deref _rubsh_var
+
+  [[ $_rubsh_var =~ / ]] || { _rubsh.IO.printf "."; return ;}
+  _rubsh.IO.printf "%s" "${_rubsh_var%/*}"
+}
+
+_rubsh.File.realpath(){
+  local _rubsh_var="$1"
+  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.sh.deref _rubsh_var
+
+  printf "%s" "$(readlink -f "$_rubsh_var")"
+}
+
 # Same as Array.to_s() but preserves keys.
 _rubsh.Hash.to_s() {
     local r
@@ -44,6 +59,10 @@ _rubsh.Hash.to_s() {
     r=$( declare -p $1 )
     printf "%s" "${r#declare\ -a\ *=}"
 }
+
+# shellcheck disable=SC2059
+_rubsh.IO.printf() { printf "$@" ;}
+_rubsh.IO.puts()   { _rubsh.IO.printf "%s\n" "$*" ;}
 
 _rubsh.sh.alias_function() { eval "$1 () { $2 \"\$@\" ;}" ;}
 
