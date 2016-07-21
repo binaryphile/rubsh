@@ -2,6 +2,7 @@
 
 library=../lib/string.sh
 source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
+unset -v library
 
 describe "String.class"
   it "returns \"String\""

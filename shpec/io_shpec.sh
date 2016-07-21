@@ -2,6 +2,7 @@
 
 library=../lib/io.sh
 source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
+unset -v library
 
 describe "IO.puts"
   it "echos to stdout"

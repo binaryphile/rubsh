@@ -2,12 +2,13 @@
 
 library=../lib/keyword.sh
 source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
+unset -v library
 
 describe "__dir__"
   it "evals to the absolute directory of this file"
     (
     # shellcheck disable=SC2154
-    result="$(eval "$__dir__")"
+    result="$(__dir__)"
     assert equal "$result" "$HOME/.basher/cellar/packages/binaryphile/rubsh/shpec"
     )
   end
@@ -16,7 +17,7 @@ end
 describe "__FILE__"
   it "evals to the relative path of this file"
     (
-    result="$(eval "$__FILE__")"
+    result="$(__FILE__)"
     assert equal "$result" "${BASH_SOURCE}"
     )
   end

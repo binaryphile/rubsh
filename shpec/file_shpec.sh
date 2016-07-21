@@ -2,9 +2,10 @@
 
 library=../lib/file.sh
 source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
+unset -v library
 
 init() {
-  _rubsh.IO.printf "%s" "$(mktemp --directory)"
+  _rubsh.IO.puts "$(mktemp --directory)"
 }
 
 cleanup() {
@@ -17,12 +18,79 @@ validate_dirname() {
   [[ -d $1 ]]               || exit
 }
 
+describe "File.absolute_path"
+  it "returns the full pathname by reference"
+    (
+    temp="$(init)"
+    validate_dirname "$temp"
+    cd "$temp"
+    sample=file1
+    assert equal "$(File.absolute_path sample)" "$temp/$sample"
+    cleanup "$temp"
+    )
+  end
+
+  it "returns the full pathname by value"
+    (
+    temp="$(init)"
+    validate_dirname "$temp"
+    cd "$temp"
+    sample=file1
+    assert equal "$(File.absolute_path "$sample")" "$temp/$sample"
+    cleanup "$temp"
+    )
+  end
+
+  it "returns the full pathname with only relative by reference"
+    (
+    temp="$(init)"
+    validate_dirname "$temp"
+    cd "$temp"
+    sample=..
+    assert equal "$(File.absolute_path sample)" "${temp%/*}"
+    cleanup "$temp"
+    )
+  end
+
+  it "returns the full pathname with only relative by value"
+    (
+    temp="$(init)"
+    validate_dirname "$temp"
+    cd "$temp"
+    sample=..
+    assert equal "$(File.absolute_path "$sample")" "${temp%/*}"
+    cleanup "$temp"
+    )
+  end
+  it "returns the full pathname without trailing slash by reference"
+    (
+    temp="$(init)"
+    validate_dirname "$temp"
+    cd "$temp"
+    sample=dir1/
+    assert equal "$(File.absolute_path sample)" "$temp/dir1"
+    cleanup "$temp"
+    )
+  end
+
+  it "returns the full pathname without trailing slash by value"
+    (
+    temp="$(init)"
+    validate_dirname "$temp"
+    cd "$temp"
+    sample=dir1/
+    assert equal "$(File.absolute_path "$sample")" "$temp/dir1"
+    cleanup "$temp"
+    )
+  end
+end
+
 describe "File.append"
   it "appends to a file by value"
     (
     temp="$(init)"
     validate_dirname "$temp"
-    _rubsh.IO.printf "%s\n" "test" > "$temp"/file
+    _rubsh.IO.puts "test" > "$temp"/file
     File.append "$temp"/file "line2"
     assert equal "$(tail -1 "$temp"/file)" "line2"
     cleanup "$temp"
@@ -33,7 +101,7 @@ describe "File.append"
     (
     temp="$(init)"
     validate_dirname "$temp"
-    _rubsh.IO.printf "%s\n" "test" > "$temp"/file
+    _rubsh.IO.puts "test" > "$temp"/file
     # shellcheck disable=SC2034
     myfile="$temp"/file
     File.append myfile "line2"
@@ -57,6 +125,24 @@ describe "File.basename"
     (
     # shellcheck disable=SC2034
     sample=/home/gumby/work/ruby.rb
+    result="$(File.basename "$sample")"
+    assert equal "$result" "ruby.rb"
+    )
+  end
+
+  it "finds the base name of trailing slash by reference"
+    (
+    # shellcheck disable=SC2034
+    sample=/home/gumby/work/ruby.rb/
+    result="$(File.basename sample)"
+    assert equal "$result" "ruby.rb"
+    )
+  end
+
+  it "finds the base name of a trailing slash by value"
+    (
+    # shellcheck disable=SC2034
+    sample=/home/gumby/work/ruby.rb/
     result="$(File.basename "$sample")"
     assert equal "$result" "ruby.rb"
     )
@@ -87,6 +173,50 @@ describe "File.chmod"
     File.chmod "$sample" 770
     assert equal "$(stat -c "%a" "$sample")" "770"
     cleanup "$temp"
+    )
+  end
+end
+
+describe "File.dirname"
+  it "determines the directory name with multiple components by reference"
+    (
+    sample="/home/gumby/work/ruby.rb"
+    assert equal "$(File.dirname sample)" "/home/gumby/work"
+    )
+  end
+
+  it "determines the directory name with multiple components by value"
+    (
+    sample="/home/gumby/work/ruby.rb"
+    assert equal "$(File.dirname "$sample")" "/home/gumby/work"
+    )
+  end
+
+  it "determines the directory name without components by reference"
+    (
+    sample="ruby.rb"
+    assert equal "$(File.dirname sample)" "."
+    )
+  end
+
+  it "determines the directory name without components by value"
+    (
+    sample="ruby.rb"
+    assert equal "$(File.dirname "$sample")" "."
+    )
+  end
+
+  it "determines the directory name with a trailing slash by reference"
+    (
+    sample="/home/gumby/work/ruby/"
+    assert equal "$(File.dirname sample)" "/home/gumby/work"
+    )
+  end
+
+  it "determines the directory name with a trailing slash by value"
+    (
+    sample="/home/gumby/work/ruby/"
+    assert equal "$(File.dirname "$sample")" "/home/gumby/work"
     )
   end
 end
@@ -175,7 +305,7 @@ describe "File.qgrep"
     temp="$(init)"
     validate_dirname "$temp"
     sample="$temp"/file
-    printf "hello" > "$sample"
+    _rubsh.IO.puts "hello" > "$sample"
     File.qgrep sample "hello"
     assert equal $? 0
     cleanup "$temp"
@@ -187,7 +317,7 @@ describe "File.qgrep"
     temp="$(init)"
     validate_dirname "$temp"
     sample="$temp"/file
-    printf "hello" > "$sample"
+    _rubsh.IO.puts "hello" > "$sample"
     File.qgrep sample "what"
     assert equal $? 1
     cleanup "$temp"
@@ -199,7 +329,7 @@ describe "File.qgrep"
     temp="$(init)"
     validate_dirname "$temp"
     sample="$temp"/file
-    printf "hello" > "$sample"
+    _rubsh.IO.puts "hello" > "$sample"
     File.qgrep "$sample" "hello"
     assert equal $? 0
     cleanup "$temp"
@@ -211,7 +341,7 @@ describe "File.qgrep"
     temp="$(init)"
     validate_dirname "$temp"
     sample="$temp"/file
-    printf "hello" > "$sample"
+    _rubsh.IO.puts "hello" > "$sample"
     File.qgrep "$sample" "what"
     assert equal $? 1
     cleanup "$temp"

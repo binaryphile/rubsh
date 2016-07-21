@@ -2,9 +2,10 @@
 
 library=../lib/core.sh
 source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
+unset -v library
 
 init() {
-  _rubsh.IO.printf "%s" "$(mktemp --directory)"
+  _rubsh.IO.puts "$(mktemp --directory)"
 }
 
 cleanup() {
@@ -19,25 +20,67 @@ validate_dirname() {
 
 describe "_rubsh.Array.to_s"
   it "renders a string version of an array"
+    (
     # shellcheck disable=SC2034
-    sample_a=( "a" "b" "c" )
+    sample=( "a" "b" "c" )
     # shellcheck disable=SC2034
-    expected_s='("a" "b" "c")'
+    expected='("a" "b" "c")'
     # shellcheck disable=SC2034
-    result_s="$(_rubsh.Array.to_s sample_a)"
-    assert equal "$expected_s" "$result_s"
+    result="$(_rubsh.Array.to_s sample)"
+    assert equal "$expected" "$result"
+    )
   end
 end
 
 describe "_rubsh.core.alias"
   it "aliases String.blank? function to core"
+    (
     # shellcheck disable=SC2034
-    aliases_a=( "blank?" )
-    _rubsh.core.alias String aliases_a
+    aliases=( "blank?" )
+    _rubsh.core.alias String aliases
     # shellcheck disable=SC2034
-    blank_s=""
-    String.blank? blank_s
+    blank=""
+    String.blank? blank
     assert equal $? 0
+    )
+  end
+end
+
+describe "_rubsh.File.basename"
+  it "finds the base name of a file by reference"
+    (
+    # shellcheck disable=SC2034
+    sample=/home/gumby/work/ruby.rb
+    result="$(_rubsh.File.basename sample)"
+    assert equal "$result" "ruby.rb"
+    )
+  end
+
+  it "finds the base name of a file by value"
+    (
+    # shellcheck disable=SC2034
+    sample=/home/gumby/work/ruby.rb
+    result="$(_rubsh.File.basename "$sample")"
+    assert equal "$result" "ruby.rb"
+    )
+  end
+
+  it "finds the base name of trailing slash by reference"
+    (
+    # shellcheck disable=SC2034
+    sample=/home/gumby/work/ruby.rb/
+    result="$(_rubsh.File.basename sample)"
+    assert equal "$result" "ruby.rb"
+    )
+  end
+
+  it "finds the base name of a trailing slash by value"
+    (
+    # shellcheck disable=SC2034
+    sample=/home/gumby/work/ruby.rb/
+    result="$(_rubsh.File.basename "$sample")"
+    assert equal "$result" "ruby.rb"
+    )
   end
 end
 
@@ -101,199 +144,254 @@ end
 
 describe "_rubsh.IO.printf"
   it "printfs to stdout"
-  (
-  sample="test"
-  assert equal "$(_rubsh.IO.printf "%s\n" "$sample")" "$(printf "%s\n" "$sample")"
-  )
+    (
+    sample="test"
+    assert equal "$(_rubsh.IO.printf "%s\n" "$sample")" "$(printf "%s\n" "$sample")"
+    )
   end
 end
 
 describe "_rubsh.IO.puts"
-  it "puts to stdout"
-  (
-  sample="test"
-  assert equal "$(_rubsh.IO.puts "$sample")" "$(printf "%s\n" "$sample")"
-  )
+  it "puts to stdout by value"
+    (
+    sample="test"
+    assert equal "$(_rubsh.IO.puts "$sample")" "$(printf "%s\n" "$sample")"
+    )
+  end
+
+  it "puts to stdout by reference"
+    (
+    sample="test"
+    assert equal "$(_rubsh.IO.puts sample)" "$(printf "%s\n" "$sample")"
+    )
   end
 end
 
-describe "_rubsh.sh.alias_function"
+describe "_rubsh.Shell.alias_function"
   it "aliases a function"
-    sample_f() { echo "hello"; }
-    _rubsh.sh.alias_function sample2_f sample_f
-    assert equal "$(sample2_f)" "hello"
+    (
+    sample() { echo "hello"; }
+    _rubsh.Shell.alias_function sample2 sample
+    assert equal "$(sample2)" "hello"
+    )
   end
 end
 
-describe "_rubsh.sh.class"
+describe "_rubsh.Shell.class"
   it "reports if it is an array"
+    (
     # shellcheck disable=SC2034
-    sample_a=( 1 2 3 )
-    assert equal "$(_rubsh.sh.class sample_a)" "array"
+    sample=( 1 2 3 )
+    assert equal "$(_rubsh.Shell.class sample)" "array"
+    )
   end
 
   it "reports if it is a string"
+    (
     # shellcheck disable=SC2034
-    sample_s="value"
-    assert equal "$(_rubsh.sh.class sample_s)" "string"
+    sample="value"
+    assert equal "$(_rubsh.Shell.class sample)" "string"
+    )
   end
 end
 
-describe "_rubsh.sh.deref"
+describe "_rubsh.Shell.deref"
   it "dereferences a scalar variable"
+    (
     # shellcheck disable=SC2034
-    sample_s="text sample"
+    sample="text sample"
     # shellcheck disable=SC2034
-    indirect_v="sample_s"
-    _rubsh.sh.deref indirect_v
+    indirect_v="sample"
+    _rubsh.Shell.deref indirect_v
     assert equal "$indirect_v" "text sample"
+    )
   end
 
   it "dereferences an array variable"
+    (
     # shellcheck disable=SC2034
-    sample_a=( "testing" "one" "two" )
+    sample=( "testing" "one" "two" )
     # shellcheck disable=SC2034
-    indirect_v="sample_a"
-    _rubsh.sh.deref indirect_v
-    assert equal "$(_rubsh.sh.class indirect_v)" "array"
-    assert equal "${indirect_v[*]}" "${sample_a[*]}"
+    indirect_v="sample"
+    _rubsh.Shell.deref indirect_v
+    assert equal "$(_rubsh.Shell.class indirect_v)" "array"
+    assert equal "${indirect_v[*]}" "${sample[*]}"
+    )
   end
 end
 
-describe "_rubsh.sh.is_var"
+describe "_rubsh.Shell.is_var"
   it "detects a variable"
-    sample_s="test"
-    _rubsh.sh.is_var sample_s
+    (
+    sample="test"
+    _rubsh.Shell.is_var sample
     assert equal $? 0
+    )
   end
 
   it "doesn't detect a function"
-    sample2_f() { echo hello ;}
-    _rubsh.sh.is_var sample2_f
+    (
+    sample2() { echo hello ;}
+    _rubsh.Shell.is_var sample2
     assert equal $? 1
+    )
   end
 
   it "doesn't detect an undefined variable"
-    _rubsh.sh.is_var no_var
+    (
+    _rubsh.Shell.is_var no_var
     assert equal $? 1
+    )
   end
 end
 
-describe "_rubsh.sh.value"
+describe "_rubsh.Shell.value"
   it "returns a scalar value"
+    (
     # shellcheck disable=SC2034
-    sample_s="value text"
-    assert equal "$(_rubsh.sh.value sample_s)" "$sample_s"
+    sample="value text"
+    assert equal "$(_rubsh.Shell.value sample)" "$sample"
+    )
   end
 
   it "returns an array value"
+    (
     # shellcheck disable=SC2034
-    sample_a=( "one" "two" "three" )
-    assert equal "$(_rubsh.sh.value sample_a)" "$(printf "%s " "${sample_a[@]}")"
+    sample=( "one" "two" "three" )
+    assert equal "$(_rubsh.Shell.value sample)" "${sample[*]} "
+    )
   end
 end
 
 describe "_rubsh.String.blank?"
 # TODO: fail undefined test
   it "checks for empty string"
+    (
     # shellcheck disable=SC2034
-    sample_s=""
-    _rubsh.String.blank? sample_s
+    sample=""
+    _rubsh.String.blank? sample
     assert equal $? 0
+    )
   end
 
   it "checks for string with only spaces"
+    (
     # shellcheck disable=SC2034
-    sample_s=" "
-    _rubsh.String.blank? sample_s
+    sample=" "
+    _rubsh.String.blank? sample
     assert equal $? 0
+    )
   end
 
   it "checks for string with only tabs"
+    (
     # shellcheck disable=SC2034
-    sample_s=" 	"
-    _rubsh.String.blank? sample_s
+    sample=" 	"
+    _rubsh.String.blank? sample
     assert equal $? 0
+    )
   end
 
   it "doesn't match strings with characters"
+    (
     # shellcheck disable=SC2034
-    sample_s="ab "
-    _rubsh.String.blank? sample_s
+    sample="ab "
+    _rubsh.String.blank? sample
     assert equal $? 1
+    )
   end
 end
 
 describe "_rubsh.String.chomp"
   it "leaves a non-whitespace-surrounded string alone"
-    sample_s="abc"
-    result_s="abc"
-    _rubsh.String.chomp sample_s
-    assert equal "$sample_s" "$result_s"
+    (
+    sample="abc"
+    result="abc"
+    _rubsh.String.chomp sample
+    assert equal "$sample" "$result"
+    )
   end
 
   it "removes whitespace from the start of a string"
-    sample_s="	abc"
-    result_s="abc"
-    _rubsh.String.chomp sample_s
-    assert equal "$sample_s" "$result_s"
+    (
+    sample="	abc"
+    result="abc"
+    _rubsh.String.chomp sample
+    assert equal "$sample" "$result"
+    )
   end
 
   it "removes whitespace from the end of a string"
-    sample_s="abc 	"
-    result_s="abc"
-    _rubsh.String.chomp sample_s
-    assert equal "$sample_s" "$result_s"
+    (
+    sample="abc 	"
+    result="abc"
+    _rubsh.String.chomp sample
+    assert equal "$sample" "$result"
+    )
   end
 
   it "removes whitespace from both ends  of a string"
-    sample_s=" abc 	"
-    result_s="abc"
-    _rubsh.String.chomp sample_s
-    assert equal "$sample_s" "$result_s"
+    (
+    sample=" abc 	"
+    result="abc"
+    _rubsh.String.chomp sample
+    assert equal "$sample" "$result"
+    )
   end
 end
 
 describe "_rubsh.String.end_with?"
   it "affirms the positive"
-    sample_s="a test"
-    _rubsh.String.end_with? sample_s "t"
+    (
+    sample="a test"
+    _rubsh.String.end_with? sample "t"
     assert equal $? 0
+    )
   end
 
   it "denies the negative"
-    sample_s="a test"
-    _rubsh.String.end_with? sample_s "r"
+    (
+    sample="a test"
+    _rubsh.String.end_with? sample "r"
     assert equal $? 1
+    )
   end
 end
 
 describe "_rubsh.String.eql?"
   it "checks equality"
+    (
     # shellcheck disable=SC2034
-    sample_s="abc"
-    _rubsh.String.eql? sample_s "$sample_s"
+    sample="abc"
+    _rubsh.String.eql? sample "$sample"
     assert equal $? 0
+    )
   end
 
   it "fails inequality"
+    (
     # shellcheck disable=SC2034
-    sample_s="abc"
-    _rubsh.String.eql? sample_s ""
+    sample="abc"
+    _rubsh.String.eql? sample ""
     assert equal $? 1
+    )
   end
 end
 
 describe "_rubsh.String.start_with?"
   it "affirms the positive"
-    sample_s="a test"
-    _rubsh.String.start_with? sample_s "a"
+    (
+    sample="a test"
+    _rubsh.String.start_with? sample "a"
     assert equal $? 0
+    )
   end
 
   it "denies the negative"
-    sample_s="a test"
-    _rubsh.String.start_with? sample_s "r"
+    (
+    sample="a test"
+    _rubsh.String.start_with? sample "r"
     assert equal $? 1
+    )
   end
 end

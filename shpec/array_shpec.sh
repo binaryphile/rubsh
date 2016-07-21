@@ -2,6 +2,7 @@
 
 library=../lib/array.sh
 source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
+unset -v library
 
 describe "Array.=="
   it "tests equality of two arrays"

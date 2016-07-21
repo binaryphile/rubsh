@@ -8,18 +8,20 @@ readonly _rubsh_keyword="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
 
 source "${BASH_SOURCE%/*}"/core.sh 2>/dev/null || source core.sh
 
-# shellcheck disable=SC2016
-export __dir__='_rubsh.File.dirname "$(_rubsh.File.realpath "$(eval "$__FILE__")")" "${BASH_SOURCE}"'
+__dir__() {
+  _rubsh.File.dirname "$(_rubsh.File.realpath "${BASH_SOURCE[1]}")"
+}
 
-# shellcheck disable=SC2016
-export __FILE__='_rubsh.IO.printf "${BASH_SOURCE}"'
+__FILE__() {
+  _rubsh.IO.puts "${BASH_SOURCE[1]}"
+}
 
 new() {
   local varname="$1"
   local constructor="$3"
   local initializer="$4"
 
-  shift; shift; shift
+  shift 3
   _rubsh.String.new initializer
   initializer.chomp
   initializer.start_with? "(" && initializer.end_with? ")" && shift && set -- "\"$initializer\"" "$@"

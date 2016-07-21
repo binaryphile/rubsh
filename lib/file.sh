@@ -13,6 +13,7 @@ _rubsh_init() {
 
   # shellcheck disable=SC2034
   read -d "" -a aliases <<EOS
+basename
 dirname
 realpath
 EOS
@@ -23,18 +24,26 @@ EOS
 _rubsh_init
 unset -f _rubsh_init
 
+File.absolute_path() {
+  local basename
+  local _rubsh_var="$1"
+  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.sh.deref _rubsh_var
+
+  _rubsh_var="${_rubsh_var%/}"
+  basename="$(_rubsh.File.basename "$_rubsh_var")"
+
+  (
+  [[ $basename =~ [^.] ]] || { cd "$_rubsh_var" >/dev/null; _rubsh.IO.puts "$PWD"; return ;}
+  cd "$(_rubsh.File.dirname "$_rubsh_var")" >/dev/null
+  _rubsh.IO.puts "$PWD/$basename"
+  )
+}
+
 File.append() {
   local _rubsh_var="$1"
   ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.sh.deref _rubsh_var
 
   cat <<<"$2" >>"$_rubsh_var"
-}
-
-File.basename() {
-  local _rubsh_var="$1"
-  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.sh.deref _rubsh_var
-
-  printf "%s" "${_rubsh_var##*/}"
 }
 
 File.chmod() {
@@ -57,6 +66,7 @@ File.new() {
 
   # shellcheck disable=SC2034
   read -d "" -a methods <<'EOS'
+absolute_path
 append
 basename
 chmod
