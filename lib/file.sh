@@ -27,7 +27,7 @@ unset -f _rubsh_init
 File.absolute_path() {
   local basename
   local _rubsh_var="$1"
-  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.sh.deref _rubsh_var
+  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
 
   _rubsh_var="${_rubsh_var%/}"
   basename="$(_rubsh.File.basename "$_rubsh_var")"
@@ -41,21 +41,21 @@ File.absolute_path() {
 
 File.append() {
   local _rubsh_var="$1"
-  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.sh.deref _rubsh_var
+  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
 
   cat <<<"$2" >>"$_rubsh_var"
 }
 
 File.chmod() {
   local _rubsh_var="$1"
-  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.sh.deref _rubsh_var
+  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
 
   chmod "$2" "$_rubsh_var"
 }
 
 File.exist? () {
   local _rubsh_var="$1"
-  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.sh.deref _rubsh_var
+  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
 
   [[ -f $_rubsh_var ]]
 }
@@ -85,33 +85,33 @@ EOS
 
   (( ${#@} > 1 )) || return 0
 
-  local "$1" && _rubsh.sh.upvar "$1" "$2"
+  local "$1" && _rubsh.Shell.passback_as "$1" "$2"
 }
 
 File.qgrep() {
   local _rubsh_var="$1"
-  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.sh.deref _rubsh_var
+  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
 
   grep -q "$2" "$_rubsh_var"
 }
 
 File.readlink() {
   local _rubsh_var="$1"
-  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.sh.deref _rubsh_var
+  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
 
   readlink "$_rubsh_var"
 }
 
 File.symlink? () {
   local _rubsh_var="$1"
-  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.sh.deref _rubsh_var
+  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
 
   [[ -h $_rubsh_var ]]
 }
 
 File.touch() {
   local _rubsh_var="$1"
-  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.sh.deref _rubsh_var
+  ! _rubsh.sh.is_var "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
 
   touch "$_rubsh_var"
 }

@@ -29,8 +29,8 @@ Array.eql? () {
   local _array2="$2"
   local i
 
-  _rubsh.sh.deref _array1
-  _rubsh.sh.deref _array2
+  _rubsh.Shell.dereference _array1
+  _rubsh.Shell.dereference _array2
   [[ ${#_array1[@]} -eq ${#_array2[@]} ]] || return 1
   for i in "${!_array1[@]}"; do
   [[ ${_array1["$i"]} == "${_array2["$i"]}" ]] || return 1
@@ -70,7 +70,7 @@ Array.index() {
 Array.join() {
   local delim="$2"
 
-  ! _rubsh.sh.is_var "$delim" || _rubsh.sh.deref delim
+  ! _rubsh.sh.is_var "$delim" || _rubsh.Shell.dereference delim
   # shellcheck disable=SC2046
   set -- $(_rubsh.sh.value "$1")
   printf "%s" "$1"
@@ -106,10 +106,10 @@ EOS
     shift
     (( ${#@} > 1 )) || {
       eval "_rubsh_val=$1"
-      _rubsh.sh.upvar "$_rubsh_arg" "${_rubsh_val[@]}"
+      _rubsh.Shell.passback_as "$_rubsh_arg" "${_rubsh_val[@]}"
       return 0
     }
-    _rubsh.sh.upvar "$_rubsh_arg" "$@"
+    _rubsh.Shell.passback_as "$_rubsh_arg" "$@"
   }
 }
 

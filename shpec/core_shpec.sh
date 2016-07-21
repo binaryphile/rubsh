@@ -195,15 +195,15 @@ describe "_rubsh.Shell.class"
   end
 end
 
-describe "_rubsh.Shell.deref"
+describe "_rubsh.Shell.dereference"
   it "dereferences a scalar variable"
     (
     # shellcheck disable=SC2034
     sample="text sample"
     # shellcheck disable=SC2034
-    indirect_v="sample"
-    _rubsh.Shell.deref indirect_v
-    assert equal "$indirect_v" "text sample"
+    indirect="sample"
+    _rubsh.Shell.dereference indirect
+    assert equal "$indirect" "text sample"
     )
   end
 
@@ -212,10 +212,10 @@ describe "_rubsh.Shell.deref"
     # shellcheck disable=SC2034
     sample=( "testing" "one" "two" )
     # shellcheck disable=SC2034
-    indirect_v="sample"
-    _rubsh.Shell.deref indirect_v
-    assert equal "$(_rubsh.Shell.class indirect_v)" "array"
-    assert equal "${indirect_v[*]}" "${sample[*]}"
+    indirect="sample"
+    _rubsh.Shell.dereference indirect
+    assert equal "$(_rubsh.Shell.class indirect)" "array"
+    assert equal "${indirect[*]}" "${sample[*]}"
     )
   end
 end

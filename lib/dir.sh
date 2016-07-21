@@ -10,21 +10,21 @@ source "${BASH_SOURCE%/*}"/core.sh 2>/dev/null || source core.sh
 
 Dir.chmod() {
   local _rubsh_var="$1"
-  _rubsh.sh.deref _rubsh_var
+  _rubsh.Shell.dereference _rubsh_var
 
   chmod "$2" "$_rubsh_var"
 }
 
 Dir.exist? () {
   local _rubsh_var="$1"
-  _rubsh.sh.deref _rubsh_var
+  _rubsh.Shell.dereference _rubsh_var
 
   [[ -d $_rubsh_var ]]
 }
 
 Dir.mkdir() {
   local _rubsh_var="$1"
-  _rubsh.sh.deref _rubsh_var
+  _rubsh.Shell.dereference _rubsh_var
 
   (( ${#@} > 1 )) || {
     mkdir -p "$_rubsh_var"
@@ -52,19 +52,19 @@ EOS
 
   (( ${#@} > 1 )) || return 0
 
-  local "$1" && _rubsh.sh.upvar "$1" "$2"
+  local "$1" && _rubsh.Shell.passback_as "$1" "$2"
 }
 
 Dir.symlink? () {
   local _rubsh_var="$1"
-  _rubsh.sh.deref _rubsh_var
+  _rubsh.Shell.dereference _rubsh_var
 
   [[ -h $_rubsh_var ]]
 }
 
 Dir.touch() {
   local _rubsh_var="$1"
-  _rubsh.sh.deref _rubsh_var
+  _rubsh.Shell.dereference _rubsh_var
 
   touch "$_rubsh_var"
 }

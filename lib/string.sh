@@ -51,14 +51,14 @@ EOS
 
   (( ${#@} > 1 )) || return 0
 
-  local "$1" && _rubsh.sh.upvar "$1" "$2"
+  local "$1" && _rubsh.Shell.passback_as "$1" "$2"
 }
 
 String.split() {
   local array
   local delimiter="$2"
 
-  ! _rubsh.sh.is_var "$delimiter" || _rubsh.sh.deref delimiter
+  ! _rubsh.sh.is_var "$delimiter" || _rubsh.Shell.dereference delimiter
   if [[ -z $delimiter ]]; then
     read -ra array <<< "$(_rubsh.sh.value "$1")"
   else
