@@ -22,7 +22,7 @@ EOS
 _rubsh_init
 unset -f _rubsh_init
 
-_rubsh.sh.alias_function Array.== Array.eql?
+_rubsh.Shell.alias_function Array.== Array.eql?
 
 Array.eql? () {
   local _array1="$1"
@@ -42,7 +42,7 @@ Array.include? () {
   local elem
   local array
 
-  array=( $(_rubsh.sh.value "$1") )
+  array=( $(_rubsh.Shell.value "$1") )
   for elem in "${array[@]}"; do
     if [[ $elem == "$2" ]]; then
       return 0
@@ -56,7 +56,7 @@ Array.index() {
   local i
   local item="$2"
 
-  array=( $( _rubsh.sh.value "$1") )
+  array=( $( _rubsh.Shell.value "$1") )
   for i in "${!array[@]}"; do
     if [[ ${array[${i}]} == "$item" ]]; then
       printf "%s" "$i"
@@ -72,7 +72,7 @@ Array.join() {
 
   ! _rubsh.Shell.variable? "$delim" || _rubsh.Shell.dereference delim
   # shellcheck disable=SC2046
-  set -- $(_rubsh.sh.value "$1")
+  set -- $(_rubsh.Shell.value "$1")
   printf "%s" "$1"
   shift
   printf "%s" "${@/#/$delim}"
@@ -120,7 +120,7 @@ Array.remove() {
 
   item="$2"
   # shellcheck disable=SC2046
-  set -- $(_rubsh.sh.value "$1")
+  set -- $(_rubsh.Shell.value "$1")
   result=( )
   for i in "$@"; do
     [[ $i == "$item" ]] || result+=( "$i" )

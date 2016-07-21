@@ -60,9 +60,9 @@ String.split() {
 
   ! _rubsh.Shell.variable? "$delimiter" || _rubsh.Shell.dereference delimiter
   if [[ -z $delimiter ]]; then
-    read -ra array <<< "$(_rubsh.sh.value "$1")"
+    read -ra array <<< "$(_rubsh.Shell.value "$1")"
   else
-    IFS="$2" read -ra array <<< "$(_rubsh.sh.value "$1")"
+    IFS="$2" read -ra array <<< "$(_rubsh.Shell.value "$1")"
   fi
   cat <<< "${array[@]}"
 }

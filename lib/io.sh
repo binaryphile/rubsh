@@ -30,6 +30,6 @@ unset -f _rubsh_init
 stderr.printf() { IO.printf "$@" 1>&2  ;}
 stderr.puts()   { IO.puts "$@" 1>&2    ;}
 
-_rubsh.sh.alias_function stdout.printf IO.printf
-_rubsh.sh.alias_function stdout.puts IO.puts
-_rubsh.sh.alias_function puts IO.puts
+_rubsh.Shell.alias_function stdout.printf IO.printf
+_rubsh.Shell.alias_function stdout.puts IO.puts
+_rubsh.Shell.alias_function puts IO.puts
