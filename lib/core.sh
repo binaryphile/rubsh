@@ -136,7 +136,7 @@ _rubsh.Shell.passback_as() {
 #     -aN  Assign next N values to varname as array
 #     -v   Assign single value to varname
 # Return: 1 if error occurs
-_rubsh.Shell.passback_ass() {
+_rubsh.Shell.passbacks_as() {
     if ! (( $# )); then
         echo "${FUNCNAME[0]}: usage: ${FUNCNAME[0]} [-v varname"\
             "value] | [-aN varname [value ...]] ..." 1>&2

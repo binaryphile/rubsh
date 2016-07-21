@@ -58,7 +58,7 @@ String.split() {
   local array
   local delimiter="$2"
 
-  ! _rubsh.sh.is_var "$delimiter" || _rubsh.Shell.dereference delimiter
+  ! _rubsh.Shell.variable? "$delimiter" || _rubsh.Shell.dereference delimiter
   if [[ -z $delimiter ]]; then
     read -ra array <<< "$(_rubsh.sh.value "$1")"
   else
