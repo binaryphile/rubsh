@@ -49,7 +49,7 @@ EOS
     _rubsh.core.alias_method "$1" "$method" "String"
   done
 
-  (( ${#@} > 1 )) || return 0
+  (( $# > 1 )) || return 0
 
   local "$1" && _rubsh.Shell.passback_as "$1" "$2"
 }

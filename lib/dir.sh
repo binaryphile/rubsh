@@ -26,7 +26,7 @@ Dir.mkdir() {
   local _rubsh_var="$1"
   _rubsh.Shell.dereference _rubsh_var
 
-  (( ${#@} > 1 )) || {
+  (( $# > 1 )) || {
     mkdir -p "$_rubsh_var"
     return
   }
@@ -50,7 +50,7 @@ EOS
     _rubsh.core.alias_method "$1" "$method" "Dir"
   done
 
-  (( ${#@} > 1 )) || return 0
+  (( $# > 1 )) || return 0
 
   local "$1" && _rubsh.Shell.passback_as "$1" "$2"
 }

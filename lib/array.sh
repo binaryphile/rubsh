@@ -97,11 +97,11 @@ EOS
     _rubsh.core.alias_method "$1" "$_rubsh_method" "Array"
   done
 
-  (( ${#@} > 1 )) || return 0
+  (( $# > 1 )) || return 0
   local "$1" && {
     _rubsh_arg="$1"
     shift
-    (( ${#@} > 1 )) || {
+    (( $# > 1 )) || {
       eval "_rubsh_val=$1"
       _rubsh.Shell.passback_as "$_rubsh_arg" "${_rubsh_val[@]}"
       return 0
