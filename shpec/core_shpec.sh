@@ -199,11 +199,11 @@ describe "_rubsh.Shell.dereference"
   it "dereferences a scalar variable"
     (
     # shellcheck disable=SC2034
-    sample="text sample"
+    sample="some text"
     # shellcheck disable=SC2034
     indirect="sample"
     _rubsh.Shell.dereference indirect
-    assert equal "$indirect" "text sample"
+    assert equal "$indirect" "some text"
     )
   end
 
@@ -251,7 +251,7 @@ describe "_rubsh.Shell.value"
     (
     # shellcheck disable=SC2034
     sample="value text"
-    assert equal "$(_rubsh.Shell.value sample)" "$sample"
+    assert equal "$(_rubsh.Shell.value sample)" '"value text"'
     )
   end
 
@@ -259,7 +259,7 @@ describe "_rubsh.Shell.value"
     (
     # shellcheck disable=SC2034
     sample=( "one" "two" "three" )
-    assert equal "$(_rubsh.Shell.value sample)" "${sample[*]} "
+    assert equal "$(_rubsh.Shell.value sample)" '("one" "two" "three")'
     )
   end
 end

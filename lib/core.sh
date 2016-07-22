@@ -22,13 +22,15 @@ _rubsh.Array.to_s() {
     # that when appending arrays (i.e. `a1+=$( my_a.to_s a2 )`), values at
     # matching indices merge instead of pushing all items onto array.
     r=${r//\[[0-9]\]=}
-    _rubsh.IO.puts "${r:1:-1}"
+    echo "${r:1:-1}"
 }
 
 _rubsh.core.alias() {
   local alias
+  eval local -a aliases="$(_rubsh.Shell.value "$2")"
 
-  for alias in $(_rubsh.Shell.value "$2"); do
+  # shellcheck disable=SC2154
+  for alias in "${aliases[@]}"; do
     _rubsh.Shell.alias_function "$1.$alias" "_rubsh.$1.$alias"
   done
 }
@@ -42,23 +44,23 @@ _rubsh.File.basename() {
   ! _rubsh.Shell.variable? "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
 
   _rubsh_var="${_rubsh_var%/}"
-  _rubsh.IO.puts "${_rubsh_var##*/}"
+  echo "${_rubsh_var##*/}"
 }
 
 _rubsh.File.dirname() {
   local _rubsh_var="$1"
   ! _rubsh.Shell.variable? "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
 
-  [[ $_rubsh_var =~ / ]] || { _rubsh.IO.puts "."; return ;}
+  [[ $_rubsh_var =~ / ]] || { echo "."; return ;}
   _rubsh_var="${_rubsh_var%/}"
-  _rubsh.IO.puts "${_rubsh_var%/*}"
+  echo "${_rubsh_var%/*}"
 }
 
 _rubsh.File.realpath(){
   local _rubsh_var="$1"
   ! _rubsh.Shell.variable? "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
 
-  _rubsh.IO.puts "$(readlink -f "$_rubsh_var")"
+  readlink -f "$_rubsh_var"
 }
 
 # Same as Array.to_s() but preserves keys.
@@ -83,41 +85,32 @@ _rubsh.IO.puts() {
 _rubsh.Shell.alias_function() { eval "$1 () { $2 \"\$@\" ;}" ;}
 
 _rubsh.Shell.class() {
-  case "$(declare -p $1)" in
+  case "$(declare -p "$1" 2>/dev/null)" in
     declare\ -a* )
-      _rubsh.IO.puts "array"
+      printf "array\n"
       ;;
     * )
-      _rubsh.IO.puts "string"
+      printf "string\n"
       ;;
   esac
 }
 
 _rubsh.Shell.dereference() {
-  set -- "$1" "$(_rubsh.Shell.value "$1")"
+  local -a _rubsh_ary
+  eval _rubsh_ary="$(eval _rubsh.Shell.value "$(_rubsh.Shell.value "$1")")"
 
-  case "$(_rubsh.Shell.class "$2")" in
-    "string" )
-      # shellcheck disable=SC2046
-      local "$1" && _rubsh.Shell.passback_as "$1" "$(_rubsh.Shell.value "$2")"
-      ;;
-    "array" )
-      # shellcheck disable=SC2046
-      local "$1" && _rubsh.Shell.passback_as "$1" $(_rubsh.Shell.value "$2")
-      ;;
-  esac
+  # shellcheck disable=SC2154
+  local "$1" && _rubsh.Shell.passback_as "$1" "${_rubsh_ary[@]}"
 }
 
-_rubsh.Shell.variable? () { declare -p "$1" >/dev/null 2>&1 ;}
-
 # Assign variable one scope above the caller
-# Usage: local "$1" && _rubsh.core.sh.upvar $1 "value(s)"
+# Usage: local "$1" && _rubsh.Shell.passback_as $1 "value(s)"
 # Param: $1  Variable name to assign value to
 # Param: $*  Value(s) to assign.  If multiple values, an array is
 #            assigned, otherwise a single value is assigned.
-# NOTE: For assigning multiple variables, use 'upvars'.  Do NOT
-#       use multiple 'upvar' calls, since one 'upvar' call might
-#       reassign a variable to be used by another 'upvar' call.
+# NOTE: For assigning multiple variables, use 'passbacks_as'.  Do NOT
+#       use multiple 'passback_as' calls, since one call might
+#       reassign a variable to be used by another call.
 # See: http://fvue.nl/wiki/Bash:_Passing_variables_by_reference
 _rubsh.Shell.passback_as() {
     if unset -v "$1"; then           # Unset & validate varname
@@ -148,7 +141,7 @@ _rubsh.Shell.passbacks_as() {
                 # Error checking
                 [[ ${1#-a} ]] || { echo "bash: ${FUNCNAME[0]}: \`$1': missing"\
                     "number specifier" 1>&2; return 1; }
-                _rubsh.IO.printf %d "${1#-a}" &> /dev/null || { echo "bash:"\
+                printf %d "${1#-a}" &> /dev/null || { echo "bash:"\
                     "${FUNCNAME[0]}: \`$1': invalid number specifier" 1>&2
                     return 1; }
                 # Assign array of -aN elements
@@ -188,13 +181,15 @@ There is NO WARRANTY, to the extent permitted by law."
 _rubsh.Shell.value()     {
   case "$(_rubsh.Shell.class "$1")" in
     "array" )
-      eval printf \"%s \" \"\$\{"$1"[@]\}\"
+      _rubsh.Array.to_s "$1"
       ;;
     * )
-      eval printf \"%s\" \"\$"$1"\"
+      eval echo \"\\\"\$"$1"\\\"\"
       ;;
   esac
 }
+
+_rubsh.Shell.variable? () { declare -p "$1" >/dev/null 2>&1 ;}
 
 _rubsh.String.blank? ()  { eval "[[ -z \${$1:-} ]] || [[ \${$1:-} =~ ^[[:space:]]+$ ]]"  ;}
 
