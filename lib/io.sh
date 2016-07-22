@@ -8,8 +8,10 @@ readonly _rubsh_io="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
 
 source "${BASH_SOURCE%/*}"/core.sh 2>/dev/null || source core.sh
 
-export stderr=stderr
-export stdout=stdout
+# shellcheck disable=SC2034
+stderr=stderr
+# shellcheck disable=SC2034
+stdout=stdout
 
 _rubsh_init() {
   local aliases

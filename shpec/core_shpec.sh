@@ -215,16 +215,17 @@ describe "_rubsh.Shell.dereference"
     indirect="sample"
     _rubsh.Shell.dereference indirect
     assert equal "$(_rubsh.Shell.class indirect)" "array"
-    assert equal "${indirect[*]}" "${sample[*]}"
+    assert equal "${#indirect[@]}" 3
+    assert equal "${indirect[*]}" "testing one two"
     )
   end
 end
 
-describe "_rubsh.Shell.is_var"
+describe "_rubsh.Shell.variable?"
   it "detects a variable"
     (
     sample="test"
-    _rubsh.Shell.is_var sample
+    _rubsh.Shell.variable? sample
     assert equal $? 0
     )
   end
@@ -232,14 +233,14 @@ describe "_rubsh.Shell.is_var"
   it "doesn't detect a function"
     (
     sample2() { echo hello ;}
-    _rubsh.Shell.is_var sample2
+    _rubsh.Shell.variable? sample2
     assert equal $? 1
     )
   end
 
   it "doesn't detect an undefined variable"
     (
-    _rubsh.Shell.is_var no_var
+    _rubsh.Shell.variable? no_var
     assert equal $? 1
     )
   end

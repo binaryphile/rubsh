@@ -25,43 +25,40 @@ unset -f _rubsh_init
 _rubsh.Shell.alias_function Array.== Array.eql?
 
 Array.eql? () {
-  local _array1="$1"
-  local _array2="$2"
-  local i
+  local _rubsh_ary1="$1"
+  local _rubsh_ary2="$2"
+  local _rubsh_i
 
-  _rubsh.Shell.dereference _array1
-  _rubsh.Shell.dereference _array2
-  [[ ${#_array1[@]} -eq ${#_array2[@]} ]] || return 1
-  for i in "${!_array1[@]}"; do
-  [[ ${_array1["$i"]} == "${_array2["$i"]}" ]] || return 1
+  _rubsh.Shell.dereference "_rubsh_ary1"
+  _rubsh.Shell.dereference "_rubsh_ary2"
+
+  (( ${#_rubsh_ary1[@]} == "${#_rubsh_ary2[@]}" )) || return
+  for _rubsh_i in "${!_rubsh_ary1[@]}"; do
+    [[ ${_rubsh_ary1[$_rubsh_i]} == "${_rubsh_ary2[$_rubsh_i]}" ]] || return
   done
 }
 
 # https://stackoverflow.com/questions/3685970/check-if-an-array-contains-a-value#answer-8574392
 Array.include? () {
-  local elem
-  local array
+  local _rubsh_ary="$1"
+  local _rubsh_item
 
-  array=( $(_rubsh.Shell.value "$1") )
-  for elem in "${array[@]}"; do
-    if [[ $elem == "$2" ]]; then
-      return 0
-    fi
+  _rubsh.Shell.dereference "_rubsh_ary"
+
+  for _rubsh_item in "${_rubsh_ary[@]}"; do
+    [[ $_rubsh_item != "$2" ]] || return
   done
   return 1
 }
 
 Array.index() {
-  local array
-  local i
-  local item="$2"
+  local _rubsh_ary
+  local _rubsh_i
+  local _rubsh_item="$2"
 
-  array=( $( _rubsh.Shell.value "$1") )
-  for i in "${!array[@]}"; do
-    if [[ ${array[${i}]} == "$item" ]]; then
-      printf "%s" "$i"
-      return 0
-    fi
+  _rubsh_ary=( $( _rubsh.Shell.value "$1") )
+  for _rubsh_i in "${!_rubsh_ary[@]}"; do
+    [[ ${_rubsh_ary[${_rubsh_i}]} != "$_rubsh_item" ]] || { _rubsh.IO.puts _rubsh_i; return ;}
   done
   return 1
 }

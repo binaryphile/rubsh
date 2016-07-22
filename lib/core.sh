@@ -39,7 +39,7 @@ _rubsh.core.alias_method() {
 
 _rubsh.File.basename() {
   local _rubsh_var="$1"
-  ! _rubsh.Shell.is_var "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
+  ! _rubsh.Shell.variable? "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
 
   _rubsh_var="${_rubsh_var%/}"
   _rubsh.IO.puts "${_rubsh_var##*/}"
@@ -47,7 +47,7 @@ _rubsh.File.basename() {
 
 _rubsh.File.dirname() {
   local _rubsh_var="$1"
-  ! _rubsh.Shell.is_var "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
+  ! _rubsh.Shell.variable? "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
 
   [[ $_rubsh_var =~ / ]] || { _rubsh.IO.puts "."; return ;}
   _rubsh_var="${_rubsh_var%/}"
@@ -56,7 +56,7 @@ _rubsh.File.dirname() {
 
 _rubsh.File.realpath(){
   local _rubsh_var="$1"
-  ! _rubsh.Shell.is_var "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
+  ! _rubsh.Shell.variable? "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
 
   _rubsh.IO.puts "$(readlink -f "$_rubsh_var")"
 }
@@ -75,7 +75,7 @@ _rubsh.IO.printf() { printf "$@" ;}
 _rubsh.IO.puts() {
   local _rubsh_var="$1"
 
-  _rubsh.Shell.is_var "$_rubsh_var" || { _rubsh.IO.printf "%s\n" "$*"; return ;}
+  _rubsh.Shell.variable? "$_rubsh_var" || { _rubsh.IO.printf "%s\n" "$*"; return ;}
   _rubsh.Shell.dereference _rubsh_var
   _rubsh.IO.printf "%s\n" "$_rubsh_var"
 }
@@ -108,7 +108,7 @@ _rubsh.Shell.dereference() {
   esac
 }
 
-_rubsh.Shell.is_var() { declare -p "$1" >/dev/null 2>&1 ;}
+_rubsh.Shell.variable? () { declare -p "$1" >/dev/null 2>&1 ;}
 
 # Assign variable one scope above the caller
 # Usage: local "$1" && _rubsh.core.sh.upvar $1 "value(s)"

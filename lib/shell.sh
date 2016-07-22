@@ -13,7 +13,7 @@ _rubsh_init() {
 
   # shellcheck disable=SC2034
   read -d "" -a aliases <<EOS
-deref
+dereference
 variable?
 EOS
 

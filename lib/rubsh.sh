@@ -20,6 +20,7 @@ file
 io
 keyword
 pathname
+shell
 string
 EOS
 
