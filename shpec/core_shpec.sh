@@ -5,7 +5,8 @@ source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
 unset -v library
 
 init() {
-  _rubsh.IO.puts "$(mktemp --directory)"
+  result="$(mktemp --directory)" || exit
+  _rubsh.IO.puts "$result"
 }
 
 cleanup() {
