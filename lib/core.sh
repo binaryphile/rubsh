@@ -68,7 +68,7 @@ _rubsh.Hash.to_s() {
     local r
 
     r=$( declare -p $1 )
-    _rubsh.IO.puts "${r#declare\ -a\ *=}"
+    echo "${r#declare\ -a\ *=}"
 }
 
 # shellcheck disable=SC2059
