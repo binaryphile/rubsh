@@ -104,11 +104,11 @@ _rubsh.Shell.class() {
 }
 
 _rubsh.Shell.dereference() {
-  local -a _rubsh_ary
-  _rubsh.Shell.assign_literal _rubsh_ary "$(_rubsh.Shell.inspect "$(_rubsh.String.to_s "$1")")"
+  local -a _rubsh_indirect
+  _rubsh.Shell.assign_literal _rubsh_indirect "$(_rubsh.Shell.inspect "$(_rubsh.String.to_s "$1")")"
 
   # shellcheck disable=SC2154
-  local "$1" && _rubsh.Shell.passback_as "$1" "${_rubsh_ary[@]}"
+  local "$1" && _rubsh.Shell.passback_as "$1" "${_rubsh_indirect[@]}"
 }
 
 # Assign variable one scope above the caller
