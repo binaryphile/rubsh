@@ -19,16 +19,28 @@ validate_dirname() {
   [[ -d $1 ]]               || exit
 }
 
-describe "_rubsh.Array.to_s"
-  it "renders a string version of an array"
+describe "_rubsh.Array.inspect"
+  it "renders a literal of an array"
     (
     # shellcheck disable=SC2034
     sample=( "a" "b" "c" )
     # shellcheck disable=SC2034
     expected='("a" "b" "c")'
     # shellcheck disable=SC2034
+    result="$(_rubsh.Array.inspect sample)"
+    assert equal "$result" '("a" "b" "c")'
+    )
+  end
+end
+
+describe "_rubsh.Array.to_s"
+  it "renders a string concatenation of an array"
+    (
+    # shellcheck disable=SC2034
+    sample=( "a" "b" "c" )
+    # shellcheck disable=SC2034
     result="$(_rubsh.Array.to_s sample)"
-    assert equal "$expected" "$result"
+    assert equal "$result" "a b c"
     )
   end
 end
@@ -178,6 +190,26 @@ describe "_rubsh.Shell.alias_function"
   end
 end
 
+describe "_rubsh.Shell.assign_literal"
+  it "assigns a string literal to a variable"
+    (
+    sample=""
+    _rubsh.Shell.assign_literal sample '"value"'
+    assert equal "$(_rubsh.Shell.class sample)" "string"
+    assert equal "$sample" "value"
+    )
+  end
+
+  it "assigns an array literal to a variable"
+    (
+    sample=""
+    _rubsh.Shell.assign_literal sample '("one" "two" "three")'
+    assert equal "$(_rubsh.Shell.class sample)" "array"
+    assert equal "${sample[*]}" "one two three"
+    )
+  end
+end
+
 describe "_rubsh.Shell.class"
   it "reports if it is an array"
     (
@@ -222,6 +254,42 @@ describe "_rubsh.Shell.dereference"
   end
 end
 
+describe "_rubsh.Shell.inspect"
+  it "returns a literal string representation"
+    (
+    # shellcheck disable=SC2034
+    sample="value text"
+    assert equal "$(_rubsh.Shell.inspect sample)" '"value text"'
+    )
+  end
+
+  it "returns a literal array representation"
+    (
+    # shellcheck disable=SC2034
+    sample=( "one" "two" "three" )
+    assert equal "$(_rubsh.Shell.inspect sample)" '("one" "two" "three")'
+    )
+  end
+end
+
+describe "_rubsh.Shell.to_s"
+  it "returns a string"
+    (
+    # shellcheck disable=SC2034
+    sample="value text"
+    assert equal "$(_rubsh.Shell.to_s sample)" "value text"
+    )
+  end
+
+  it "returns a concatenated string"
+    (
+    # shellcheck disable=SC2034
+    sample=( "one" "two" "three" )
+    assert equal "$(_rubsh.Shell.to_s sample)" "one two three"
+    )
+  end
+end
+
 describe "_rubsh.Shell.variable?"
   it "detects a variable"
     (
@@ -243,24 +311,6 @@ describe "_rubsh.Shell.variable?"
     (
     _rubsh.Shell.variable? no_var
     assert equal $? 1
-    )
-  end
-end
-
-describe "_rubsh.Shell.value"
-  it "returns a scalar value"
-    (
-    # shellcheck disable=SC2034
-    sample="value text"
-    assert equal "$(_rubsh.Shell.value sample)" '"value text"'
-    )
-  end
-
-  it "returns an array value"
-    (
-    # shellcheck disable=SC2034
-    sample=( "one" "two" "three" )
-    assert equal "$(_rubsh.Shell.value sample)" '("one" "two" "three")'
     )
   end
 end
@@ -380,6 +430,15 @@ describe "_rubsh.String.eql?"
   end
 end
 
+describe "_rubsh.String.inpect"
+  it "returns a string literal expression for a variable"
+    (
+    sample="one"
+    assert equal "$(_rubsh.String.inspect sample)" '"one"'
+    )
+  end
+end
+
 describe "_rubsh.String.start_with?"
   it "affirms the positive"
     (
@@ -397,3 +456,13 @@ describe "_rubsh.String.start_with?"
     )
   end
 end
+
+describe "_rubsh.String.to_s"
+  it "returns a string for a variable"
+    (
+    sample="one"
+    assert equal "$(_rubsh.String.to_s sample)" "one"
+    )
+  end
+end
+

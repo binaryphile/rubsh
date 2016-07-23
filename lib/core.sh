@@ -12,26 +12,28 @@ readonly _rubsh_core="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
 # https://stackoverflow.com/questions/10582763/how-to-return-an-array-in-bash-without-using-globals/15982208#15982208
 # Print array definition to use with assignments, for loops, etc.
 #   varname: the name of an array variable.
-_rubsh.Array.to_s() {
+_rubsh.Array.inspect() {
     local r
 
     r=$( declare -p $1 )
     r=${r#declare\ -a\ *=}
     # Strip keys so printed definition will be a simple list (like when using
     # "${array[@]}").  One side effect of having keys in the definition is
-    # that when appending arrays (i.e. `a1+=$( my_a.to_s a2 )`), values at
+    # that when appending arrays (i.e. `a1+=$( my_a.inspect a2 )`), values at
     # matching indices merge instead of pushing all items onto array.
     r=${r//\[[0-9]\]=}
     echo "${r:1:-1}"
 }
 
-_rubsh.core.alias() {
-  local alias
-  eval local -a aliases="$(_rubsh.Shell.value "$2")"
+_rubsh.Array.to_s() { eval echo \"\$\{"$1"[*]\}\" ;}
 
-  # shellcheck disable=SC2154
-  for alias in "${aliases[@]}"; do
-    _rubsh.Shell.alias_function "$1.$alias" "_rubsh.$1.$alias"
+_rubsh.core.alias() {
+  local _rubsh_alias
+  local _rubsh_aliases="$2"
+  _rubsh.Shell.dereference _rubsh_aliases
+
+  for _rubsh_alias in "${_rubsh_aliases[@]}"; do
+    _rubsh.Shell.alias_function "$1.$_rubsh_alias" "_rubsh.$1.$_rubsh_alias"
   done
 }
 
@@ -63,8 +65,8 @@ _rubsh.File.realpath(){
   readlink -f "$_rubsh_var"
 }
 
-# Same as Array.to_s() but preserves keys.
-_rubsh.Hash.to_s() {
+# Same as Array.inspect() but preserves keys.
+_rubsh.Hash.inspect() {
     local r
 
     r=$( declare -p $1 )
@@ -84,6 +86,12 @@ _rubsh.IO.puts() {
 
 _rubsh.Shell.alias_function() { eval "$1 () { $2 \"\$@\" ;}" ;}
 
+_rubsh.Shell.assign_literal() {
+  eval local -a _rubsh_ary="$2"
+
+  local "$1" && _rubsh.Shell.passback_as "$1" "${_rubsh_ary[@]}"
+}
+
 _rubsh.Shell.class() {
   case "$(declare -p "$1" 2>/dev/null)" in
     declare\ -a* )
@@ -97,7 +105,7 @@ _rubsh.Shell.class() {
 
 _rubsh.Shell.dereference() {
   local -a _rubsh_ary
-  eval _rubsh_ary="$(eval _rubsh.Shell.value "$(_rubsh.Shell.value "$1")")"
+  _rubsh.Shell.assign_literal _rubsh_ary "$(_rubsh.Shell.inspect "$(_rubsh.String.to_s "$1")")"
 
   # shellcheck disable=SC2154
   local "$1" && _rubsh.Shell.passback_as "$1" "${_rubsh_ary[@]}"
@@ -120,6 +128,18 @@ _rubsh.Shell.passback_as() {
             eval "$1"=\(\"\${@:2}\"\)  # Return array
         fi
     fi
+}
+
+# TODO: implement with send?
+_rubsh.Shell.inspect() {
+  case "$(_rubsh.Shell.class "$1")" in
+    "array" )
+      _rubsh.Array.inspect "$1"
+      ;;
+    * )
+      _rubsh.String.inspect "$1"
+      ;;
+  esac
 }
 
 # Assign variables one scope above the caller
@@ -178,13 +198,13 @@ There is NO WARRANTY, to the extent permitted by law."
     done
 }
 
-_rubsh.Shell.value()     {
+_rubsh.Shell.to_s() {
   case "$(_rubsh.Shell.class "$1")" in
     "array" )
       _rubsh.Array.to_s "$1"
       ;;
     * )
-      eval echo \"\\\"\$"$1"\\\"\"
+      _rubsh.String.to_s "$1"
       ;;
   esac
 }
@@ -208,7 +228,8 @@ _rubsh.String.end_with? () {
   [[ ${_rubsh_var: -1} == "$2" ]]
 }
 
-_rubsh.String.eql? ()    { eval "[[ \${$1:-} == \"$2\" ]]" ;}
+_rubsh.String.eql? ()   { eval "[[ \${$1:-} == \"$2\" ]]" ;}
+_rubsh.String.inspect() { eval echo \\\"\"\$"$1"\"\\\"    ;}
 
 _rubsh.String.new() {
   local _rubsh_method
@@ -240,3 +261,5 @@ _rubsh.String.start_with? () {
   _rubsh.Shell.dereference _rubsh_var
   [[ ${_rubsh_var:0:1} == "$2" ]]
 }
+
+_rubsh.String.to_s() { eval echo \"\$"$1"\" ;}

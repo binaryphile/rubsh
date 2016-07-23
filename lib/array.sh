@@ -52,7 +52,7 @@ Array.include? () {
 }
 
 Array.index() {
-  local _rubsh_ary
+  local -a _rubsh_ary
   local _rubsh_i
   local _rubsh_item="$2"
 
