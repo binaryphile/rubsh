@@ -13,16 +13,16 @@ readonly _rubsh_core="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
 # Print array definition to use with assignments, for loops, etc.
 #   varname: the name of an array variable.
 _rubsh.Array.inspect() {
-    local r
+    local _rubsh_var
 
-    r=$( declare -p $1 )
-    r=${r#declare\ -a\ *=}
+    _rubsh_var="$(declare -p "$1")"
+    _rubsh_var="${_rubsh_var#declare\ -a\ *=}"
     # Strip keys so printed definition will be a simple list (like when using
     # "${array[@]}").  One side effect of having keys in the definition is
     # that when appending arrays (i.e. `a1+=$( my_a.inspect a2 )`), values at
     # matching indices merge instead of pushing all items onto array.
-    r=${r//\[[0-9]\]=}
-    echo "${r:1:-1}"
+    _rubsh_var="${_rubsh_var//\[[0-9]\]=}"
+    echo "${_rubsh_var:1:-1}"
 }
 
 _rubsh.Array.to_s() { eval echo \"\$\{"$1"[*]\}\" ;}
@@ -229,7 +229,13 @@ _rubsh.String.end_with? () {
 }
 
 _rubsh.String.eql? ()   { eval "[[ \${$1:-} == \"$2\" ]]" ;}
-_rubsh.String.inspect() { eval echo \\\"\"\$"$1"\"\\\"    ;}
+_rubsh.String.inspect() {
+    local _rubsh_var
+
+    _rubsh_var="$(declare -p "$1")"
+    _rubsh_var=${_rubsh_var#declare\ --\ *=}
+    echo "$_rubsh_var"
+}
 
 _rubsh.String.new() {
   local _rubsh_method
