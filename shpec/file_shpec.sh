@@ -26,7 +26,7 @@ describe "File.absolute_path"
     validate_dirname "$temp"
     cd "$temp"
     sample=file1
-    assert equal "$(File.absolute_path sample)" "$temp/$sample"
+    assert equal "$(File.absolute_path :sample)" "$temp/$sample"
     cleanup "$temp"
     )
   end
@@ -48,7 +48,7 @@ describe "File.absolute_path"
     validate_dirname "$temp"
     cd "$temp"
     sample=..
-    assert equal "$(File.absolute_path sample)" "${temp%/*}"
+    assert equal "$(File.absolute_path :sample)" "${temp%/*}"
     cleanup "$temp"
     )
   end
@@ -69,7 +69,7 @@ describe "File.absolute_path"
     validate_dirname "$temp"
     cd "$temp"
     sample=dir1/
-    assert equal "$(File.absolute_path sample)" "$temp/dir1"
+    assert equal "$(File.absolute_path :sample)" "$temp/dir1"
     cleanup "$temp"
     )
   end
@@ -105,7 +105,7 @@ describe "File.append"
     _rubsh.IO.puts "test" > "$temp"/file
     # shellcheck disable=SC2034
     myfile="$temp"/file
-    File.append myfile "line2"
+    File.append :myfile "line2"
     assert equal "$(tail -1 "$temp"/file)" "line2"
     cleanup "$temp"
     )
@@ -117,7 +117,7 @@ describe "File.basename"
     (
     # shellcheck disable=SC2034
     sample=/home/gumby/work/ruby.rb
-    result="$(File.basename sample)"
+    result="$(File.basename :sample)"
     assert equal "$result" "ruby.rb"
     )
   end
@@ -135,7 +135,7 @@ describe "File.basename"
     (
     # shellcheck disable=SC2034
     sample=/home/gumby/work/ruby.rb/
-    result="$(File.basename sample)"
+    result="$(File.basename :sample)"
     assert equal "$result" "ruby.rb"
     )
   end
@@ -158,7 +158,7 @@ describe "File.chmod"
     #shellcheck disable=SC2154
     sample="$temp"/file
     install -m 660 /dev/null "$temp"/file
-    File.chmod sample 770
+    File.chmod :sample 770
     assert equal "$(stat -c "%a" "$sample")" "770"
     cleanup "$temp"
     )
@@ -182,7 +182,7 @@ describe "File.dirname"
   it "determines the directory name with multiple components by reference"
     (
     sample="/home/gumby/work/ruby.rb"
-    assert equal "$(File.dirname sample)" "/home/gumby/work"
+    assert equal "$(File.dirname :sample)" "/home/gumby/work"
     )
   end
 
@@ -196,7 +196,7 @@ describe "File.dirname"
   it "determines the directory name without components by reference"
     (
     sample="ruby.rb"
-    assert equal "$(File.dirname sample)" "."
+    assert equal "$(File.dirname :sample)" "."
     )
   end
 
@@ -210,7 +210,7 @@ describe "File.dirname"
   it "determines the directory name with a trailing slash by reference"
     (
     sample="/home/gumby/work/ruby/"
-    assert equal "$(File.dirname sample)" "/home/gumby/work"
+    assert equal "$(File.dirname :sample)" "/home/gumby/work"
     )
   end
 
@@ -226,14 +226,14 @@ describe "File.dirname"
   it "determines the directory name with multiple components by reference"
     (
     sample="/home/gumby/work/ruby.rb"
-    assert equal "$(File.dirname sample)" "/home/gumby/work"
+    assert equal "$(File.dirname :sample)" "/home/gumby/work"
     )
   end
 
   it "determines the directory name without components by reference"
     (
     sample="ruby.rb"
-    assert equal "$(File.dirname sample)" "."
+    assert equal "$(File.dirname :sample)" "."
     )
   end
 
@@ -259,7 +259,7 @@ describe "File.exist?"
     validate_dirname "$temp"
     sample="$temp"/file
     touch "$sample"
-    File.exist? sample
+    File.exist? :sample
     assert equal $? 0
     cleanup "$temp"
     )
@@ -270,7 +270,7 @@ describe "File.exist?"
     temp="$(init)"
     validate_dirname "$temp"
     sample="$temp"/file
-    File.exist? sample
+    File.exist? :sample
     assert equal $? 1
     cleanup "$temp"
     )
@@ -307,7 +307,7 @@ describe "File.qgrep"
     validate_dirname "$temp"
     sample="$temp"/file
     _rubsh.IO.puts "hello" > "$sample"
-    File.qgrep sample "hello"
+    File.qgrep :sample "hello"
     assert equal $? 0
     cleanup "$temp"
     )
@@ -319,7 +319,7 @@ describe "File.qgrep"
     validate_dirname "$temp"
     sample="$temp"/file
     _rubsh.IO.puts "hello" > "$sample"
-    File.qgrep sample "what"
+    File.qgrep :sample "what"
     assert equal $? 1
     cleanup "$temp"
     )
@@ -357,7 +357,7 @@ describe "File.readlink"
     validate_dirname "$temp"
     sample="$temp"/file
     ln -sf file2 "$sample"
-    assert equal "$(File.readlink sample)" file2
+    assert equal "$(File.readlink :sample)" file2
     cleanup "$temp"
     )
   end
@@ -383,7 +383,7 @@ describe "File.realpath"
     touch "$temp"/dir2/file
     ln -sf dir2 "$temp"/dir
     sample="$temp"/../.."$temp"/dir/file
-    assert equal "$(File.realpath sample)" "$temp"/dir2/file
+    assert equal "$(File.realpath :sample)" "$temp"/dir2/file
     cleanup "$temp"
     )
   end
@@ -409,7 +409,7 @@ describe "File.symlink?"
     validate_dirname "$temp"
     sample="$temp"/file
     ln -sf file2 "$sample"
-    File.symlink? sample
+    File.symlink? :sample
     assert equal $? 0
     cleanup "$temp"
     )
@@ -420,7 +420,7 @@ describe "File.symlink?"
     temp="$(init)"
     validate_dirname "$temp"
     sample="$temp"/file
-    File.symlink? sample
+    File.symlink? :sample
     assert equal $? 1
     cleanup "$temp"
     )
@@ -459,7 +459,7 @@ describe "File.touch"
     touch "$sample"
     sleep 0.1
     time="$(stat -c "%y" "$sample")"
-    File.touch sample
+    File.touch :sample
     assert unequal "$time" "$(stat -c "%y" "$sample")"
     cleanup "$temp"
     )
