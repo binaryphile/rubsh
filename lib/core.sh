@@ -13,56 +13,58 @@ readonly _rubsh_core="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
 # Print array definition to use with assignments, for loops, etc.
 #   varname: the name of an array variable.
 _rubsh.Array.inspect() {
-    local _rubsh_var
+    local _rubsh_cactus
 
-    _rubsh_var="$(declare -p "$1")"
-    _rubsh_var="${_rubsh_var#declare\ -a\ *=}"
+    _rubsh_cactus=$(_rubsh.Symbol.to_s "$1")
+    _rubsh_cactus=$(declare -p "$_rubsh_cactus")
+    _rubsh_cactus=${_rubsh_cactus#declare\ -a\ *=}
     # Strip keys so printed definition will be a simple list (like when using
     # "${array[@]}").  One side effect of having keys in the definition is
     # that when appending arrays (i.e. `a1+=$( my_a.inspect a2 )`), values at
     # matching indices merge instead of pushing all items onto array.
-    _rubsh_var="${_rubsh_var//\[[0-9]\]=}"
-    echo "${_rubsh_var:1:-1}"
+    _rubsh_cactus="${_rubsh_cactus//\[[0-9]\]=}"
+    echo "${_rubsh_cactus:1:-1}"
 }
 
-_rubsh.Array.to_s() { eval echo \"\$\{"$1"[*]\}\" ;}
+_rubsh.Array.to_s() { eval echo \"\$\{"$(_rubsh.Symbol.to_s "$1")"[*]\}\" ;}
 
 _rubsh.core.alias() {
-  local _rubsh_alias
-  local _rubsh_aliases="$2"
-  _rubsh.Shell.dereference _rubsh_aliases
+  local _rubsh_alex
+  local _rubsh_burger=$1
+  local _rubsh_casino=$2
+  _rubsh.Shell.dereference :_rubsh_casino
+  _rubsh_burger=$(_rubsh.Symbol.to_s "$_rubsh_burger")
 
-  for _rubsh_alias in "${_rubsh_aliases[@]}"; do
-    _rubsh.Shell.alias_function "$1.$_rubsh_alias" "_rubsh.$1.$_rubsh_alias"
+  for _rubsh_alex in "${_rubsh_casino[@]}"; do
+    _rubsh_alex=$(_rubsh.Symbol.to_s "$_rubsh_alex")
+    _rubsh.Shell.alias_function ":$_rubsh_burger.$_rubsh_alex" ":_rubsh.$_rubsh_burger.$_rubsh_alex"
   done
 }
 
-_rubsh.core.alias_method() {
-  eval "$1.$2 () { $3.$2 $1 \"\$@\" ;}"
-}
+_rubsh.core.alias_method() { eval "$1.$2 () { $3.$2 $1 \"\$@\" ;}" ;}
 
 _rubsh.File.basename() {
-  local _rubsh_var="$1"
-  ! _rubsh.Shell.variable? "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
+  local _rubsh_bandit=$1
+  ! _rubsh.Shell.variable? "$_rubsh_bandit" || _rubsh.Shell.dereference :_rubsh_bandit
 
-  _rubsh_var="${_rubsh_var%/}"
-  echo "${_rubsh_var##*/}"
+  _rubsh_bandit="${_rubsh_bandit%/}"
+  echo "${_rubsh_bandit##*/}"
 }
 
 _rubsh.File.dirname() {
-  local _rubsh_var="$1"
-  ! _rubsh.Shell.variable? "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
+  local _rubsh_aspirin="$1"
+  ! _rubsh.Shell.variable? "$_rubsh_aspirin" || _rubsh.Shell.dereference :_rubsh_aspirin
 
-  [[ $_rubsh_var =~ / ]] || { echo "."; return ;}
-  _rubsh_var="${_rubsh_var%/}"
-  echo "${_rubsh_var%/*}"
+  [[ $_rubsh_aspirin =~ / ]] || { echo "."; return ;}
+  _rubsh_aspirin="${_rubsh_aspirin%/}"
+  echo "${_rubsh_aspirin%/*}"
 }
 
 _rubsh.File.realpath(){
-  local _rubsh_var="$1"
-  ! _rubsh.Shell.variable? "$_rubsh_var" || _rubsh.Shell.dereference _rubsh_var
+  local _rubsh_bonus=$1
+  ! _rubsh.Shell.variable? "$_rubsh_bonus" || _rubsh.Shell.dereference :_rubsh_bonus
 
-  readlink -f "$_rubsh_var"
+  readlink -f "$_rubsh_bonus"
 }
 
 # Same as Array.inspect() but preserves keys.
@@ -74,26 +76,41 @@ _rubsh.Hash.inspect() {
 }
 
 # shellcheck disable=SC2059
-_rubsh.IO.printf() { printf "$@" ;}
+_rubsh.IO.printf() {
+  local _rubsh_camera=$1
+  local _rubsh_deliver=$2
 
-_rubsh.IO.puts() {
-  local _rubsh_var="$1"
-
-  _rubsh.Shell.variable? "$_rubsh_var" || { _rubsh.IO.printf "%s\n" "$*"; return ;}
-  _rubsh.Shell.dereference _rubsh_var
-  _rubsh.IO.printf "%s\n" "$_rubsh_var"
+  _rubsh.Shell.variable? "$_rubsh_deliver" || { printf "$@"; return ;}
+  shift 2
+  _rubsh.Shell.dereference :_rubsh_deliver
+  printf "$_rubsh_camera" "$_rubsh_deliver" "$@"
 }
 
-_rubsh.Shell.alias_function() { eval "$1 () { $2 \"\$@\" ;}" ;}
+_rubsh.IO.puts() {
+  local _rubsh_detect=$1
+
+  _rubsh.Shell.variable? "$_rubsh_detect" || { _rubsh.IO.printf "%s\n" "$*"; return ;}
+  _rubsh.Shell.dereference :_rubsh_detect
+  _rubsh.IO.printf "%s\n" "$_rubsh_detect"
+}
+
+_rubsh.Shell.alias_function() { eval "$(_rubsh.Symbol.to_s "$1") () { $(_rubsh.Symbol.to_s "$2") \"\$@\" ;}" ;}
 
 _rubsh.Shell.assign_literal() {
-  eval local -a _rubsh_ary="$2"
+  local _rubsh_angel
+  _rubsh_angel=$(_rubsh.Symbol.to_s "$1")
+  local -a _rubsh_ary=$2
 
-  local "$1" && _rubsh.Shell.passback_as "$1" "${_rubsh_ary[@]}"
+  local "$_rubsh_angel" && _rubsh.Shell.passback_as "$1" "${_rubsh_ary[@]}"
 }
 
 _rubsh.Shell.class() {
-  case "$(declare -p "$1" 2>/dev/null)" in
+  local _rubsh_anatomy
+  local _rubsh_result
+
+  _rubsh_anatomy=$(_rubsh.Symbol.to_s "$1")
+  _rubsh_result=$(declare -p "$_rubsh_anatomy" 2>/dev/null) || return
+  case $_rubsh_result in
     declare\ -a* )
       printf "array\n"
       ;;
@@ -104,11 +121,11 @@ _rubsh.Shell.class() {
 }
 
 _rubsh.Shell.dereference() {
-  local -a _rubsh_indirect
-  _rubsh.Shell.assign_literal _rubsh_indirect "$(_rubsh.Shell.inspect "$(_rubsh.String.to_s "$1")")"
+  local _rubsh_cola
 
-  # shellcheck disable=SC2154
-  local "$1" && _rubsh.Shell.passback_as "$1" "${_rubsh_indirect[@]}"
+  _rubsh_cola=$(_rubsh.Shell.to_s "$1")
+  _rubsh.Shell.assign_literal :_rubsh_cola "$(_rubsh.Shell.inspect "$_rubsh_cola")"
+  local "$(_rubsh.Symbol.to_s "$1")" && _rubsh.Shell.passback_as "$1" "${_rubsh_cola[@]}"
 }
 
 # Assign variable one scope above the caller
@@ -121,18 +138,21 @@ _rubsh.Shell.dereference() {
 #       reassign a variable to be used by another call.
 # See: http://fvue.nl/wiki/Bash:_Passing_variables_by_reference
 _rubsh.Shell.passback_as() {
-    if unset -v "$1"; then           # Unset & validate varname
-        if (( $# == 2 )); then
-            eval "$1"=\"\$2\"          # Return single value
-        else
-            eval "$1"=\(\"\${@:2}\"\)  # Return array
-        fi
+  local _rubsh_chaos
+  _rubsh_chaos=$(_rubsh.Symbol.to_s "$1")
+
+  if unset -v "$_rubsh_chaos"; then           # Unset & validate varname
+    if (( $# == 2 )); then
+      printf -v "$_rubsh_chaos" "%s" "$2" # Return single value
+    else
+      eval "$_rubsh_chaos"=\(\"\${@:2}\"\)  # Return array
     fi
+  fi
 }
 
 # TODO: implement with send?
 _rubsh.Shell.inspect() {
-  case "$(_rubsh.Shell.class "$1")" in
+  case $(_rubsh.Shell.class "$1") in
     "array" )
       _rubsh.Array.inspect "$1"
       ;;
@@ -198,6 +218,8 @@ There is NO WARRANTY, to the extent permitted by law."
     done
 }
 
+_rubsh.Shell.symbol? () { [[ $1 == :* ]] ;}
+
 _rubsh.Shell.to_s() {
   case "$(_rubsh.Shell.class "$1")" in
     "array" )
@@ -209,32 +231,44 @@ _rubsh.Shell.to_s() {
   esac
 }
 
-_rubsh.Shell.variable? () { declare -p "$1" >/dev/null 2>&1 ;}
+_rubsh.Shell.variable? () { declare -p "$(_rubsh.Symbol.to_s "$1")" >/dev/null 2>&1 ;}
 
-_rubsh.String.blank? ()  { eval "[[ -z \${$1:-} ]] || [[ \${$1:-} =~ ^[[:space:]]+$ ]]"  ;}
+_rubsh.String.blank? () {
+  local _rubsh_distant
+  _rubsh_distant=$(_rubsh.Symbol.to_s "$1")
+
+  [[ -z ${!_rubsh_distant} ]] || [[ ${!_rubsh_distant} =~ ^[[:space:]]+$ ]]
+}
 
 _rubsh.String.chomp() {
-  local _rubsh_var="$1"
-  _rubsh.Shell.dereference _rubsh_var
+  local _rubsh_client=$1
+  _rubsh.Shell.dereference :_rubsh_client
 
-  _rubsh_var="${_rubsh_var#"${_rubsh_var%%[![:space:]]*}"}"   # remove leading whitespace characters
-  _rubsh_var="${_rubsh_var%"${_rubsh_var##*[![:space:]]}"}"   # remove trailing whitespace characters
-  local "$1" && _rubsh.Shell.passback_as "$1" "$_rubsh_var"
+  _rubsh_client="${_rubsh_client#"${_rubsh_client%%[![:space:]]*}"}"   # remove leading whitespace characters
+  _rubsh_client="${_rubsh_client%"${_rubsh_client##*[![:space:]]}"}"   # remove trailing whitespace characters
+  local "$(_rubsh.Symbol.to_s "$1")" && _rubsh.Shell.passback_as "$1" "$_rubsh_client"
 }
 
 _rubsh.String.end_with? () {
-  _rubsh_var="$1"
-  _rubsh.Shell.dereference _rubsh_var
-  [[ ${_rubsh_var: -1} == "$2" ]]
+  _rubsh_blonde=$1
+  _rubsh.Shell.dereference :_rubsh_blonde
+
+  [[ $_rubsh_blonde == *"$2" ]]
 }
 
-_rubsh.String.eql? ()   { eval "[[ \${$1:-} == \"$2\" ]]" ;}
-_rubsh.String.inspect() {
-    local _rubsh_var
+_rubsh.String.eql? () {
+  local _rubsh_america
+  _rubsh_america=$(_rubsh.Symbol.to_s "$1")
+  [[ ${!_rubsh_america:-} == "$2" ]]
+}
 
-    _rubsh_var="$(declare -p "$1")"
-    _rubsh_var=${_rubsh_var#declare\ --\ *=}
-    echo "$_rubsh_var"
+_rubsh.String.inspect() {
+    local _rubsh_corner
+
+    _rubsh_corner=$(_rubsh.Symbol.to_s "$1")
+    _rubsh_corner="$(declare -p "$_rubsh_corner")"
+    _rubsh_corner=${_rubsh_corner#declare\ --\ *=\"}
+    echo "${_rubsh_corner%\"}"
 }
 
 _rubsh.String.new() {
@@ -263,9 +297,14 @@ EOS
 _rubsh.String.present? () { ! _rubsh.String.blank? "$@" ;}
 
 _rubsh.String.start_with? () {
-  _rubsh_var="$1"
-  _rubsh.Shell.dereference _rubsh_var
-  [[ ${_rubsh_var:0:1} == "$2" ]]
+  _rubsh_airline=$1
+  _rubsh.Shell.dereference :_rubsh_airline
+  [[ $_rubsh_airline == "$2"* ]]
 }
 
-_rubsh.String.to_s() { eval echo \"\$"$1"\" ;}
+_rubsh.String.to_s() { eval echo \"\$"$(_rubsh.Symbol.to_s "$1")"\" ;}
+
+_rubsh.Symbol.to_s() {
+  [[ ! $1 == *";"* && $1 =~ ^:[[:print:]]+$ ]] || return
+  echo "${1#:}"
+}
