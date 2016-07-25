@@ -30,10 +30,10 @@ _rubsh.Array.to_s() { eval echo \"\$\{"$(_rubsh.Symbol.to_s "$1")"[*]\}\" ;}
 
 _rubsh.core.alias() {
   local _rubsh_alex
-  local _rubsh_burger=$1
+  local _rubsh_burger
   local _rubsh_casino=$2
   _rubsh.Shell.dereference :_rubsh_casino
-  _rubsh_burger=$(_rubsh.Symbol.to_s "$_rubsh_burger")
+  _rubsh_burger=$(_rubsh.Symbol.to_s "$1")
 
   for _rubsh_alex in "${_rubsh_casino[@]}"; do
     _rubsh_alex=$(_rubsh.Symbol.to_s "$_rubsh_alex")
@@ -41,7 +41,15 @@ _rubsh.core.alias() {
   done
 }
 
-_rubsh.core.alias_method() { eval "$1.$2 () { $3.$2 $1 \"\$@\" ;}" ;}
+_rubsh.core.alias_method() {
+  local _rubsh_agent
+  local _rubsh_canyon
+  local _rubsh_cargo
+
+  _rubsh_agent=$(_rubsh.Symbol.to_s "$1")
+  _rubsh_canyon=$(_rubsh.Symbol.to_s "$2")
+  _rubsh_cargo=$(_rubsh.Symbol.to_s "$3")
+  eval "$_rubsh_agent.$_rubsh_canyon () { $_rubsh_cargo.$_rubsh_canyon $1 \"\$@\" ;}" ;}
 
 _rubsh.File.basename() {
   local _rubsh_bandit=$1
@@ -272,21 +280,21 @@ _rubsh.String.inspect() {
 }
 
 _rubsh.String.new() {
-  local _rubsh_method
-  local _rubsh_methods
+  local _rubsh_catalog
+  local _rubsh_burma
 
   # shellcheck disable=SC2034
-  read -d "" -a _rubsh_methods <<EOS
-blank?
-chomp
-end_with?
-eql?
-present?
-start_with?
+  read -d "" -a _rubsh_burma <<EOS
+:blank?
+:chomp
+:end_with?
+:eql?
+:present?
+:start_with?
 EOS
 
-  for _rubsh_method in "${_rubsh_methods[@]}"; do
-    _rubsh.core.alias_method "$1" "$_rubsh_method" "_rubsh.String"
+  for _rubsh_catalog in "${_rubsh_burma[@]}"; do
+    _rubsh.core.alias_method "$1" "$_rubsh_catalog" "_rubsh.String"
   done
 
   (( $# > 1 )) || return 0

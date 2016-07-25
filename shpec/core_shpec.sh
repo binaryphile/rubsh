@@ -57,6 +57,17 @@ describe "_rubsh.core.alias"
   end
 end
 
+describe "_rubsh.core.alias_method"
+  it "aliases a class method to a variable"
+    (
+    sample=""
+    _rubsh.core.alias_method :sample :chomp :_rubsh.String
+    sample.chomp
+    assert equal $? 0
+    )
+  end
+end
+
 describe "_rubsh.File.basename"
   it "finds the base name of a file by reference"
     (
