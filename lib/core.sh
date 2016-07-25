@@ -4,7 +4,7 @@
 [[ -z $_rubsh_core ]] || return 0
 
 # shellcheck disable=SC2046
-readonly _rubsh_core="$(set -- $(sha1sum "$BASH_SOURCE"); printf "%s" "$1")"
+readonly _rubsh_core="$(set -- $(sha1sum "$BASH_SOURCE"); echo "$1")"
 
 # https://stackoverflow.com/questions/192292/bash-how-best-to-include-other-scripts/12694189#12694189
 [[ -n $_rubsh_lib ]]  || readonly _rubsh_lib="$(cd "${BASH_SOURCE%/*}" >/dev/null 2>&1; printf "%s" "$PWD")"
