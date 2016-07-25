@@ -17,15 +17,15 @@ __FILE__() {
 }
 
 new() {
-  local varname="$1"
-  local constructor="$3"
-  local initializer="$4"
+  local varname=$1
+  local constructor=$3
+  local initializer=$4
 
   shift 3
-  _rubsh.String.new initializer
+  _rubsh.String.new :initializer
   initializer.chomp
   initializer.start_with? "(" && initializer.end_with? ")" && shift && set -- "\"$initializer\"" "$@"
-  eval "$constructor" "$varname" "$@"
+  eval "$constructor" :"$varname" "$@"
 }
 
 require() {

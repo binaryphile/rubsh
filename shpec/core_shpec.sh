@@ -486,6 +486,17 @@ describe "_rubsh.String.inspect"
   end
 end
 
+describe "_rubsh.String.new"
+  it "adds string methods to a variable"
+    (
+    sample=""
+    _rubsh.String.new :sample
+    sample.blank?
+    assert equal $? 0
+    )
+  end
+end
+
 describe "_rubsh.String.start_with?"
   it "affirms the positive"
     (

@@ -289,12 +289,14 @@ _rubsh.String.new() {
 :chomp
 :end_with?
 :eql?
+:inspect
 :present?
 :start_with?
+:to_s
 EOS
 
   for _rubsh_catalog in "${_rubsh_burma[@]}"; do
-    _rubsh.core.alias_method "$1" "$_rubsh_catalog" "_rubsh.String"
+    _rubsh.core.alias_method "$1" "$_rubsh_catalog" :_rubsh.String
   done
 
   (( $# > 1 )) || return 0
