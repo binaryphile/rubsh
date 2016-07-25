@@ -17,21 +17,21 @@ __FILE__() {
 }
 
 new() {
-  local varname=$1
-  local constructor=$3
-  local initializer=$4
+  local _rubsh_basic=$1
+  local _rubsh_chief=$3
+  local _rubsh_couple=$4
 
   shift 3
-  _rubsh.String.new :initializer
-  initializer.chomp
-  initializer.start_with? "(" && initializer.end_with? ")" && shift && set -- "\"$initializer\"" "$@"
-  eval "$constructor" :"$varname" "$@"
+  _rubsh.String.new :_rubsh_couple
+  _rubsh_couple.chomp
+  _rubsh_couple.start_with? "(" && _rubsh_couple.end_with? ")" && shift && set -- "\"$_rubsh_couple\"" "$@"
+  echo eval "$_rubsh_chief" :"$_rubsh_basic" "$@"
 }
 
 require() {
-  local path="$PATH"
+  local _rubsh_cuba="$PATH"
 
-  export PATH="$RUBSH_PATH${RUBSH_PATH:+:}$PATH"
+  PATH="$RUBSH_PATH${RUBSH_PATH:+:}$PATH"
   source "$1".sh 2>/dev/null
-  export PATH="$path"
+  PATH="$_rubsh_cuba"
 }
