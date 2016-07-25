@@ -18,11 +18,11 @@ _rubsh_init() {
 
   # shellcheck disable=SC2034
   read -d "" -a aliases <<EOS
-printf
-puts
+:printf
+:puts
 EOS
 
-  _rubsh.core.alias IO aliases
+  _rubsh.core.alias :IO :aliases
 }
 
 _rubsh_init
@@ -32,6 +32,6 @@ unset -f _rubsh_init
 stderr.printf() { IO.printf "$@" 1>&2  ;}
 stderr.puts()   { IO.puts "$@" 1>&2    ;}
 
-_rubsh.Shell.alias_function stdout.printf IO.printf
-_rubsh.Shell.alias_function stdout.puts IO.puts
-_rubsh.Shell.alias_function puts IO.puts
+_rubsh.Shell.alias_function :stdout.printf :IO.printf
+_rubsh.Shell.alias_function :stdout.puts :IO.puts
+_rubsh.Shell.alias_function :puts :IO.puts
