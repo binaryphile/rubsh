@@ -23,21 +23,22 @@ less annoying to work with.
 
 ~~~bash
 > source rubsh.sh
-> new my_string = String.new " hello there " # Declare a String surrounded by spaces
+> new my_string = String.new " hello there " # declare a String surrounded by spaces
 > echo $(my_string.class)
-String
-> echo $my_string
+string
+> echo $my_string # note the initial space
  hello there
-> my_string.chomp # Trim the surrounding spaces
+> my_string.chomp # trim the surrounding spaces
 > echo $my_string
 hello there
 > if my_string.start_with? "h"; then echo "True!"; fi
 True!
+> declare result
 > new result = my_string.split
 > echo $(result.class)
 Array
-> echo $(result.to_s)
-'("hello" "there")'
+> echo $(result.inspect)
+("hello" "there")
 > echo $(result.join " ")
 hello there
 ~~~
