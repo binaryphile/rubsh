@@ -33,9 +33,9 @@ File.absolute_path() {
   _rubsh_disco="$(_rubsh.File.basename :_rubsh_dallas)"
 
   (
-  [[ $_rubsh_disco =~ [^.] ]] || { cd "$_rubsh_dallas" >/dev/null; _rubsh.IO.puts "$PWD"; return ;}
+  [[ $_rubsh_disco =~ [^.] ]] || { cd "$_rubsh_dallas" >/dev/null; _rubsh.IO.printf "%s\n" "$PWD"; return ;}
   cd "$(_rubsh.File.dirname "$_rubsh_dallas")" >/dev/null
-  _rubsh.IO.puts "$PWD/$_rubsh_disco"
+  _rubsh.IO.printf "%s/%s\n" "$PWD" "$_rubsh_disco"
   )
 }
 
@@ -53,11 +53,18 @@ File.chmod() {
   chmod "$2" "$_rubsh_direct"
 }
 
-File.exist? () {
-  local _rubsh_bermuda=$1
-  ! _rubsh.Shell.variable? "$_rubsh_bermuda" || _rubsh.Shell.dereference :_rubsh_bermuda
+File.directory? () {
+  local _rubsh_target=$1
+  ! _rubsh.Shell.variable? "$_rubsh_target" || _rubsh.Shell.dereference :_rubsh_target
 
-  [[ -f $_rubsh_bermuda ]]
+  [[ -d $_rubsh_target ]]
+}
+
+File.executable? () {
+  local _rubsh_garage=$1
+  ! _rubsh.Shell.variable? "$_rubsh_garage" || _rubsh.Shell.dereference :_rubsh_garage
+
+  [[ -x $_rubsh_garage ]]
 }
 
 File.new() {
@@ -71,7 +78,9 @@ File.new() {
 :basename
 :chmod
 :dirname
-:exist?
+:directory?
+:executable?
+:join
 :qgrep
 :readlink
 :realpath
@@ -87,6 +96,8 @@ EOS
 
   local "$(_rubsh.Symbol.to_s "$1")" && _rubsh.Shell.passback_as "$1" "$2"
 }
+
+File.join() { _rubsh.IO.printf "%s/%s\n" "$1" "$2" ;}
 
 File.qgrep() {
   local _rubsh_color=$1

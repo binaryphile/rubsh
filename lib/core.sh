@@ -136,6 +136,18 @@ _rubsh.Shell.dereference() {
   local "$(_rubsh.Symbol.to_s "$1")" && _rubsh.Shell.passback_as "$1" "${_rubsh_cola[@]}"
 }
 
+# TODO: implement with send?
+_rubsh.Shell.inspect() {
+  case $(_rubsh.Shell.class "$1") in
+    "array" )
+      _rubsh.Array.inspect "$1"
+      ;;
+    * )
+      _rubsh.String.inspect "$1"
+      ;;
+  esac
+}
+
 # Assign variable one scope above the caller
 # Usage: local "$1" && _rubsh.Shell.passback_as $1 "value(s)"
 # Param: $1  Variable name to assign value to
@@ -156,18 +168,6 @@ _rubsh.Shell.passback_as() {
       eval "$_rubsh_chaos"=\(\"\${@:2}\"\)  # Return array
     fi
   fi
-}
-
-# TODO: implement with send?
-_rubsh.Shell.inspect() {
-  case $(_rubsh.Shell.class "$1") in
-    "array" )
-      _rubsh.Array.inspect "$1"
-      ;;
-    * )
-      _rubsh.String.inspect "$1"
-      ;;
-  esac
 }
 
 # Assign variables one scope above the caller

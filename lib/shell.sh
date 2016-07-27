@@ -13,11 +13,19 @@ _rubsh_init() {
 
   # shellcheck disable=SC2034
   read -d "" -a aliases <<EOS
-dereference
-variable?
+:alias_function
+:assign_literal
+:class
+:dereference
+:inspect
+:passback_as
+:passbacks_as
+:symbol?
+:to_s
+:variable?
 EOS
 
-  _rubsh.core.alias Shell aliases
+  _rubsh.core.alias :Shell :aliases
 }
 
 _rubsh_init

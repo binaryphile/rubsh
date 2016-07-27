@@ -5,7 +5,7 @@ source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
 unset -v library
 
 init() {
-  result="$(mktemp --directory)" || exit
+  result=$(mktemp --directory) || exit
   _rubsh.IO.puts "$result"
 }
 
@@ -22,7 +22,7 @@ validate_dirname() {
 describe "File.absolute_path"
   it "returns the full pathname by reference"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
     cd "$temp"
     sample=file1
@@ -33,7 +33,7 @@ describe "File.absolute_path"
 
   it "returns the full pathname by value"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
     cd "$temp"
     sample=file1
@@ -44,7 +44,7 @@ describe "File.absolute_path"
 
   it "returns the full pathname with only relative by reference"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
     cd "$temp"
     sample=..
@@ -55,7 +55,7 @@ describe "File.absolute_path"
 
   it "returns the full pathname with only relative by value"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
     cd "$temp"
     sample=..
@@ -65,7 +65,7 @@ describe "File.absolute_path"
   end
   it "returns the full pathname without trailing slash by reference"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
     cd "$temp"
     sample=dir1/
@@ -76,7 +76,7 @@ describe "File.absolute_path"
 
   it "returns the full pathname without trailing slash by value"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
     cd "$temp"
     sample=dir1/
@@ -89,7 +89,7 @@ end
 describe "File.append"
   it "appends to a file by value"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
     _rubsh.IO.puts "test" > "$temp"/file
     File.append "$temp"/file "line2"
@@ -100,11 +100,11 @@ describe "File.append"
 
   it "appends to a file by reference"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
     _rubsh.IO.puts "test" > "$temp"/file
     # shellcheck disable=SC2034
-    myfile="$temp"/file
+    myfile=$temp/file
     File.append :myfile "line2"
     assert equal "$(tail -1 "$temp"/file)" "line2"
     cleanup "$temp"
@@ -117,7 +117,7 @@ describe "File.basename"
     (
     # shellcheck disable=SC2034
     sample=/home/gumby/work/ruby.rb
-    result="$(File.basename :sample)"
+    result=$(File.basename :sample)
     assert equal "$result" "ruby.rb"
     )
   end
@@ -126,7 +126,7 @@ describe "File.basename"
     (
     # shellcheck disable=SC2034
     sample=/home/gumby/work/ruby.rb
-    result="$(File.basename "$sample")"
+    result=$(File.basename "$sample")
     assert equal "$result" "ruby.rb"
     )
   end
@@ -135,7 +135,7 @@ describe "File.basename"
     (
     # shellcheck disable=SC2034
     sample=/home/gumby/work/ruby.rb/
-    result="$(File.basename :sample)"
+    result=$(File.basename :sample)
     assert equal "$result" "ruby.rb"
     )
   end
@@ -144,7 +144,7 @@ describe "File.basename"
     (
     # shellcheck disable=SC2034
     sample=/home/gumby/work/ruby.rb/
-    result="$(File.basename "$sample")"
+    result=$(File.basename "$sample")
     assert equal "$result" "ruby.rb"
     )
   end
@@ -153,10 +153,10 @@ end
 describe "File.chmod"
   it "changes file mode by reference"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
     #shellcheck disable=SC2154
-    sample="$temp"/file
+    sample=$temp/file
     install -m 660 /dev/null "$temp"/file
     File.chmod :sample 770
     assert equal "$(stat -c "%a" "$sample")" "770"
@@ -166,10 +166,10 @@ describe "File.chmod"
 
   it "changes file mode by value"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
     #shellcheck disable=SC2154
-    sample="$temp"/file
+    sample=$temp/file
     install -m 660 /dev/null "$temp"/file
     File.chmod "$sample" 770
     assert equal "$(stat -c "%a" "$sample")" "770"
@@ -178,124 +178,280 @@ describe "File.chmod"
   end
 end
 
+describe "File.directory?"
+  it "detects a directory by value"
+    (
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample=$temp/dir
+    mkdir "$sample"
+    File.directory? "$sample"
+    assert equal $? 0
+    cleanup "$temp"
+    )
+  end
+
+  it "detects a directory by reference"
+    (
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample=$temp/dir
+    mkdir "$sample"
+    File.directory? :sample
+    assert equal $? 0
+    cleanup "$temp"
+    )
+  end
+
+  it "detects a non-directory by value"
+    (
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample=$temp/file
+    touch "$sample"
+    File.directory? "$sample"
+    assert equal $? 1
+    cleanup "$temp"
+    )
+  end
+
+  it "detects a non-directory by reference"
+    (
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample=$temp/file
+    touch "$sample"
+    File.directory? :sample
+    assert equal $? 1
+    cleanup "$temp"
+    )
+  end
+
+  it "detects a directory symlink by value"
+    (
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample_dir=$temp/dir
+    sample_link=$temp/dir2
+    mkdir "$sample_dir"
+    ln -sf "$sample_dir" "$sample_link"
+    File.directory? "$sample_link"
+    assert equal $? 0
+    cleanup "$temp"
+    )
+  end
+
+  it "detects a directory symlink by reference"
+    (
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample_dir=$temp/dir
+    sample_link=$temp/dir2
+    mkdir "$sample_dir"
+    ln -sf "$sample_dir" "$sample_link"
+    File.directory? :sample_link
+    assert equal $? 0
+    cleanup "$temp"
+    )
+  end
+
+  it "detects a non-directory symlink by value"
+    (
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample_file=$temp/file
+    sample_link=$temp/file2
+    touch "$sample_file"
+    ln -sf "$sample_file" "$sample_link"
+    File.directory? "$sample_link"
+    assert equal $? 1
+    cleanup "$temp"
+    )
+  end
+
+  it "detects a non-directory symlink by reference"
+    (
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample_file=$temp/file
+    sample_link=$temp/file2
+    touch "$sample_file"
+    ln -sf "$sample_file" "$sample_link"
+    File.directory? :sample_link
+    assert equal $? 1
+    cleanup "$temp"
+    )
+  end
+end
+
 describe "File.dirname"
   it "determines the directory name with multiple components by reference"
     (
-    sample="/home/gumby/work/ruby.rb"
+    sample=/home/gumby/work/ruby.rb
     assert equal "$(File.dirname :sample)" "/home/gumby/work"
     )
   end
 
   it "determines the directory name with multiple components by value"
     (
-    sample="/home/gumby/work/ruby.rb"
+    sample=/home/gumby/work/ruby.rb
     assert equal "$(File.dirname "$sample")" "/home/gumby/work"
     )
   end
 
   it "determines the directory name without components by reference"
     (
-    sample="ruby.rb"
+    sample=ruby.rb
     assert equal "$(File.dirname :sample)" "."
     )
   end
 
   it "determines the directory name without components by value"
     (
-    sample="ruby.rb"
+    sample=ruby.rb
     assert equal "$(File.dirname "$sample")" "."
     )
   end
 
   it "determines the directory name with a trailing slash by reference"
     (
-    sample="/home/gumby/work/ruby/"
+    sample=/home/gumby/work/ruby/
     assert equal "$(File.dirname :sample)" "/home/gumby/work"
     )
   end
 
   it "determines the directory name with a trailing slash by value"
     (
-    sample="/home/gumby/work/ruby/"
+    sample=/home/gumby/work/ruby/
     assert equal "$(File.dirname "$sample")" "/home/gumby/work"
     )
   end
 end
 
-describe "File.dirname"
-  it "determines the directory name with multiple components by reference"
+describe "File.executable?"
+  it "detects an executable directory by value"
     (
-    sample="/home/gumby/work/ruby.rb"
-    assert equal "$(File.dirname :sample)" "/home/gumby/work"
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample_dir=$temp/dir
+    mkdir -m 770 "$sample_dir"
+    File.executable? "$sample_dir"
+    assert equal $? 0
+    cleanup "$temp"
     )
   end
 
-  it "determines the directory name without components by reference"
+  it "detects an executable directory by reference"
     (
-    sample="ruby.rb"
-    assert equal "$(File.dirname :sample)" "."
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample_dir=$temp/dir
+    mkdir -m 770 "$sample_dir"
+    File.executable? :sample_dir
+    assert equal $? 0
+    cleanup "$temp"
     )
   end
 
-  it "determines the directory name with multiple components by value"
+  it "detects a non-executable directory"
     (
-    sample="/home/gumby/work/ruby.rb"
-    assert equal "$(File.dirname "$sample")" "/home/gumby/work"
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample_dir=$temp/dir
+    mkdir -m 660 "$sample_dir"
+    File.executable? "$sample_dir"
+    assert equal $? 1
+    cleanup "$temp"
     )
   end
 
-  it "determines the directory name without components by value"
+  it "detects an executable file by value"
     (
-    sample="ruby.rb"
-    assert equal "$(File.dirname "$sample")" "."
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample_file=$temp/file
+    install -m 770 /dev/null "$sample_file"
+    File.executable? "$sample_file"
+    assert equal $? 0
+    cleanup "$temp"
+    )
+  end
+
+  it "detects an executable file by reference"
+    (
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample_file=$temp/file
+    install -m 770 /dev/null "$sample_file"
+    File.executable? :sample_file
+    assert equal $? 0
+    cleanup "$temp"
+    )
+  end
+
+  it "detects a non-executable file"
+    (
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample_file=$temp/file
+    install -m 660 /dev/null "$sample_file"
+    File.executable? "$sample_file"
+    assert equal $? 1
+    cleanup "$temp"
+    )
+  end
+
+  it "detects a symlink to an executable file"
+    (
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample_file=$temp/file
+    sample_link=$temp/file2
+    install -m 770 /dev/null "$sample_file"
+    ln -sf "$sample_file" "$sample_link"
+    File.executable? "$sample_link"
+    assert equal $? 0
+    cleanup "$temp"
+    )
+  end
+
+  it "detects a symlink to an executable directory"
+    (
+    temp=$(init)
+    validate_dirname "$temp"
+    #shellcheck disable=SC2154
+    sample_dir=$temp/dir
+    sample_link=$temp/dir2
+    mkdir -m 770 "$sample_dir"
+    ln -sf "$sample_dir" "$sample_link"
+    File.executable? "$sample_link"
+    assert equal $? 0
+    cleanup "$temp"
     )
   end
 end
 
-describe "File.exist?"
-  it "detects a file's existence by reference"
+describe "File.join"
+  it "returns a path from two elements"
     (
-    temp="$(init)"
-    validate_dirname "$temp"
-    sample="$temp"/file
-    touch "$sample"
-    File.exist? :sample
-    assert equal $? 0
-    cleanup "$temp"
-    )
-  end
-
-  it "detects a file's non-existence by reference"
-    (
-    temp="$(init)"
-    validate_dirname "$temp"
-    sample="$temp"/file
-    File.exist? :sample
-    assert equal $? 1
-    cleanup "$temp"
-    )
-  end
-
-  it "detects a file's existence by value"
-    (
-    temp="$(init)"
-    validate_dirname "$temp"
-    sample="$temp"/file
-    touch "$sample"
-    File.exist? "$sample"
-    assert equal $? 0
-    cleanup "$temp"
-    )
-  end
-
-  it "detects a file's non-existence by value"
-    (
-    temp="$(init)"
-    validate_dirname "$temp"
-    sample="$temp"/file
-    File.exist? "$sample"
-    assert equal $? 1
-    cleanup "$temp"
+    sample=/home/gumby/work
+    file=ruby.rb
+    assert equal "$(File.join "$sample" "$file")" /home/gumby/work/ruby.rb
     )
   end
 end
@@ -303,9 +459,9 @@ end
 describe "File.qgrep"
   it "detects the presence of text within a file by reference"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
-    sample="$temp"/file
+    sample=$temp/file
     _rubsh.IO.puts "hello" > "$sample"
     File.qgrep :sample "hello"
     assert equal $? 0
@@ -315,9 +471,9 @@ describe "File.qgrep"
 
   it "detects the absence of text within a file by reference"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
-    sample="$temp"/file
+    sample=$temp/file
     _rubsh.IO.puts "hello" > "$sample"
     File.qgrep :sample "what"
     assert equal $? 1
@@ -327,9 +483,9 @@ describe "File.qgrep"
 
   it "detects the presence of text within a file by value"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
-    sample="$temp"/file
+    sample=$temp/file
     _rubsh.IO.puts "hello" > "$sample"
     File.qgrep "$sample" "hello"
     assert equal $? 0
@@ -339,9 +495,9 @@ describe "File.qgrep"
 
   it "detects the absence of text within a file by value"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
-    sample="$temp"/file
+    sample=$temp/file
     _rubsh.IO.puts "hello" > "$sample"
     File.qgrep "$sample" "what"
     assert equal $? 1
@@ -353,9 +509,9 @@ end
 describe "File.readlink"
   it "returns the target of a link by reference"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
-    sample="$temp"/file
+    sample=$temp/file
     ln -sf file2 "$sample"
     assert equal "$(File.readlink :sample)" file2
     cleanup "$temp"
@@ -364,9 +520,9 @@ describe "File.readlink"
 
   it "returns the target of a link by value"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
-    sample="$temp"/file
+    sample=$temp/file
     ln -sf file2 "$sample"
     assert equal "$(File.readlink "$sample")" file2
     cleanup "$temp"
@@ -377,12 +533,12 @@ end
 describe "File.realpath"
   it "determines the directory name with multiple components without symlinks or dots by reference"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
     mkdir "$temp"/dir2
     touch "$temp"/dir2/file
     ln -sf dir2 "$temp"/dir
-    sample="$temp"/../.."$temp"/dir/file
+    sample=$temp/../..$temp/dir/file
     assert equal "$(File.realpath :sample)" "$temp"/dir2/file
     cleanup "$temp"
     )
@@ -390,12 +546,12 @@ describe "File.realpath"
 
   it "determines the directory name with multiple components without symlinks or dots by value"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
     mkdir "$temp"/dir2
     touch "$temp"/dir2/file
     ln -sf dir2 "$temp"/dir
-    sample="$temp"/../.."$temp"/dir/file
+    sample=$temp/../..$temp/dir/file
     assert equal "$(File.realpath "$sample")" "$temp"/dir2/file
     cleanup "$temp"
     )
@@ -405,9 +561,9 @@ end
 describe "File.symlink?"
   it "detects a symlink by reference"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
-    sample="$temp"/file
+    sample=$temp/file
     ln -sf file2 "$sample"
     File.symlink? :sample
     assert equal $? 0
@@ -417,9 +573,9 @@ describe "File.symlink?"
 
   it "detects a non-symlink by reference"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
-    sample="$temp"/file
+    sample=$temp/file
     File.symlink? :sample
     assert equal $? 1
     cleanup "$temp"
@@ -428,9 +584,9 @@ describe "File.symlink?"
 
   it "detects a symlink by value"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
-    sample="$temp"/file
+    sample=$temp/file
     ln -sf file2 "$sample"
     File.symlink? "$sample"
     assert equal $? 0
@@ -440,9 +596,9 @@ describe "File.symlink?"
 
   it "detects a non-symlink by value"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
-    sample="$temp"/file
+    sample=$temp/file
     File.symlink? "$sample"
     assert equal $? 1
     cleanup "$temp"
@@ -453,12 +609,12 @@ end
 describe "File.touch"
   it "updates the modified time on a file by reference"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
-    sample="$temp"/file
+    sample=$temp/file
     touch "$sample"
     sleep 0.1
-    time="$(stat -c "%y" "$sample")"
+    time=$(stat -c "%y" "$sample")
     File.touch :sample
     assert unequal "$time" "$(stat -c "%y" "$sample")"
     cleanup "$temp"
@@ -467,12 +623,12 @@ describe "File.touch"
 
   it "updates the modified time on a file by value"
     (
-    temp="$(init)"
+    temp=$(init)
     validate_dirname "$temp"
-    sample="$temp"/file
+    sample=$temp/file
     touch "$sample"
     sleep 0.1
-    time="$(stat -c "%y" "$sample")"
+    time=$(stat -c "%y" "$sample")
     File.touch "$sample"
     assert unequal "$time" "$(stat -c "%y" "$sample")"
     cleanup "$temp"
