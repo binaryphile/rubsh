@@ -447,11 +447,19 @@ describe "File.executable?"
 end
 
 describe "File.join"
-  it "returns a path from two elements"
+  it "returns a path from two elements by value"
     (
     sample=/home/gumby/work
     file=ruby.rb
     assert equal "$(File.join "$sample" "$file")" /home/gumby/work/ruby.rb
+    )
+  end
+
+  it "returns a path from two elements by reference"
+    (
+    sample=/home/gumby/work
+    file=ruby.rb
+    assert equal "$(File.join :sample :file)" /home/gumby/work/ruby.rb
     )
   end
 end

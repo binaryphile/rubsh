@@ -167,14 +167,14 @@ end
 describe "_rubsh.IO.printf"
   it "printfs to stdout by value"
     (
-    sample="test"
+    sample=test
     assert equal "$(_rubsh.IO.printf "%s\n" "$sample")" "$(printf "test\n")"
     )
   end
 
-  it "prinfs to stdout by reference"
+  it "printfs to stdout by reference"
     (
-    sample="test"
+    sample=test
     assert equal "$(_rubsh.IO.printf "%s\n" :sample)" "$(printf "test\n")"
     )
   end
@@ -183,14 +183,14 @@ end
 describe "_rubsh.IO.puts"
   it "puts to stdout by value"
     (
-    sample="test"
+    sample=test
     assert equal "$(_rubsh.IO.puts "$sample")" "$(printf "test\n")"
     )
   end
 
   it "puts to stdout by reference"
     (
-    sample="test"
+    sample=test
     assert equal "$(_rubsh.IO.puts :sample)" "$(printf "test\n")"
     )
   end
@@ -344,7 +344,7 @@ end
 describe "_rubsh.Shell.variable?"
   it "detects a variable"
     (
-    sample="test"
+    sample=test
     _rubsh.Shell.variable? :sample
     assert equal $? 0
     )

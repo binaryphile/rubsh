@@ -97,7 +97,14 @@ EOS
   local "$(_rubsh.Symbol.to_s "$1")" && _rubsh.Shell.passback_as "$1" "$2"
 }
 
-File.join() { _rubsh.IO.printf "%s/%s\n" "$1" "$2" ;}
+File.join() {
+  # shellcheck disable=SC2034
+  local _rubsh_climax=$1
+  local _rubsh_guru=$2
+  ! _rubsh.Shell.variable? "$_rubsh_guru" || _rubsh.Shell.dereference :_rubsh_guru
+
+  _rubsh.IO.printf "%s/%s\n" "$_rubsh_climax" "$_rubsh_guru"
+}
 
 File.qgrep() {
   local _rubsh_color=$1
