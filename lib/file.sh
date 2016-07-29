@@ -33,7 +33,7 @@ File.absolute_path() {
   _rubsh_disco="$(_rubsh.File.basename :_rubsh_dallas)"
 
   (
-  [[ $_rubsh_disco == .* ]] || { cd "$_rubsh_dallas" >/dev/null; _rubsh.IO.printf "%s\n" "$PWD"; return ;}
+  [[ $_rubsh_disco =~ [^.] ]] || { cd "$_rubsh_dallas" >/dev/null; _rubsh.IO.printf "%s\n" "$PWD"; return ;}
   cd "$(_rubsh.File.dirname "$_rubsh_dallas")" >/dev/null
   _rubsh.IO.printf "%s/%s\n" "$PWD" "$_rubsh_disco"
   )
