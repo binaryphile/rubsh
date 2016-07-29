@@ -13,7 +13,6 @@ source "$_rubsh_lib"/file.sh
 # TODO: use alias_function
 Pathname.basename() { File.basename "$@"  ;}
 Pathname.dirname()  { File.dirname  "$@"  ;}
-Pathname.exist? ()  { File.exist?   "$@"  ;}
 Pathname.readlink() { File.readlink "$@"  ;}
 
 # https://github.com/basecamp/sub/blob/master/libexec/sub

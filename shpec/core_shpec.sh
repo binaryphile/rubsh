@@ -10,7 +10,7 @@ init() {
 }
 
 cleanup() {
-  validate_dirname "$temp" || exit
+  validate_dirname "$1" || exit
   rm -rf -- "$1"
 }
 
