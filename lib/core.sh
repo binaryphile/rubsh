@@ -4,10 +4,10 @@
 [[ -z $_rubsh_core ]] || return 0
 
 # shellcheck disable=SC2046
-readonly _rubsh_core="$(set -- $(sha1sum "$BASH_SOURCE"); echo "$1")"
+readonly _rubsh_core=$(set -- $(sha1sum "$BASH_SOURCE"); echo "$1")
 
 # https://stackoverflow.com/questions/192292/bash-how-best-to-include-other-scripts/12694189#12694189
-[[ -n $_rubsh_lib ]]  || readonly _rubsh_lib="$(cd "${BASH_SOURCE%/*}" >/dev/null 2>&1; printf "%s" "$PWD")"
+[[ -n $_rubsh_lib ]]  || readonly _rubsh_lib=$(cd "${BASH_SOURCE%/*}" >/dev/null 2>&1; printf "%s" "$PWD")
 
 # https://stackoverflow.com/questions/10582763/how-to-return-an-array-in-bash-without-using-globals/15982208#15982208
 # Print array definition to use with assignments, for loops, etc.
@@ -16,17 +16,17 @@ _rubsh.Array.inspect() {
     local _rubsh_cactus
 
     _rubsh_cactus=$(_rubsh.Symbol.to_s "$1")
-    _rubsh_cactus=$(declare -p "$_rubsh_cactus")
+    _rubsh_cactus=$(declare -p $_rubsh_cactus)
     _rubsh_cactus=${_rubsh_cactus#declare\ -a\ *=}
     # Strip keys so printed definition will be a simple list (like when using
     # "${array[@]}").  One side effect of having keys in the definition is
     # that when appending arrays (i.e. `a1+=$( my_a.inspect a2 )`), values at
     # matching indices merge instead of pushing all items onto array.
-    _rubsh_cactus="${_rubsh_cactus//\[[0-9]\]=}"
+    _rubsh_cactus=${_rubsh_cactus//\[[0-9]\]=}
     echo "${_rubsh_cactus:1:-1}"
 }
 
-_rubsh.Array.to_s() { eval echo \"\$\{"$(_rubsh.Symbol.to_s "$1")"[*]\}\" ;}
+_rubsh.Array.to_s() { eval echo \$\{"$(_rubsh.Symbol.to_s "$1")"[*]\} ;}
 
 _rubsh.core.alias() {
   local _rubsh_alex
@@ -55,7 +55,7 @@ _rubsh.File.basename() {
   local _rubsh_bandit=$1
   ! _rubsh.Shell.variable? "$_rubsh_bandit" || _rubsh.Shell.dereference :_rubsh_bandit
 
-  _rubsh_bandit="${_rubsh_bandit%/}"
+  _rubsh_bandit=${_rubsh_bandit%/}
   echo "${_rubsh_bandit##*/}"
 }
 
@@ -64,7 +64,7 @@ _rubsh.File.dirname() {
   ! _rubsh.Shell.variable? "$_rubsh_aspirin" || _rubsh.Shell.dereference :_rubsh_aspirin
 
   [[ $_rubsh_aspirin =~ / ]] || { echo "."; return ;}
-  _rubsh_aspirin="${_rubsh_aspirin%/}"
+  _rubsh_aspirin=${_rubsh_aspirin%/}
   echo "${_rubsh_aspirin%/*}"
 }
 
@@ -88,9 +88,9 @@ _rubsh.IO.printf() {
   local _rubsh_camera=$1
   local _rubsh_deliver=$2
 
-  _rubsh.Shell.variable? "$_rubsh_deliver" || { printf "$@"; return ;}
+  ! _rubsh.Shell.variable? "$_rubsh_camera" || _rubsh.Shell.dereference :_rubsh_camera
+  ! _rubsh.Shell.variable? "$_rubsh_deliver" || _rubsh.Shell.dereference :_rubsh_deliver
   shift 2
-  _rubsh.Shell.dereference :_rubsh_deliver
   printf "$_rubsh_camera" "$_rubsh_deliver" "$@"
 }
 
@@ -133,7 +133,7 @@ _rubsh.Shell.dereference() {
 
   _rubsh_cola=$(_rubsh.Shell.to_s "$1")
   _rubsh.Shell.assign_literal :_rubsh_cola "$(_rubsh.Shell.inspect "$_rubsh_cola")"
-  local "$(_rubsh.Symbol.to_s "$1")" && _rubsh.Shell.passback_as "$1" "${_rubsh_cola[@]}"
+  local $(_rubsh.Symbol.to_s "$1") && _rubsh.Shell.passback_as "$1" "${_rubsh_cola[@]}"
 }
 
 # TODO: implement with send?
@@ -245,16 +245,16 @@ _rubsh.String.blank? () {
   local _rubsh_distant
   _rubsh_distant=$(_rubsh.Symbol.to_s "$1")
 
-  [[ -z ${!_rubsh_distant} ]] || [[ ${!_rubsh_distant} =~ ^[[:space:]]+$ ]]
+  [[ -z ${!_rubsh_distant} || ${!_rubsh_distant} =~ ^[[:space:]]+$ ]]
 }
 
 _rubsh.String.chomp() {
   local _rubsh_client=$1
   _rubsh.Shell.dereference :_rubsh_client
 
-  _rubsh_client="${_rubsh_client#"${_rubsh_client%%[![:space:]]*}"}"   # remove leading whitespace characters
-  _rubsh_client="${_rubsh_client%"${_rubsh_client##*[![:space:]]}"}"   # remove trailing whitespace characters
-  local "$(_rubsh.Symbol.to_s "$1")" && _rubsh.Shell.passback_as "$1" "$_rubsh_client"
+  _rubsh_client=${_rubsh_client#"${_rubsh_client%%[![:space:]]*}"}   # remove leading whitespace characters
+  _rubsh_client=${_rubsh_client%"${_rubsh_client##*[![:space:]]}"}   # remove trailing whitespace characters
+  local $(_rubsh.Symbol.to_s "$1") && _rubsh.Shell.passback_as "$1" "$_rubsh_client"
 }
 
 _rubsh.String.end_with? () {

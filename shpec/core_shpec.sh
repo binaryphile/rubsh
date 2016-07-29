@@ -5,7 +5,7 @@ source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
 unset -v library
 
 init() {
-  result="$(mktemp --directory)" || exit
+  result=$(mktemp --directory) || exit
   _rubsh.IO.puts "$result"
 }
 
@@ -14,10 +14,7 @@ cleanup() {
   rm -rf -- "$1"
 }
 
-validate_dirname() {
-  [[ $1 =~ ^/tmp/tmp\. ]]   || exit
-  [[ -d $1 ]]               || exit
-}
+validate_dirname() { [[ $1 == /tmp/tmp.* && -d $1 ]] || exit ;}
 
 describe "_rubsh.Array.inspect"
   it "renders a literal of an array"
@@ -178,6 +175,28 @@ describe "_rubsh.IO.printf"
     assert equal "$(_rubsh.IO.printf "%s\n" :sample)" "$(printf "test\n")"
     )
   end
+
+  it "printfs to stdout by references"
+    (
+    sample=test
+    # shellcheck disable=SC2034
+    sample_format="%s\n"
+    assert equal "$(_rubsh.IO.printf :sample_format :sample)" "$(printf "test\\\n")"
+    )
+  end
+
+  # it "printfs to stdout with an arbitrary number of references"
+  #   (
+  #   sample=testing
+  #   # shellcheck disable=SC2034
+  #   sample2=one
+  #   # shellcheck disable=SC2034
+  #   sample3=two
+  #   # shellcheck disable=SC2034
+  #   sample_format="%s %s %s\n"
+  #   assert equal "$(_rubsh.IO.printf :sample_format :sample :sample2 :sample3)" "$(printf "testing one two\\\n")"
+  #   )
+  # end
 end
 
 describe "_rubsh.IO.puts"

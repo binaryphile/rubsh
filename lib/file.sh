@@ -67,6 +67,13 @@ File.executable? () {
   [[ -x $_rubsh_garage ]]
 }
 
+File.file? () {
+  local _rubsh_meaning=$1
+  ! _rubsh.Shell.variable? "$_rubsh_meaning" || _rubsh.Shell.dereference :_rubsh_meaning
+
+  [[ -f $_rubsh_meaning ]]
+}
+
 File.new() {
   local _rubsh_colombo
   local _rubsh_diet
@@ -94,7 +101,7 @@ EOS
 
   (( $# > 1 )) || return 0
 
-  local "$(_rubsh.Symbol.to_s "$1")" && _rubsh.Shell.passback_as "$1" "$2"
+  local $(_rubsh.Symbol.to_s "$1") && _rubsh.Shell.passback_as "$1" "$2"
 }
 
 File.join() {
