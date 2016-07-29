@@ -10,11 +10,11 @@ init() {
 }
 
 cleanup() {
-  validate_dirname "$1"
+  validate_dirname "$temp" || exit
   rm -rf -- "$1"
 }
 
-validate_dirname() { [[ $1 == /tmp/tmp.* && -d $1 ]] || exit ;}
+validate_dirname() { [[ $1 == /tmp/tmp.* && -d $1 ]] ;}
 
 describe "_rubsh.Array.inspect"
   it "renders a literal of an array"
@@ -137,7 +137,7 @@ describe "_rubsh.File.realpath"
   it "determines the directory name with multiple components without symlinks or dots by reference"
     (
     temp="$(init)"
-    validate_dirname "$temp"
+    validate_dirname "$temp" || exit
     mkdir "$temp"/dir2
     touch "$temp"/dir2/file
     ln -sf dir2 "$temp"/dir
@@ -150,7 +150,7 @@ describe "_rubsh.File.realpath"
   it "determines the directory name with multiple components without symlinks or dots by value"
     (
     temp="$(init)"
-    validate_dirname "$temp"
+    validate_dirname "$temp" || exit
     mkdir "$temp"/dir2
     touch "$temp"/dir2/file
     ln -sf dir2 "$temp"/dir
