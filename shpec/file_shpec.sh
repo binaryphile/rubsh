@@ -5,12 +5,12 @@ source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
 unset -v library
 
 init() {
-  result=$(mktemp --directory) || exit
+  result=$(mktemp --directory) || return
   _rubsh.IO.puts "$result"
 }
 
 cleanup() {
-  validate_dirname "$1" || exit
+  validate_dirname "$1" || return
   rm -rf -- "$1"
 }
 
@@ -19,7 +19,7 @@ validate_dirname() { [[ $1 == /tmp/tmp.* && -d $1 ]] ;}
 describe "File.absolute_path"
   it "returns the full pathname by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     cd "$temp"
     sample=file1
@@ -30,7 +30,7 @@ describe "File.absolute_path"
 
   it "returns the full pathname by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     cd "$temp"
     sample=file1
@@ -41,7 +41,7 @@ describe "File.absolute_path"
 
   it "returns the full pathname with only relative by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     cd "$temp"
     sample=..
@@ -52,7 +52,7 @@ describe "File.absolute_path"
 
   it "returns the full pathname with only relative by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     cd "$temp"
     sample=..
@@ -62,7 +62,7 @@ describe "File.absolute_path"
   end
   it "returns the full pathname without trailing slash by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     cd "$temp"
     sample=dir1/
@@ -73,7 +73,7 @@ describe "File.absolute_path"
 
   it "returns the full pathname without trailing slash by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     cd "$temp"
     sample=dir1/
@@ -86,7 +86,7 @@ end
 describe "File.append"
   it "appends to a file by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     _rubsh.IO.puts "test" > "$temp"/file
     File.append "$temp"/file "line2"
@@ -97,7 +97,7 @@ describe "File.append"
 
   it "appends to a file by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     _rubsh.IO.puts "test" > "$temp"/file
     # shellcheck disable=SC2034
@@ -150,7 +150,7 @@ end
 describe "File.chmod"
   it "changes file mode by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample=$temp/file
@@ -163,7 +163,7 @@ describe "File.chmod"
 
   it "changes file mode by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample=$temp/file
@@ -178,7 +178,7 @@ end
 describe "File.directory?"
   it "detects a directory by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample=$temp/dir
@@ -191,7 +191,7 @@ describe "File.directory?"
 
   it "detects a directory by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample=$temp/dir
@@ -204,7 +204,7 @@ describe "File.directory?"
 
   it "detects a non-directory by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample=$temp/file
@@ -217,7 +217,7 @@ describe "File.directory?"
 
   it "detects a non-directory by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample=$temp/file
@@ -230,7 +230,7 @@ describe "File.directory?"
 
   it "detects a directory symlink by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_dir=$temp/dir
@@ -245,7 +245,7 @@ describe "File.directory?"
 
   it "detects a directory symlink by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_dir=$temp/dir
@@ -260,7 +260,7 @@ describe "File.directory?"
 
   it "detects a non-directory symlink by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_file=$temp/file
@@ -275,7 +275,7 @@ describe "File.directory?"
 
   it "detects a non-directory symlink by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_file=$temp/file
@@ -336,7 +336,7 @@ end
 describe "File.executable?"
   it "detects an executable directory by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_dir=$temp/dir
@@ -349,7 +349,7 @@ describe "File.executable?"
 
   it "detects an executable directory by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_dir=$temp/dir
@@ -362,7 +362,7 @@ describe "File.executable?"
 
   it "detects a non-executable directory"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_dir=$temp/dir
@@ -375,7 +375,7 @@ describe "File.executable?"
 
   it "detects an executable file by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_file=$temp/file
@@ -388,7 +388,7 @@ describe "File.executable?"
 
   it "detects an executable file by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_file=$temp/file
@@ -401,7 +401,7 @@ describe "File.executable?"
 
   it "detects a non-executable file"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_file=$temp/file
@@ -414,7 +414,7 @@ describe "File.executable?"
 
   it "detects a symlink to an executable file"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_file=$temp/file
@@ -429,7 +429,7 @@ describe "File.executable?"
 
   it "detects a symlink to an executable directory"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_dir=$temp/dir
@@ -446,7 +446,7 @@ end
 describe "File.file?"
   it "detects a file by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample=$temp/file
@@ -459,7 +459,7 @@ describe "File.file?"
 
   it "detects a file by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample=$temp/file
@@ -472,7 +472,7 @@ describe "File.file?"
 
   it "detects a non-file by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample=$temp/dir
@@ -485,7 +485,7 @@ describe "File.file?"
 
   it "detects a non-file by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample=$temp/dir
@@ -498,7 +498,7 @@ describe "File.file?"
 
   it "detects a file symlink by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_file=$temp/file
@@ -513,7 +513,7 @@ describe "File.file?"
 
   it "detects a file symlink by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_file=$temp/file
@@ -528,7 +528,7 @@ describe "File.file?"
 
   it "detects a non-file symlink by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_dir=$temp/dir
@@ -543,7 +543,7 @@ describe "File.file?"
 
   it "detects a non-file symlink by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     #shellcheck disable=SC2154
     sample_dir=$temp/dir
@@ -578,7 +578,7 @@ end
 describe "File.qgrep"
   it "detects the presence of text within a file by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     sample=$temp/file
     _rubsh.IO.puts "hello" > "$sample"
@@ -590,7 +590,7 @@ describe "File.qgrep"
 
   it "detects the absence of text within a file by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     sample=$temp/file
     _rubsh.IO.puts "hello" > "$sample"
@@ -602,7 +602,7 @@ describe "File.qgrep"
 
   it "detects the presence of text within a file by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     sample=$temp/file
     _rubsh.IO.puts "hello" > "$sample"
@@ -614,7 +614,7 @@ describe "File.qgrep"
 
   it "detects the absence of text within a file by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     sample=$temp/file
     _rubsh.IO.puts "hello" > "$sample"
@@ -628,7 +628,7 @@ end
 describe "File.readlink"
   it "returns the target of a link by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     sample=$temp/file
     ln -sf file2 "$sample"
@@ -639,7 +639,7 @@ describe "File.readlink"
 
   it "returns the target of a link by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     sample=$temp/file
     ln -sf file2 "$sample"
@@ -652,7 +652,7 @@ end
 describe "File.realpath"
   it "determines the directory name with multiple components without symlinks or dots by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     mkdir "$temp"/dir2
     touch "$temp"/dir2/file
@@ -665,7 +665,7 @@ describe "File.realpath"
 
   it "determines the directory name with multiple components without symlinks or dots by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     mkdir "$temp"/dir2
     touch "$temp"/dir2/file
@@ -680,7 +680,7 @@ end
 describe "File.symlink?"
   it "detects a symlink by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     sample=$temp/file
     ln -sf file2 "$sample"
@@ -692,7 +692,7 @@ describe "File.symlink?"
 
   it "detects a non-symlink by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     sample=$temp/file
     File.symlink? :sample
@@ -703,7 +703,7 @@ describe "File.symlink?"
 
   it "detects a symlink by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     sample=$temp/file
     ln -sf file2 "$sample"
@@ -715,7 +715,7 @@ describe "File.symlink?"
 
   it "detects a non-symlink by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     sample=$temp/file
     File.symlink? "$sample"
@@ -728,7 +728,7 @@ end
 describe "File.touch"
   it "updates the modified time on a file by reference"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     sample=$temp/file
     touch "$sample"
@@ -742,7 +742,7 @@ describe "File.touch"
 
   it "updates the modified time on a file by value"
     (
-    temp=$(init)
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     sample=$temp/file
     touch "$sample"

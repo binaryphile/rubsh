@@ -5,12 +5,12 @@ source "${BASH_SOURCE%/*}/$library" 2>/dev/null || source "$library"
 unset -v library
 
 init() {
-  result=$(mktemp --directory) || exit
+  result=$(mktemp --directory) || return
   _rubsh.IO.puts "$result"
 }
 
 cleanup() {
-  validate_dirname "$1" || exit
+  validate_dirname "$1" || return
   rm -rf -- "$1"
 }
 
@@ -136,7 +136,7 @@ end
 describe "_rubsh.File.realpath"
   it "determines the directory name with multiple components without symlinks or dots by reference"
     (
-    temp="$(init)"
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     mkdir "$temp"/dir2
     touch "$temp"/dir2/file
@@ -149,7 +149,7 @@ describe "_rubsh.File.realpath"
 
   it "determines the directory name with multiple components without symlinks or dots by value"
     (
-    temp="$(init)"
+    temp=$(init) || exit
     validate_dirname "$temp" || exit
     mkdir "$temp"/dir2
     touch "$temp"/dir2/file
