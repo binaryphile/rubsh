@@ -136,3 +136,40 @@ describe "String.new"
     )
   end
 end
+
+describe "String.start_with?"
+  it "identifies a starting character by reference"
+    (
+    # shellcheck disable=SC2034
+    sample="a test"
+    String.start_with? :sample "a"
+    assert equal $? 0
+    )
+  end
+
+  it "identifies a non-starting character by reference"
+    (
+    # shellcheck disable=SC2034
+    sample="a test"
+    String.start_with? :sample "b"
+    assert equal $? 1
+    )
+  end
+
+  it "identifies a starting character by value"
+    (
+    # shellcheck disable=SC2034
+    String.start_with? "a test" "a"
+    assert equal $? 0
+    )
+  end
+
+  it "identifies a non-starting character by value"
+    (
+    # shellcheck disable=SC2034
+    sample="a test"
+    String.start_with? "a test" "b"
+    assert equal $? 1
+    )
+  end
+end

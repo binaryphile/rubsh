@@ -517,7 +517,7 @@ describe "_rubsh.String.new"
 end
 
 describe "_rubsh.String.start_with?"
-  it "affirms the positive"
+  it "affirms the positive by reference"
     (
     sample="a test"
     _rubsh.String.start_with? :sample "a"
@@ -525,10 +525,77 @@ describe "_rubsh.String.start_with?"
     )
   end
 
-  it "denies the negative"
+  it "denies the negative by reference"
     (
     sample="a test"
     _rubsh.String.start_with? :sample "r"
+    assert equal $? 1
+    )
+  end
+
+  it "affirms the positive by value"
+    (
+    sample="a test"
+    _rubsh.String.start_with? "a test" "a"
+    assert equal $? 0
+    )
+  end
+
+  it "denies the negative by value"
+    (
+    _rubsh.String.start_with? "a test" "r"
+    assert equal $? 1
+    )
+  end
+end
+
+describe "_rubsh.String.symbol?"
+  it "affirms an alphanumeric symbol"
+    (
+    _rubsh.String.symbol? ":sample1"
+    assert equal $? 0
+    )
+  end
+
+  it "affirms a alphanumeric symbol with a leading underscore"
+    (
+    _rubsh.String.symbol? ":_sample1"
+    assert equal $? 0
+    )
+  end
+
+  it "affirms a symbol with a trailing underscore"
+    (
+    _rubsh.String.symbol? ":sample1_"
+    assert equal $? 0
+    )
+  end
+
+  it "affirms a symbol that looks like a function"
+    (
+    # shellcheck disable=SC2016
+    _rubsh.String.symbol? ":String.symbol?="
+    assert equal $? 0
+    )
+  end
+
+  it "errors with no initial colon"
+    (
+    _rubsh.String.symbol? "sample"
+    assert equal $? 1
+    )
+  end
+
+  it "errors with a semicolon"
+    (
+    _rubsh.String.symbol? ":sample;"
+    assert equal $? 1
+    )
+  end
+
+  it "errors with a bracket"
+    (
+    _rubsh.String.symbol? ":sample]"
     assert equal $? 1
     )
   end
@@ -545,21 +612,8 @@ end
 
 describe "_rubsh.Symbol.to_s"
   it "returns a string for a symbol literal"
+    (
     assert equal "$(_rubsh.Symbol.to_s :sample)" "sample"
-  end
-
-  it "errors on a non-symbol literal with no initial colon"
-    _rubsh.Symbol.to_s "sample" >/dev/null
-    assert equal $? 1
-  end
-
-  it "errors on a non-symbol literal with a semicolon"
-    _rubsh.Symbol.to_s "sample;" >/dev/null
-    assert equal $? 1
-  end
-
-  it "errors on a non-symbol literal with a bracket"
-    _rubsh.Symbol.to_s "sample]" >/dev/null
-    assert equal $? 1
+    )
   end
 end

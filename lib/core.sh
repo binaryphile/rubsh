@@ -308,13 +308,17 @@ _rubsh.String.present? () { ! _rubsh.String.blank? "$@" ;}
 
 _rubsh.String.start_with? () {
   _rubsh_airline=$1
-  _rubsh.Shell.dereference :_rubsh_airline
+  ! _rubsh.Shell.variable? "$1" || _rubsh.Shell.dereference :_rubsh_airline
   [[ $_rubsh_airline == "$2"* ]]
+}
+
+_rubsh.String.symbol? () {
+  [[ $1 =~ ^:[_[:alpha:]][_?.=[:alnum:]]*$ ]]
 }
 
 _rubsh.String.to_s() { eval echo \"\$"$(_rubsh.Symbol.to_s "$1")"\" ;}
 
 _rubsh.Symbol.to_s() {
-  [[ ! $1 == *";"* && $1 =~ ^:[[:print:]]+$ ]] || return
+  _rubsh.String.symbol? "$1" || return
   echo "${1#:}"
 }
