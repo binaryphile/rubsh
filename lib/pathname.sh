@@ -28,7 +28,7 @@ Pathname.realdirpath() {
     # shellcheck disable=SC2034
     name="$(Pathname.basename path)"
     # shellcheck disable=SC2034
-    path="$(File.readlink name || true)"
+    path="$(File.readlink name || :)"
   done
   pwd
   cd "$cwd"
