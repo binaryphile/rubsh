@@ -173,3 +173,64 @@ describe "String.start_with?"
     )
   end
 end
+
+describe "String.symbol?"
+  it "affirms an alphanumeric symbol"
+    (
+    String.symbol? ":sample1"
+    assert equal $? 0
+    )
+  end
+
+  it "affirms a alphanumeric symbol with a leading underscore"
+    (
+    String.symbol? ":_sample1"
+    assert equal $? 0
+    )
+  end
+
+  it "affirms a symbol with a trailing underscore"
+    (
+    String.symbol? ":sample1_"
+    assert equal $? 0
+    )
+  end
+
+  it "affirms a symbol that looks like a function"
+    (
+    # shellcheck disable=SC2016
+    String.symbol? ":String.symbol?="
+    assert equal $? 0
+    )
+  end
+
+  it "errors with no initial colon"
+    (
+    String.symbol? "sample"
+    assert equal $? 1
+    )
+  end
+
+  it "errors with a semicolon"
+    (
+    String.symbol? ":sample;"
+    assert equal $? 1
+    )
+  end
+
+  it "errors with a bracket"
+    (
+    String.symbol? ":sample]"
+    assert equal $? 1
+    )
+  end
+end
+
+describe "String.to_s"
+  it "returns a string for a variable by reference"
+    (
+    sample="one"
+    assert equal "$(String.to_s :sample)" "one"
+    )
+  end
+end

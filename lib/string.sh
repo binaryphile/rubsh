@@ -19,6 +19,7 @@ _rubsh_init() {
 :eql?
 :inspect
 :start_with?
+:symbol?
 :to_s
 EOS
 
