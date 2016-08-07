@@ -22,6 +22,7 @@ keyword
 pathname
 shell
 string
+symbol
 EOS
 
   for module in "${modules[@]}"; do
