@@ -165,6 +165,8 @@ _rubsh.Shell.passback_as() {
     if (( $# == 2 )); then
       printf -v "$_rubsh_chaos" "%s" "$2" # Return single value
     else
+      # TODO: declare?
+      # shellcheck disable=SC1083
       eval "$_rubsh_chaos"=\(\"\${@:2}\"\)  # Return array
     fi
   fi
@@ -193,12 +195,14 @@ _rubsh.Shell.passbacks_as() {
                     "${FUNCNAME[0]}: \`$1': invalid number specifier" 1>&2
                     return 1; }
                 # Assign array of -aN elements
+                # shellcheck disable=SC1083,SC2086,SC2015
                 [[ "$2" ]] && unset -v "$2" && eval "$2"=\(\"\${@:3:${1#-a}}\"\) &&
                 shift $((${1#-a} + 2)) || { echo "bash: ${FUNCNAME[0]}:"\
                     "\`$1${2+ }$2': missing argument(s)" 1>&2; return 1; }
                 ;;
             -v)
                 # Assign single value
+                # shellcheck disable=SC1083,SC2086,SC2015
                 [[ "$2" ]] && unset -v "$2" && eval "$2"=\"\$3\" &&
                 shift 3 || { echo "bash: ${FUNCNAME[0]}: $1: missing"\
                 "argument(s)" 1>&2; return 1; }
