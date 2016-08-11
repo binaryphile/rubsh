@@ -114,6 +114,18 @@ describe "Array.index"
   end
 end
 
+describe "Array.inspect"
+  it "renders a literal of an array"
+    (
+    # shellcheck disable=SC2034
+    sample=( "a" "b" "c" )
+    # shellcheck disable=SC2034
+    result="$(Array.inspect :sample)"
+    assert equal "$result" '("a" "b" "c")'
+    )
+  end
+end
+
 describe "Array.join"
   it "joins array elements"
     (

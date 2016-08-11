@@ -14,6 +14,7 @@ _rubsh_init() {
   # shellcheck disable=SC2034
   read -d "" -a aliases <<EOS
 :to_s
+:inspect
 EOS
 
   _rubsh.core.alias :Array :aliases
