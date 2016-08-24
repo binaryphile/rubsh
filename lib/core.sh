@@ -85,13 +85,13 @@ _rubsh.Hash.inspect() {
 
 # shellcheck disable=SC2059
 _rubsh.IO.printf() {
-  local _rubsh_camera=$1
-  local _rubsh_deliver=$2
+  local _rubsh_ipr_format=$1
+  local _rubsh_ipr_subst=$2
 
-  ! _rubsh.Shell.variable? "$_rubsh_camera" || _rubsh.Shell.dereference :_rubsh_camera
-  ! _rubsh.Shell.variable? "$_rubsh_deliver" || _rubsh.Shell.dereference :_rubsh_deliver
+  ! _rubsh.Shell.variable? "$_rubsh_ipr_format" || _rubsh.Shell.dereference :_rubsh_ipr_format
+  ! _rubsh.Shell.variable? "$_rubsh_ipr_subst" || _rubsh.Shell.dereference :_rubsh_ipr_subst
   shift 2
-  printf "$_rubsh_camera" "$_rubsh_deliver" "$@"
+  printf "$_rubsh_ipr_format" "$_rubsh_ipr_subst" "$@"
 }
 
 _rubsh.IO.puts() {
@@ -129,11 +129,11 @@ _rubsh.Shell.class() {
 }
 
 _rubsh.Shell.dereference() {
-  local _rubsh_cola
+  local _rubsh_sde_ref
 
-  _rubsh_cola=$(_rubsh.Shell.to_s "$1")
-  _rubsh.Shell.assign_literal :_rubsh_cola "$(_rubsh.Shell.inspect "$_rubsh_cola")"
-  local $(_rubsh.Symbol.to_s "$1") && _rubsh.Shell.passback_as "$1" "${_rubsh_cola[@]}"
+  _rubsh_sde_ref=$(_rubsh.Shell.to_s "$1")
+  _rubsh.Shell.assign_literal :_rubsh_sde_ref "$(_rubsh.Shell.inspect "$_rubsh_sde_ref")"
+  local $(_rubsh.Symbol.to_s "$1") && _rubsh.Shell.passback_as "$1" "${_rubsh_sde_ref[@]}"
 }
 
 # TODO: implement with send?
@@ -275,12 +275,12 @@ _rubsh.String.eql? () {
 }
 
 _rubsh.String.inspect() {
-    local _rubsh_corner
+    local _rubsh_sin_ref
 
-    _rubsh_corner=$(_rubsh.Symbol.to_s "$1")
-    _rubsh_corner="$(declare -p "$_rubsh_corner")"
-    _rubsh_corner=${_rubsh_corner#declare\ --\ *=\"}
-    echo "${_rubsh_corner%\"}"
+    _rubsh_sin_ref=$(_rubsh.Symbol.to_s "$1")
+    _rubsh_sin_ref="$(declare -p "$_rubsh_sin_ref")"
+    _rubsh_sin_ref=${_rubsh_sin_ref#declare\ -?\ *=\"}
+    echo "${_rubsh_sin_ref%\"}"
 }
 
 _rubsh.String.new() {
@@ -311,9 +311,9 @@ EOS
 _rubsh.String.present? () { ! _rubsh.String.blank? "$@" ;}
 
 _rubsh.String.start_with? () {
-  _rubsh_airline=$1
-  ! _rubsh.Shell.variable? "$1" || _rubsh.Shell.dereference :_rubsh_airline
-  [[ $_rubsh_airline == "$2"* ]]
+  _rubsh_ssw_string=$1
+  _rubsh.Shell.variable? "$1" && _rubsh.Shell.dereference :_rubsh_ssw_string
+  [[ $_rubsh_ssw_string == "$2"* ]]
 }
 
 _rubsh.String.symbol? () {

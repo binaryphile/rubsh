@@ -285,7 +285,7 @@ describe "_rubsh.Shell.dereference"
 
   it "dereferences an array variable"
     (
-    # shellcheck disable=SC2034
+    # shellcheck disable=SC2034,SC2030
     sample=( "testing" "one" "two" )
     # shellcheck disable=SC2034
     indirect=":sample"
@@ -293,6 +293,18 @@ describe "_rubsh.Shell.dereference"
     assert equal "$(_rubsh.Shell.class :indirect)" "array"
     assert equal "${#indirect[@]}" 3
     assert equal "${indirect[*]}" "testing one two"
+    )
+  end
+
+  it "dereferences an exported variable"
+    (
+    # shellcheck disable=SC2034,SC2031
+    declare -x sample="some text"
+    # shellcheck disable=SC2034
+    indirect=":sample"
+    _rubsh.Shell.dereference :indirect
+    assert equal "$(_rubsh.Shell.class :indirect)" "string"
+    assert equal "$indirect" "some text"
     )
   end
 end
@@ -499,7 +511,16 @@ end
 describe "_rubsh.String.inspect"
   it "returns a string literal expression for a variable"
     (
+    # shellcheck disable=SC2030
     sample="one"
+    assert equal "$(_rubsh.String.inspect :sample)" "one"
+    )
+  end
+
+  it "returns a string literal expression for an exported variable"
+    (
+    # shellcheck disable=SC2031
+    declare -x sample="one"
     assert equal "$(_rubsh.String.inspect :sample)" "one"
     )
   end

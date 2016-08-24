@@ -14,50 +14,20 @@ describe "String.class"
   end
 end
 
-describe "String.split"
-  it "splits on the specified delimiter"
+describe "String.inspect"
+  it "returns a string literal expression for a variable"
     (
-    # shellcheck disable=SC2034
-    sample="a/b/c"
-    result=""
-    String.split :sample :result "/"
-    assert equal "$(_rubsh.Shell.class :result)" "array"
-    assert equal "$(_rubsh.Array.to_s :result)" "a b c"
+    # shellcheck disable=SC2030
+    sample="one"
+    assert equal "$(String.inspect :sample)" "one"
     )
   end
 
-  it "splits on the specified variable if supplied"
+  it "returns a string literal expression for an exported variable"
     (
-    # shellcheck disable=SC2034
-    sample="a/b/c"
-    # shellcheck disable=SC2034
-    delimiter="/"
-    result=""
-    String.split :sample :result :delimiter
-    assert equal "$(_rubsh.Shell.class :result)" "array"
-    assert equal "$(_rubsh.Array.to_s :result)" "a b c"
-    )
-  end
-
-  it "splits on the shell IFS (normally whitespace) if nothing specified"
-    (
-    # shellcheck disable=SC2034
-    sample="a  b 	c"
-    result=""
-    String.split :sample :result
-    assert equal "$(_rubsh.Shell.class :result)" "array"
-    assert equal "$(_rubsh.Array.to_s :result)" "a b c"
-    )
-  end
-end
-
-describe "String.eql?"
-  it "exists"
-    (
-    # shellcheck disable=SC2034
-    sample="abc"
-    String.eql? :sample "abc"
-    assert equal $? 0
+    # shellcheck disable=SC2031
+    declare -x sample="one"
+    assert equal "$(_rubsh.String.inspect :sample)" "one"
     )
   end
 end
@@ -68,6 +38,17 @@ describe "String.blank?"
     # shellcheck disable=SC2034
     blank=""
     String.blank? :blank
+    assert equal $? 0
+    )
+  end
+end
+
+describe "String.eql?"
+  it "exists"
+    (
+    # shellcheck disable=SC2034
+    sample="abc"
+    String.eql? :sample "abc"
     assert equal $? 0
     )
   end
@@ -133,6 +114,44 @@ describe "String.new"
     # shellcheck disable=SC2034
     result=""
     sample.split :result
+    )
+  end
+end
+
+describe "String.split"
+  it "splits on the specified delimiter"
+    (
+    # shellcheck disable=SC2034
+    sample="a/b/c"
+    result=""
+    String.split :sample :result "/"
+    assert equal "$(_rubsh.Shell.class :result)" "array"
+    assert equal "$(_rubsh.Array.to_s :result)" "a b c"
+    )
+  end
+
+  it "splits on the specified variable if supplied"
+    (
+    # shellcheck disable=SC2034
+    sample="a/b/c"
+    # shellcheck disable=SC2034
+    delimiter="/"
+    result=""
+    String.split :sample :result :delimiter
+    assert equal "$(_rubsh.Shell.class :result)" "array"
+    assert equal "$(_rubsh.Array.to_s :result)" "a b c"
+    )
+  end
+
+  it "splits on the shell IFS (normally whitespace) if nothing specified"
+    (
+    # shellcheck disable=SC2034
+    sample="a  b 	c"
+    # shellcheck disable=SC2034
+    result=""
+    String.split :sample :result
+    assert equal "$(_rubsh.Shell.class :result)" "array"
+    assert equal "$(_rubsh.Array.to_s :result)" "a b c"
     )
   end
 end
@@ -229,6 +248,7 @@ end
 describe "String.to_s"
   it "returns a string for a variable by reference"
     (
+    # shellcheck disable=SC2034
     sample="one"
     assert equal "$(String.to_s :sample)" "one"
     )

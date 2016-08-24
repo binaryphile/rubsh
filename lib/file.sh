@@ -4,7 +4,7 @@
 [[ -z $_rubsh_file ]] || return 0
 
 # shellcheck disable=SC2046
-readonly _rubsh_file="$(set -- $(sha1sum "$BASH_SOURCE"); echo "$1")"
+readonly _rubsh_file=$(set -- $(sha1sum "$BASH_SOURCE"); echo "$1")
 
 source "${BASH_SOURCE%/*}"/core.sh 2>/dev/null || source core.sh
 
@@ -106,11 +106,11 @@ EOS
 
 File.join() {
   # shellcheck disable=SC2034
-  local _rubsh_climax=$1
-  local _rubsh_guru=$2
-  ! _rubsh.Shell.variable? "$_rubsh_guru" || _rubsh.Shell.dereference :_rubsh_guru
+  local _rubsh_fjo_path1=$1
+  local _rubsh_fjo_path2=$2
+  _rubsh.Shell.variable? "$_rubsh_fjo_path2" && _rubsh.Shell.dereference :_rubsh_fjo_path2
 
-  _rubsh.IO.printf "%s/%s\n" "$_rubsh_climax" "$_rubsh_guru"
+  _rubsh.IO.printf "%s/%s\n" "$_rubsh_fjo_path1" "$_rubsh_fjo_path2"
 }
 
 File.qgrep() {
