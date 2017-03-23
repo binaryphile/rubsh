@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Functions to interact with shell variables, functions and the environment
 
-[[ -z $_rubsh_shell ]] || return 0
+[[ -n $_rubsh_shell ]] && return
 
 # shellcheck disable=SC2046
 readonly _rubsh_shell="$(set -- $(sha1sum "$BASH_SOURCE"); echo "$1")"
