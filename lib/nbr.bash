@@ -1,6 +1,8 @@
 # Note the use of triple underscores for the class functions
 
 declare -Ag ___methodh
+# TODO: convert to string
+declare -ag __=()
 
 class () { ___class=$1 ;}
 
@@ -21,6 +23,7 @@ class Class; {
     local ___name
 
     for ___name in "$@"; do
+      eval "$___name () { $___name.to_s ;}"
       Class.inherit "$___class" ___name ___methods
     done
   end
@@ -61,7 +64,7 @@ class Array; {
         printf -v __statement '__vals+=( "${%s[@]}" )' "$1"
         eval "$__statement"
         ;;
-      *   ) "$@"; __vals+=( "${__[@]}" );;
+      * ) "$@"; __vals+=( "${__[@]}" );;
     esac
   end
 
@@ -75,7 +78,7 @@ class Array; {
         printf -v __statement '__vals=( "${%s[@]}" )' "$1"
         eval "$__statement"
         ;;
-      *   ) "$@"; __vals=( "${__[@]}" );;
+      * ) "$@"; __vals=( "${__[@]}" );;
     esac
   end
 
