@@ -1,8 +1,7 @@
 # Note the use of triple underscores for the class functions
 
 declare -Ag ___methodh
-# TODO: convert to string
-declare -ag __=()
+declare __=''
 
 class () { ___class=$1 ;}
 
@@ -19,11 +18,13 @@ def () {
 class Class; {
   def new <<'  end'
     local ___class=$1; shift
+    local ___class_methods=( ${___methodh[Class]} )
     local ___methods=( ${___methodh[$___class]} )
     local ___name
 
     for ___name in "$@"; do
-      eval "$___name () { $___name.to_s ;}"
+      eval "function $___name { $___name.to_s ;}"
+      Class.inherit Class ___name ___class_methods
       Class.inherit "$___class" ___name ___methods
     done
   end
@@ -39,13 +40,30 @@ class Class; {
 
     for ____method in "${____methods[@]}"; do
       case $____method in
-        'new'         ) continue          ;;
-        [[:alpha:]]*  ) ____separator=.   ;;
-        *             ) ____separator=''  ;;
+        'new' | 'inherit' ) continue          ;;
+        [[:alpha:]]*      ) ____separator=.   ;;
+        *                 ) ____separator=''  ;;
       esac
       printf -v ____statement 'function %s%s%s { %s.%s %s "$@" ;}' "$____name" "$____separator" "$____method" "$____class" "$____method" "$____name"
       eval "$____statement"
     done
+  end
+
+  def set <<'  end'
+    local -n __val=$1; shift
+
+    __=''
+    "$@"
+    eval __val="$__"
+  end
+
+  def to_s <<'  end'
+    local __name=$1
+    local __result
+
+    __result=$(declare -p "$__name")
+    __result=${__result#declare -* $__name=}
+    __=${__result:1:${#__result}-2}
   end
 }
 
@@ -54,7 +72,7 @@ class Array; {
     Class.new Array "$@"
   end
 
-  def += <<'  end'
+  def append <<'  end'
     local -n __vals=$1; shift
     local __statement
 
@@ -68,42 +86,31 @@ class Array; {
     esac
   end
 
-  def = <<'  end'
-    local -n __vals=$1; shift
-    local __statement
-
-    case $# in
-      '0' ) return;;
-      '1' )
-        printf -v __statement '__vals=( "${%s[@]}" )' "$1"
-        eval "$__statement"
-        ;;
-      * ) "$@"; __vals=( "${__[@]}" );;
-    esac
-  end
-
   def join <<'  end'
     local -n __vals=$1; shift
     local IFS=$1
 
     __=${__vals[*]}
   end
+
+  def set <<'  end'
+    local -n __vals=$1; shift
+    local __statement
+
+    case $# in
+      '0' ) return;;
+      '1' ) "$1"
+        printf -v __statement '__vals=( "${%s[@]}" )' "$1"
+        eval "$__statement"
+        ;;
+      * ) "$@"; __vals=( "${__[@]}" );;
+    esac
+  end
 }
 
 class Hash; {
   def new <<'  end'
     Class.new Hash "$@"
-  end
-
-  def = <<'  end'
-    local -n __valh=$1; shift
-
-    case $# in
-      '0' ) return          ;;
-      '1' ) Hash.to_s "$1"  ;;
-      *   ) "$@"            ;;
-    esac
-    eval __valh="$__"
   end
 
   def map <<'  end'
@@ -126,15 +133,6 @@ class Hash; {
     done
 
     __=( "${__retvals[@]}" )
-  end
-
-  def to_s <<'  end'
-    local __name=$1
-    local __result
-
-    result=$(declare -p "$__name")
-    result=${result#declare -A $__name=}
-    __=${result:1:${#result}-2}
   end
 }
 
