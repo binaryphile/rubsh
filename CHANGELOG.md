@@ -7,9 +7,11 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Unreleased]
 ------------
 
-### Added
+### Documentation
 
--   changelog
+-   added changelog
+
+-   revisited readme
 
   [Keep a Changelog]: http://keepachangelog.com/
   [Semantic Versioning]: http://semver.org/
