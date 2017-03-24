@@ -1,79 +1,71 @@
 [[ -n ${_rubsh:-} ]] && return
 readonly _rubsh=loaded
 
-declare -Ag ___methodh
-declare __=''
+unset -v __ __methodh
+declare -Ag __methodh
+__=''
 
-# Note the use of triple underscores for the next few functions
-class () { ___class=$1 ;}
+class () {
+  __class=$1
+  local parent=${3:-}
+
+  [[ $__class == 'Class' ]] && return
+  [[ -n $parent ]] && {
+    eval "$__class.new () { Class.new $parent "'"$@"'"; Class.new $__class "'"$@"'" ;}"
+    return
+  }
+  eval "$__class.new () { Class.new $__class "'"$@"'" ;}"
+}
 
 def () {
-  local ___method=$1
-  local ___body=$(</dev/stdin)
-  local ___statement
+  local method=$1
+  local body=$(</dev/stdin)
 
-  printf -v ___statement 'function %s.%s { %s ;}' "$___class" "$___method" "$___body"
-  eval "$___statement"
-  ___methodh[$___class]+="$___method "
+  eval "$__class.$method () { $body ;}"
+  __methodh[$__class]+="$method "
 }
 
 class Class; {
   def new <<'  end'
-    local ___class=$1; shift
-    local ___class_methods=( ${___methodh[Class]} )
-    local ___methods=( ${___methodh[$___class]} )
-    local ___name
+    local class=$1; shift
+    local self
 
-    for ___name in "$@"; do
-      eval "function $___name { $___name.to_s ;}"
-      Class.inherit Class ___name ___class_methods
-      Class.inherit "$___class" ___name ___methods
+    for self in "$@"; do
+      eval "$self () { $self.to_s ;}"
+      Class.inherit Object "$self"
+      Class.inherit "$class" "$self"
     done
   end
 
-  # four underscores
   def inherit <<'  end'
-    local ____class=$1
-    local ____name=${!2}
-    local -n ____methods=$3
-    local ____method
-    local ____separator
-    local ____statement
+    local class=$1
+    local self=$2
+    local method
 
-    for ____method in "${____methods[@]}"; do
-      case $____method in
-        'new' | 'inherit' ) continue          ;;
-        [[:alpha:]]*      ) ____separator=.   ;;
-        *                 ) ____separator=''  ;;
-      esac
-      printf -v ____statement 'function %s%s%s { %s.%s %s "$@" ;}' "$____name" "$____separator" "$____method" "$____class" "$____method" "$____name"
-      eval "$____statement"
+    for method in ${__methodh[$class]}; do
+      eval "$self.$method () { $class.$method $self "'"$@"'" ;}"
     done
   end
+}
 
+class Object; {
   def set <<'  end'
-    local -n __val=$1; shift
+    local -n __self=$1; shift
 
     __=''
     "$@"
-    eval __val="$__"
+    eval __self="$__"
   end
 
   def to_s <<'  end'
-    local __name=$1
-    local __result
+    local self=$1
 
-    __result=$(declare -p "$__name")
-    __result=${__result#declare -* $__name=}
-    __=${__result:1:${#__result}-2}
+    __=$(declare -p "$self" 2>/dev/null) || return
+    __=${__#declare -* $self=}
   end
 }
 
 class Array; {
-  def new <<'  end'
-    Class.new Array "$@"
-  end
-
   def append <<'  end'
     local -n __vals=$1; shift
     local __statement
@@ -94,27 +86,9 @@ class Array; {
 
     __=${__vals[*]}
   end
-
-  def set <<'  end'
-    local -n __vals=$1; shift
-    local __statement
-
-    case $# in
-      '0' ) return;;
-      '1' ) "$1"
-        printf -v __statement '__vals=( "${%s[@]}" )' "$1"
-        eval "$__statement"
-        ;;
-      * ) "$@"; __vals=( "${__[@]}" );;
-    esac
-  end
 }
 
 class Hash; {
-  def new <<'  end'
-    Class.new Hash "$@"
-  end
-
   def map <<'  end'
     local -n __valh=$1
     local __keyparm=$3
@@ -126,7 +100,7 @@ class Hash; {
     local __retvals=()
     local __statement
 
-    printf -v __statement '__retvals+=( "$(echo "%s")" )' "$__lambda"
+    printf -v __statement '__retvals+=( "$(puts "%s")" )' "$__lambda"
 
     for __key in "${!__valh[@]}"; do
       printf -v "$__keyparm" '%s' "$__key"
@@ -138,32 +112,13 @@ class Hash; {
   end
 }
 
-class String; {
-  def new <<'  end'
-    Class.new String "$@"
-  end
-
-  def = <<'  end'
-    local val=$1; shift
-
-    case $# in
-      '0' ) return                            ;;
-      '1' ) printf -v "$val" '%s' "${!1}"     ;;
-      *   ) "$@"; printf -v "$val" '%s' "$__" ;;
-    esac
-  end
-}
+class String
 
 defs () { IFS=$'\n' read -rd '' "$1" ||: ;}
 
 puts () { printf '%s\n' "$1" ;}
 
-class File; {
-  def new <<'  end'
-    Path.new "$@"
-    Class.new File "$@"
-  end
-
+class File , Path; {
   def each <<'  end'
     local __filename=${!1}
     local __lineparm=$3
@@ -184,26 +139,25 @@ class File; {
       '1' ) __string=${!1}      ;;
       *   ) "$@"; __string=$__  ;;
     esac
-    echo "$__string" >"$__filename"
+    puts "$__string" >"$__filename"
   end
 }
 
 class Path; {
-  def new <<'  end'
-    String.new "$@"
-    Class.new Path "$@"
-  end
-
   def expand_path <<'  end'
-    local pathname=${!1}
-    local filename
+    local __pathname=${!1}
+    local __filename
 
     unset -v CDPATH
-    [[ -e $pathname ]] && {
-      filename=$(basename "$pathname")
-      pathname=$(dirname "$pathname")
+    [[ -e $__pathname ]] && {
+      __filename=$(basename "$__pathname")
+      __pathname=$(dirname "$__pathname")
     }
-    pathname=$(cd "$pathname" && pwd) || return
-    __=$pathname${filename:+/}${filename:-}
+    [[ -d $__pathname ]] || return
+    __pathname=$(cd "$__pathname"; pwd)
+    __=$__pathname${__filename:+/}${__filename:-}
   end
 }
+
+unset -v __class
+unset -f class def
