@@ -27,15 +27,15 @@ describe __
   end
 end
 
-# describe ___class
-#   it "is not set"
-#     stop_on_error off
-#     declare -p ___class >/dev/null 2>&1
-#     assert unequal 0 $?
-#     stop_on_error
-#   end
-# end
-#
+describe ___class
+  it "is not set"
+    stop_on_error off
+    declare -p ___class >/dev/null 2>&1
+    assert unequal 0 $?
+    stop_on_error
+  end
+end
+
 # describe Class.new
 #   it "creates methods"; (
 #     Class.new Class sample
