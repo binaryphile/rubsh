@@ -6,7 +6,7 @@ declare -Ag __methodh
 __=''
 
 class () {
-  __class=$1
+  __class=$1 # global
   local parent=${3:-}
 
   [[ $__class == 'Class' ]] && return

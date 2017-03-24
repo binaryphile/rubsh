@@ -38,9 +38,21 @@ describe ___class
 end
 
 describe class
-  it "sets __class"; (
+  it "sets __class globally"; (
     class Sample
     assert equal Sample "$__class"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "returns if class is Class"; (
+    read -r unexpected <<'    EOS'
+Class.new ()
+{
+    Class.new Class "$@"
+}
+    EOS
+    class Class
+    assert unequal "$unexpected" "$(declare -f Class.new)"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 end
