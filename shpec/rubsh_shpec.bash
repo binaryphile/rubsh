@@ -36,14 +36,14 @@ describe ___class
   end
 end
 
-# describe Class.new
-#   it "creates methods"; (
-#     Class.new Class sample
-#     assert equal $'declare -f sample\ndeclare -f sample.set\ndeclare -f sample.to_s' "$(declare -F | grep sample)"
-#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-#   end
-# end
-#
+describe Class.new
+  it "creates methods from a specified class"; (
+    Class.new Object sample
+    assert equal $'declare -f sample\ndeclare -f sample.set\ndeclare -f sample.to_s' "$(declare -F | grep sample)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+end
+
 # describe Class.inherit
 #   it "creates a method from a list"; (
 #     name=sample
