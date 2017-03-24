@@ -10,6 +10,7 @@ initialize_shpec_helper
 stop_on_error=true
 stop_on_error
 
+shpec_test=true
 shpec_source lib/rubsh.bash
 
 describe ___methodh
@@ -33,6 +34,14 @@ describe ___class
     declare -p ___class >/dev/null 2>&1
     assert unequal 0 $?
     stop_on_error
+  end
+end
+
+describe class
+  it "sets __class"; (
+    class Sample
+    assert equal Sample "$__class"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 end
 

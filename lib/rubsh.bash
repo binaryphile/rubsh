@@ -159,5 +159,6 @@ class Path; {
   end
 }
 
+[[ -n $shpec_test ]] && return
 unset -v __class
 unset -f class def
