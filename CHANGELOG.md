@@ -7,7 +7,15 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Unreleased]
 ------------
 
-### Documentation
+### Changed
+
+-   eliminated all existing work and started from scratch
+
+### Added
+
+-   tests
+
+### Documented
 
 -   added changelog
 

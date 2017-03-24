@@ -21,12 +21,12 @@ describe ___methodh
   end
 end
 
-# describe __
-#   it "is blank"
-#     assert equal 'declare -- __=""' "$(declare -p __)"
-#   end
-# end
-#
+describe __
+  it "is blank"
+    assert equal 'declare -- __=""' "$(declare -p __)"
+  end
+end
+
 # describe ___class
 #   it "is not set"
 #     stop_on_error off
