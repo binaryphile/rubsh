@@ -1,8 +1,10 @@
-# Note the use of triple underscores for the class functions
+[[ -n ${_rubsh:-} ]] && return
+readonly _rubsh=loaded
 
 declare -Ag ___methodh
 declare __=''
 
+# Note the use of triple underscores for the next few functions
 class () { ___class=$1 ;}
 
 def () {
