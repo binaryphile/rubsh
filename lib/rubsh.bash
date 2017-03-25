@@ -9,7 +9,6 @@ class () {
   __class=$1 # global
   local parent=${3:-}
 
-  [[ $__class == 'Class' ]] && return
   [[ -n $parent ]] && {
     eval "$__class.new () { Object.new $parent "'"$@"'"; Object.new $__class "'"$@"'" ;}"
     return
