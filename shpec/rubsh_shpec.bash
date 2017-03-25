@@ -69,6 +69,14 @@ describe Class.new
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
+  it "creates methods of the specified class in addition"; (
+    Class.new Class example
+    IFS=$'\n' read -rd '' -a results <<<"$(declare -F | grep example\.)" ||:
+    results=( "${results[@]#declare -f example.}" )
+    assert equal "inherit new set to_s" "${results[*]}"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
   it "creates a self-named function"; (
     Class.new Object sample
     assert equal 'declare -f sample' "$(declare -F | grep 'sample$')"
