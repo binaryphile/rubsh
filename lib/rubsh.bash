@@ -6,6 +6,9 @@ declare -Ag __bodyh __methodh __parenth
 __=''
 
 __methodh[Class]=new
+
+__parenth[Class]=Object
+
 IFS=$'\n' read -rd '' __bodyh[Class.new] <<'end' ||:
   local self=$1
   local statement

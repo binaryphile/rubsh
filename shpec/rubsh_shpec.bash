@@ -59,6 +59,16 @@ shpec_source lib/rubsh.bash
 #   end
 # end
 
+describe Object methods
+  
+end
+
+describe Class
+  it "is a child of Object"
+    assert equal Object "${__parenth[Class]}"
+  end
+end
+
 describe Class new
   it "creates a new object"; (
     Class new Sample
