@@ -77,9 +77,20 @@ describe Class.new
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
-  it "creates a self-named function"; (
-    Class.new Object sample
-    assert equal 'declare -f sample' "$(declare -F | grep 'sample$')"
+  it "creates an instance-named function"; (
+    Class.new Sample example
+    declare -f example >/dev/null
+    assert equal 0 $?
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "does so for multiple instances"; (
+    Class.new Sample example1 example2
+    declare -f example1 >/dev/null
+    results=( $? )
+    declare -f example2 >/dev/null
+    results+=( $? )
+    assert equal '0 0' "${results[*]}"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 end
