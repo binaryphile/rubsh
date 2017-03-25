@@ -49,6 +49,12 @@ describe class
     assert equal Object "${__parenth[Sample]}"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+
+  it "assigns the given parent"; (
+    class Sample , Other
+    assert equal Other "${__parenth[Sample]}"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end
 
 describe def
