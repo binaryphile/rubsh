@@ -1,12 +1,16 @@
 [[ -n ${_rubsh:-} ]] && return
 readonly _rubsh=loaded
 
-unset -v __ __methodh
-declare -Ag __methodh
+unset -v __ __methodh __parenth
+declare -Ag __methodh __parenth
 __=''
 
 class () {
   __class=$1 # global
+  __parent=${3:-}
+
+  [[ -n $__parent ]] && { __parenth[$__class]=$__parent; return ;}
+  __parenth[$__class]=Object
 }
 
 def () {

@@ -13,15 +13,6 @@ stop_on_error
 shpec_test=true
 shpec_source lib/rubsh.bash
 
-describe ___methodh
-  it "catalogues the methods of classes"
-    read -r expected <<'    EOS' ||:
-      declare -A __methodh='([Object]="new set to_s" [Array]="append join" [Class]="new inherit" [Hash]="map" [File]="each write" [Path]="expand_path" )'
-    EOS
-    assert equal "$expected" "$(declare -p __methodh)"
-  end
-end
-
 describe __
   it "is blank"
     assert equal 'declare -- __=""' "$(declare -p __)"
@@ -37,10 +28,25 @@ describe ___class
   end
 end
 
+describe ___methodh
+  it "catalogues the methods of classes"
+    read -r expected <<'    EOS' ||:
+      declare -A __methodh='([Object]="new set to_s" [Array]="append join" [Class]="new inherit" [Hash]="map" [File]="each write" [Path]="expand_path" )'
+    EOS
+    assert equal "$expected" "$(declare -p __methodh)"
+  end
+end
+
 describe class
   it "sets __class globally"; (
     class Sample
     assert equal Sample "$__class"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "assigns Object as the default parent"; (
+    class Sample
+    assert equal Object "${__parenth[Sample]}"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 end
