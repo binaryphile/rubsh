@@ -66,6 +66,12 @@ describe Class.new
     assert equal $'declare -f sample\ndeclare -f sample.new\ndeclare -f sample.set\ndeclare -f sample.to_s' "$(declare -F | grep sample)"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+
+  it "creates a self-named function"; (
+    Class.new Object sample
+    assert equal 'declare -f sample' "$(declare -F | grep 'sample$')"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end
 
 describe Class.inherit
