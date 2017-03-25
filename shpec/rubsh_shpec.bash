@@ -31,7 +31,7 @@ end
 describe ___methodh
   it "catalogues the methods of classes"
     read -r expected <<'    EOS' ||:
-      declare -A __methodh='([Object]="new set to_s" [Array]="append join" [Class]="new inherit" [Hash]="map" [File]="each write" [Path]="expand_path" )'
+      declare -A __methodh='([Object]="set to_s" [Array]="append join" [Class]="new" [Hash]="map" [File]="each write" [Path]="expand_path" )'
     EOS
     assert equal "$expected" "$(declare -p __methodh)"
   end
@@ -44,13 +44,24 @@ describe class
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
+  it "calls Class.new"; (
+    stub_command Class.new 'echo "$@"'
+
+    assert equal Sample "$(Class.new Sample)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
   it "assigns Object as the default parent"; (
+    stub_command Class.new
+
     class Sample
     assert equal Object "${__parenth[Sample]}"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
   it "assigns the given parent"; (
+    stub_command Class.new
+
     class Sample , Other
     assert equal Other "${__parenth[Sample]}"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:

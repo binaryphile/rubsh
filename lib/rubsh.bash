@@ -5,20 +5,18 @@ unset -v __ __methodh __parenth
 declare -Ag __methodh __parenth
 __=''
 
-__methodh[Class]=new
-
 class () {
   __class=$1 # global
-  __parent=${3:-}
+  local __parent=${3:-}
 
-  Class.new Class "$__class"
+  __inherit Class "$__class"
   [[ -n $__parent ]] && { __parenth[$__class]=$__parent; return ;}
-  [[ $__class == 'Object' ]] || __parenth[$__class]=Object
+  if [[ $__class != 'Object' ]]; then __parenth[$__class]=Object; fi
 }
 
 def () {
   local method=$1
-  local body=$(</dev/stdin)
+  local body=${2:-$(</dev/stdin)}
   local tmp=()
 
   eval "$__class.$method () { $body ;}"
@@ -26,7 +24,7 @@ def () {
   __methodh[$__class]=${tmp[*]}
 }
 
-Class.inherit () {
+__inherit () {
   local class=$1
   local self=$2
   local method
@@ -36,14 +34,16 @@ Class.inherit () {
   done
 }
 
-Class.new () {
-  local class=$1; shift
-  local self
+class Class; {
+  def new <<'  end'
+    local class=$1; shift
+    local self
 
-  for self in "$@"; do
-    [[ -n ${__parenth[$class]} ]] && eval "${__parenth[$class]}".new "$@"
-    Class.inherit "$class" "$self"
-  done
+    for self in "$@"; do
+      [[ -n ${__parenth[$class]} ]] && eval "${__parenth[$class]}".new "$@"
+      __inherit "$class" "$self"
+    done
+  end
 }
 
 class Object , Class; {
