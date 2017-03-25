@@ -45,6 +45,21 @@ describe class
   end
 end
 
+describe def
+  it "creates a method"; (
+    __class=Sample
+    read -rd '' expected <<'    EOS' ||:
+Sample.example () 
+{ 
+    :
+}
+    EOS
+    def example <<<:
+    assert equal "$expected" "$(declare -f Sample.example)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+end
+
 describe Object.new
   it "creates methods from a specified class"; (
     Object.new Object sample
