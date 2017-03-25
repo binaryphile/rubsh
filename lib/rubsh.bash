@@ -7,13 +7,6 @@ __=''
 
 class () {
   __class=$1 # global
-  local parent=${3:-}
-
-  [[ -n $parent ]] && {
-    eval "$__class.new () { Object.new $parent "'"$@"'"; Object.new $__class "'"$@"'" ;}"
-    return
-  }
-  eval "$__class.new () { Object.new $__class "'"$@"'" ;}"
 }
 
 def () {
@@ -27,6 +20,17 @@ def () {
 }
 
 class Class; {
+  def new <<'  end'
+    local class=$1; shift
+    local self
+
+    for self in "$@"; do
+      eval "$self () { $self.to_s ;}"
+      Class.inherit Object "$self"
+      Class.inherit "$class" "$self"
+    done
+  end
+
   def inherit <<'  end'
     local class=$1
     local self=$2

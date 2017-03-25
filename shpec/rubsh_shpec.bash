@@ -16,7 +16,7 @@ shpec_source lib/rubsh.bash
 describe ___methodh
   it "catalogues the methods of classes"
     read -r expected <<'    EOS' ||:
-      declare -A __methodh='([Object]="new set to_s" [Array]="append join" [Class]="inherit" [Hash]="map" [File]="each write" [Path]="expand_path" )'
+      declare -A __methodh='([Object]="new set to_s" [Array]="append join" [Class]="new inherit" [Hash]="map" [File]="each write" [Path]="expand_path" )'
     EOS
     assert equal "$expected" "$(declare -p __methodh)"
   end
@@ -60,18 +60,18 @@ Sample.example ()
   end
 end
 
-describe Class.inherit
-  it "creates instance methods from a class"; (
-    Class.inherit Class sample
-    assert equal 'declare -f sample.inherit' "$(declare -F | grep sample\.)"
+describe Class.new
+  it "creates methods from a specified class"; (
+    Class.new Object sample
+    assert equal $'declare -f sample\ndeclare -f sample.new\ndeclare -f sample.set\ndeclare -f sample.to_s' "$(declare -F | grep sample)"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 end
 
-describe Object.new
-  it "creates methods from a specified class"; (
-    Object.new Object sample
-    assert equal $'declare -f sample\ndeclare -f sample.new\ndeclare -f sample.set\ndeclare -f sample.to_s' "$(declare -F | grep sample)"
+describe Class.inherit
+  it "creates instance methods from a class"; (
+    Class.inherit Class sample
+    assert equal $'declare -f sample.inherit\ndeclare -f sample.new' "$(declare -F | grep sample\.)"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 end
