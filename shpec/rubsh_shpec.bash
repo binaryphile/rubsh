@@ -60,6 +60,14 @@ Sample.example ()
   end
 end
 
+describe Class.inherit
+  it "creates instance methods from a class"; (
+    Class.inherit Class sample
+    assert equal 'declare -f sample.inherit' "$(declare -F | grep sample\.)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+end
+
 describe Object.new
   it "creates methods from a specified class"; (
     Object.new Object sample
@@ -67,13 +75,3 @@ describe Object.new
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 end
-
-# describe Class.inherit
-#   it "creates a method from a list"; (
-#     name=sample
-#     methods=( example )
-#     Class.inherit Class name example
-#     assert equal $'declare -f sample\ndeclare -f sample.set\ndeclare -f sample.to_s' "$(declare -F | grep sample)"
-#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-#   end
-# end
