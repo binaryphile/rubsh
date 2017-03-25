@@ -12,6 +12,7 @@ IFS=$'\n' read -rd '' __bodyh[Class.new] <<'end' ||:
 
   printf -v statement '%s () { :;}' "$self"
   eval "$statement"
+  __parenth[$self]=Class
 end
 
 Class () {

@@ -67,9 +67,11 @@ describe Class new
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
-  # it "assumes new for an unspecified method"
-  #   Class Sample
-  #   declare -f Sample
+  it "sets the parent to Class"; (
+    Class new Sample
+    assert equal Class "${__parenth[Sample]}"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 #   it "creates Object methods"; (
 #     Class.new Sample example
 #     IFS=$'\n' read -rd '' -a results <<<"$(declare -F | grep example\.)" ||:
