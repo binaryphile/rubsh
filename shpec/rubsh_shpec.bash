@@ -61,9 +61,11 @@ Sample.example ()
 end
 
 describe Class.new
-  it "creates methods from a specified class"; (
-    Class.new Object sample
-    assert equal $'declare -f sample\ndeclare -f sample.new\ndeclare -f sample.set\ndeclare -f sample.to_s' "$(declare -F | grep sample)"
+  it "creates Object methods"; (
+    Class.new Sample example
+    IFS=$'\n' read -rd '' -a results <<<"$(declare -F | grep example\.)" ||:
+    results=( "${results[@]#declare -f example.}" )
+    assert equal "${__methodh[Object]}" "${results[*]}"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
@@ -81,3 +83,11 @@ describe Class.inherit
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 end
+#
+# describe Object.new
+#   it "creates methods from a specified class"; (
+#     Object.new sample
+#     assert equal $'declare -f sample\ndeclare -f sample.new\ndeclare -f sample.set\ndeclare -f sample.to_s' "$(declare -F | grep sample)"
+#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+#   end
+# end
