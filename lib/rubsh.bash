@@ -19,7 +19,7 @@ class () {
 def () {
   local method=$1
   local body=$(</dev/stdin)
-  local tmp
+  local tmp=()
 
   eval "$__class.$method () { $body ;}"
   tmp=( ${__methodh[$__class]} "$method" )
