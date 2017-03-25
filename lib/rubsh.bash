@@ -11,10 +11,10 @@ class () {
 
   [[ $__class == 'Class' ]] && return
   [[ -n $parent ]] && {
-    eval "$__class.new () { Class.new $parent "'"$@"'"; Class.new $__class "'"$@"'" ;}"
+    eval "$__class.new () { Object.new $parent "'"$@"'"; Object.new $__class "'"$@"'" ;}"
     return
   }
-  eval "$__class.new () { Class.new $__class "'"$@"'" ;}"
+  eval "$__class.new () { Object.new $__class "'"$@"'" ;}"
 }
 
 def () {
@@ -26,17 +26,6 @@ def () {
 }
 
 class Class; {
-  def new <<'  end'
-    local class=$1; shift
-    local self
-
-    for self in "$@"; do
-      eval "$self () { $self.to_s ;}"
-      Class.inherit Object "$self"
-      Class.inherit "$class" "$self"
-    done
-  end
-
   def inherit <<'  end'
     local class=$1
     local self=$2
@@ -49,6 +38,17 @@ class Class; {
 }
 
 class Object; {
+  def new <<'  end'
+    local class=$1; shift
+    local self
+
+    for self in "$@"; do
+      eval "$self () { $self.to_s ;}"
+      Class.inherit Object "$self"
+      Class.inherit "$class" "$self"
+    done
+  end
+
   def set <<'  end'
     local -n __self=$1; shift
 
