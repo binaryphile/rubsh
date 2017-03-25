@@ -16,7 +16,7 @@ shpec_source lib/rubsh.bash
 describe ___methodh
   it "catalogues the methods of classes"
     read -r expected <<'    EOS' ||:
-      declare -A __methodh='([Object]="new set to_s " [Array]="append join " [Class]="inherit " [Hash]="map " [File]="each write " [Path]="expand_path " )'
+      declare -A __methodh='([Object]="new set to_s" [Array]="append join" [Class]="inherit" [Hash]="map" [File]="each write" [Path]="expand_path" )'
     EOS
     assert equal "$expected" "$(declare -p __methodh)"
   end
