@@ -72,41 +72,6 @@ Sample.example ()
   end
 end
 
-describe Class.new
-  it "creates Object methods"; (
-    Class.new Sample example
-    IFS=$'\n' read -rd '' -a results <<<"$(declare -F | grep example\.)" ||:
-    results=( "${results[@]#declare -f example.}" )
-    assert equal "${__methodh[Object]}" "${results[*]}"
-    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  end
-
-  it "creates methods of the specified class in addition"; (
-    Class.new Class example
-    IFS=$'\n' read -rd '' -a results <<<"$(declare -F | grep example\.)" ||:
-    results=( "${results[@]#declare -f example.}" )
-    assert equal "inherit new set to_s" "${results[*]}"
-    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  end
-
-  it "creates an instance-named function"; (
-    Class.new Sample example
-    declare -f example >/dev/null
-    assert equal 0 $?
-    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  end
-
-  it "does so for multiple instances"; (
-    Class.new Sample example1 example2
-    declare -f example1 >/dev/null
-    results=( $? )
-    declare -f example2 >/dev/null
-    results+=( $? )
-    assert equal '0 0' "${results[*]}"
-    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  end
-end
-
 describe Class.inherit
   it "creates instance methods from a class"; (
     Class.inherit Class sample

@@ -9,7 +9,9 @@ class () {
   __class=$1 # global
   __parent=${3:-}
 
+  inherit Class "$__class"
   [[ -n $__parent ]] && { __parenth[$__class]=$__parent; return ;}
+  case $__class in 'Object' | 'Class' ) return;; esac
   __parenth[$__class]=Object
 }
 
@@ -23,41 +25,29 @@ def () {
   __methodh[$__class]=${tmp[*]}
 }
 
+inherit () {
+  local class=$1
+  local self=$2
+  local method
+
+  for method in ${__methodh[$class]}; do
+    eval "$self.$method () { $class.$method $self "'"$@"'" ;}"
+  done
+}
+
 class Class; {
   def new <<'  end'
     local class=$1; shift
     local self
 
     for self in "$@"; do
-      eval "$self () { $self.to_s ;}"
-      Class.inherit Object "$self"
-      Class.inherit "$class" "$self"
-    done
-  end
-
-  def inherit <<'  end'
-    local class=$1
-    local self=$2
-    local method
-
-    for method in ${__methodh[$class]}; do
-      eval "$self.$method () { $class.$method $self "'"$@"'" ;}"
+      [[ -n ${__parenth[$class]} ]] && eval "${__parenth[$class]}".new "$@"
+      inherit "$class" "$self"
     done
   end
 }
 
 class Object; {
-  def new <<'  end'
-    local class=$1; shift
-    local self
-
-    for self in "$@"; do
-      eval "$self () { $self.to_s ;}"
-      Class.inherit Object "$self"
-      Class.inherit "$class" "$self"
-    done
-  end
-
   def set <<'  end'
     local -n __self=$1; shift
 
