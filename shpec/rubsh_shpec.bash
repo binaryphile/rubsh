@@ -13,6 +13,17 @@ stop_on_error
 shpec_test=true
 shpec_source lib/rubsh.bash
 
+describe __dispatch
+  it "determines self from the calling function"; (
+    __parenth[samplef]=example
+    __bodyh[example.example]='echo $1'
+
+    samplef () { __dispatch "$@" ;}
+    assert equal samplef "$(samplef example)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+end
+
 # describe class
 #   it "sets __class globally"; (
 #     class Sample
