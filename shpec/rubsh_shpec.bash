@@ -79,6 +79,11 @@ end
 # end
 
 describe Object
+  it "is a function"
+    declare -f Object >/dev/null
+    assert equal 0 $?
+  end
+
   describe methods
     it "returns the methods defined on the object"
       Object methods
