@@ -112,6 +112,13 @@ describe Class
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
 
+    it "creates multiples"; (
+      Class new Sample Example
+      declare -f Example >/dev/null
+      assert equal 0 $?
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+
     it "sets the parent to Class"; (
       Class new Sample
       assert equal Class "${__parenth[Sample]}"
@@ -125,21 +132,6 @@ describe Class
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
 
-  #   it "creates methods of the specified class in addition"; (
-  #     Class.new Class example
-  #     IFS=$'\n' read -rd '' -a results <<<"$(declare -F | grep example\.)" ||:
-  #     results=( "${results[@]#declare -f example.}" )
-  #     assert equal "inherit new set to_s" "${results[*]}"
-  #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  #   end
-  #
-  #   it "creates an instance-named function"; (
-  #     Class.new Sample example
-  #     declare -f example >/dev/null
-  #     assert equal 0 $?
-  #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  #   end
-  #
   #   it "does so for multiple instances"; (
   #     Class.new Sample example1 example2
   #     declare -f example1 >/dev/null

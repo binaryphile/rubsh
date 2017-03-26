@@ -24,12 +24,14 @@ IFS=$'\n' read -rd '' __bodyh[Object.methods] <<'end' ||:
 end
 
 IFS=$'\n' read -rd '' __bodyh[Class.new] <<'end' ||:
-  local self=$1
+  local self
   local statement
 
-  printf -v statement '%s () { :;}' "$self"
-  eval "$statement"
-  __parenth[$self]=Class
+  for self in "$@"; do
+    printf -v statement '%s () { :;}' "$self"
+    eval "$statement"
+    __parenth[$self]=Class
+  done
 end
 
 __dispatch () {
