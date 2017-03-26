@@ -84,6 +84,13 @@ describe Object
     assert equal 0 $?
   end
 
+  it "calls __dispatch"; (
+    stub_command __dispatch 'echo called'
+
+    assert equal called "$(Object)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
   describe methods
     it "returns the methods defined on the object"
       Object methods
