@@ -2,7 +2,6 @@ source import.bash
 
 shpec_helper_imports=(
   initialize_shpec_helper
-  shpec_source
   stop_on_error
 )
 eval "$(importa shpec-helper shpec_helper_imports)"
@@ -11,10 +10,19 @@ stop_on_error=true
 stop_on_error
 
 shpec_test=true
-shpec_source lib/rubsh.bash
+eval "$shpec_source/lib/rubsh.bash"
 
 describe __dispatch
   it "determines self from the calling function"; (
+    __parenth[samplef]=example
+    __bodyh[example.example]='echo $1'
+
+    samplef () { __dispatch "$@" ;}
+    assert equal samplef "$(samplef example)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "creates a method from the body hash"; (
     __parenth[samplef]=example
     __bodyh[example.example]='echo $1'
 

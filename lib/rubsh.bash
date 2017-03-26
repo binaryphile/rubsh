@@ -2,7 +2,7 @@
 [[ -n ${reload:-}                   ]] && { unset -v reload && echo reloaded || return ;}
 [[ -z ${_rubsh:-}                   ]] && readonly _rubsh=loaded
 
-unset -v __ __bodyh __methodh __parenth
+unset -v __ __bodyh __classes __methodh __parenth
 declare -Ag __bodyh __methodh __parenth
 __=''
 
@@ -11,6 +11,8 @@ __methodh[Object]=methods
 
 __parenth[Class]=Object
 __parenth[Object]=Object
+
+__classes+=' Class Object '
 
 IFS=$'\n' read -rd '' __bodyh[Object.methods] <<'end' ||:
   local class=$1
