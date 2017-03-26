@@ -79,6 +79,14 @@ end
 # end
 
 describe Object
+
+# describe Object.new
+#   it "creates methods from a specified class"; (
+#     Object.new sample
+#     assert equal $'declare -f sample\ndeclare -f sample.new\ndeclare -f sample.set\ndeclare -f sample.to_s' "$(declare -F | grep sample)"
+#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+#   end
+# end
   it "is a function"
     declare -f Object >/dev/null
     assert equal 0 $?
@@ -100,6 +108,11 @@ describe Object
 end
 
 describe Class
+  it "is a function"
+    declare -f Class >/dev/null
+    assert equal 0 $?
+  end
+
   it "is a child of Object"
     assert equal Object "${__parenth[Class]}"
   end
@@ -131,23 +144,5 @@ describe Class
       assert equal '([0]="methods")' "$__"
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
-
-  #   it "does so for multiple instances"; (
-  #     Class.new Sample example1 example2
-  #     declare -f example1 >/dev/null
-  #     results=( $? )
-  #     declare -f example2 >/dev/null
-  #     results+=( $? )
-  #     assert equal '0 0' "${results[*]}"
-  #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  #   end
   end
 end
-
-# describe Object.new
-#   it "creates methods from a specified class"; (
-#     Object.new sample
-#     assert equal $'declare -f sample\ndeclare -f sample.new\ndeclare -f sample.set\ndeclare -f sample.to_s' "$(declare -F | grep sample)"
-#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-#   end
-# end
