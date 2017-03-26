@@ -94,8 +94,7 @@ describe Object
   describe methods
     it "returns the methods defined on the object"
       Object methods
-      eval results="$__"
-      assert equal 'declare -a results='\''([0]="methods")'\' "$(declare -p results)"
+      assert equal '([0]="methods")' "$__"
     end
   end
 end
