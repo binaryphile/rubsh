@@ -10,7 +10,7 @@ __methodh[Class]=new
 __methodh[Object]=methods
 
 __parenth[Class]=Object
-__parenth[Object]=Object
+__parenth[Object]=Class
 
 __classes+=' Class Object '
 

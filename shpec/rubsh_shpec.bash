@@ -10,7 +10,7 @@ stop_on_error=true
 stop_on_error
 
 shpec_test=true
-eval "$shpec_source/lib/rubsh.bash"
+eval "source $shpec_cwd/../lib/rubsh.bash"
 
 describe __dispatch
   it "determines self from the calling function"; (
@@ -32,64 +32,14 @@ describe __dispatch
   end
 end
 
-# describe class
-#   it "sets __class globally"; (
-#     class Sample
-#     assert equal Sample "$__class"
-#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-#   end
-#
-#   it "calls Class.new"; (
-#     stub_command Class.new 'echo "$@"'
-#
-#     assert equal Sample "$(Class.new Sample)"
-#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-#   end
-#
-#   it "assigns Object as the default parent"; (
-#     stub_command Class.new
-#
-#     class Sample
-#     assert equal Object "${__parenth[Sample]}"
-#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-#   end
-#
-#   it "assigns the given parent"; (
-#     stub_command Class.new
-#
-#     class Sample , Other
-#     assert equal Other "${__parenth[Sample]}"
-#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-#   end
-# end
-#
-# describe def
-#   it "creates a method"; (
-#     __class=Sample
-#     read -rd '' expected <<'    EOS' ||:
-# Sample.example () 
-# { 
-#     :
-# }
-#     EOS
-#     def example <<<:
-#     assert equal "$expected" "$(declare -f Sample.example)"
-#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-#   end
-# end
-
 describe Object
-
-# describe Object.new
-#   it "creates methods from a specified class"; (
-#     Object.new sample
-#     assert equal $'declare -f sample\ndeclare -f sample.new\ndeclare -f sample.set\ndeclare -f sample.to_s' "$(declare -F | grep sample)"
-#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-#   end
-# end
   it "is a function"
     declare -f Object >/dev/null
     assert equal 0 $?
+  end
+
+  it "is a child of Class"
+    assert equal Class "${__parenth[Object]}"
   end
 
   it "calls __dispatch"; (
@@ -146,3 +96,49 @@ describe Class
     end
   end
 end
+
+# describe class
+#   it "sets __class globally"; (
+#     class Sample
+#     assert equal Sample "$__class"
+#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+#   end
+#
+#   it "calls Class.new"; (
+#     stub_command Class.new 'echo "$@"'
+#
+#     assert equal Sample "$(Class.new Sample)"
+#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+#   end
+#
+#   it "assigns Object as the default parent"; (
+#     stub_command Class.new
+#
+#     class Sample
+#     assert equal Object "${__parenth[Sample]}"
+#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+#   end
+#
+#   it "assigns the given parent"; (
+#     stub_command Class.new
+#
+#     class Sample , Other
+#     assert equal Other "${__parenth[Sample]}"
+#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+#   end
+# end
+#
+# describe def
+#   it "creates a method"; (
+#     __class=Sample
+#     read -rd '' expected <<'    EOS' ||:
+# Sample.example () 
+# { 
+#     :
+# }
+#     EOS
+#     def example <<<:
+#     assert equal "$expected" "$(declare -f Sample.example)"
+#     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+#   end
+# end
