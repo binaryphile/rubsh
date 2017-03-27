@@ -26,6 +26,13 @@ describe Object
       assert equal '([0]="Object")' "$__"
     end
   end
+
+  describe class
+    it "is class Class"
+      Object class
+      assert equal Class "$__"
+    end
+  end
 end
 
 describe Class
