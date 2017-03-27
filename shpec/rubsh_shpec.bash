@@ -38,8 +38,8 @@ describe Object
     assert equal 0 $?
   end
 
-  it "is a child of Class"
-    assert equal Class "${__parenth[Object]}"
+  it "has a class of Class"
+    assert equal Class "${__classh[Object]}"
   end
 
   it "calls __dispatch"; (
@@ -47,6 +47,15 @@ describe Object
 
     assert equal called "$(Object)"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  describe new
+    it "creates a function"; (
+      Object new sample
+      declare -f sample >/dev/null
+      assert equal 0 $?
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
   end
 
   describe methods

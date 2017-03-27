@@ -2,17 +2,22 @@
 [[ -n ${reload:-}                   ]] && { unset -v reload && echo reloaded || return ;}
 [[ -z ${_rubsh:-}                   ]] && readonly _rubsh=loaded
 
-unset -v __ __bodyh __classes __methodh __parenth
-declare -Ag __bodyh __methodh __parenth
+unset -v __ __class_methodh __classes __instance_bodyh __instance_methodh __parenth
+declare -Ag __class_bodyh __class_methodh __instance_bodyh __instance_methodh __parenth
 __=''
 
-__methodh[Class]=new
-__methodh[Object]=methods
+__instance_methodsh[Class]=' new '
+__instance_methodsh[Object]=' methods '
+
+__class_methodsh[Class]=' new '
 
 __parenth[Class]=Object
-__parenth[Object]=Class
+__parenth[Object]=Object
 
-__classes+=' Class Object '
+__classh[Class]=Class
+__classh[Object]=Class
+
+__classes=' Class Object '
 
 IFS=$'\n' read -rd '' __bodyh[Object.methods] <<'end' ||:
   local class=$1
@@ -31,6 +36,21 @@ IFS=$'\n' read -rd '' __bodyh[Class.new] <<'end' ||:
     printf -v statement '%s () { :;}' "$self"
     eval "$statement"
     __parenth[$self]=Class
+    __classh[$self]=Class
+    __classes+="$self "
+  done
+end
+
+IFS=$'\n' read -rd '' __class_bodyh[Class.new] <<'end' ||:
+  local self
+  local statement
+
+  for self in "$@"; do
+    printf -v statement '%s () { :;}' "$self"
+    eval "$statement"
+    __parenth[$self]=Class
+    __classh[$self]=Class
+    __classes+="$self "
   done
 end
 
@@ -40,7 +60,10 @@ __dispatch () {
   local self=${FUNCNAME[1]}
   local statement
 
-  class=${__parenth[$self]}
+  class=${__classh[$self]}
+  [[ ${__methodsh[$class]} == *" $method "* ]] && {
+    :
+  }
   printf -v statement '__ () { %s ;}; __ "$self" "$@"' "${__bodyh[$class.$method]}"
   eval "$statement"
 }
