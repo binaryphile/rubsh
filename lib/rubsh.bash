@@ -17,7 +17,14 @@ defs __method_bodyh[Object.class] <<'end'
 end
 
 defs __method_bodyh[Object.methods] <<'end'
-  __='([0]="ancestors" [1]="methods")'
+  local cls=$1
+  local show_inherited=${2:-true}
+
+  case $show_inherited in
+    'false' ) __='()'                               ;;
+    'true'  ) __='([0]="ancestors" [1]="methods")'  ;;
+    *       ) return 1                              ;;
+  esac
 end
 
 defs __method_bodyh[Class.ancestors] <<'end'
