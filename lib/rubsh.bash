@@ -2,13 +2,11 @@
 [[ -n ${reload:-}                   ]] && { unset -v reload && echo reloaded || return ;}
 [[ -z ${_rubsh:-}                   ]] && readonly _rubsh=loaded
 
-unset -v __classh __method_bodyh __methodsh
+unset   -v  __classh __method_bodyh __methodsh __
 declare -Ag __classh __method_bodyh __methodsh
+__=''
 
 defs () { IFS=$'\n' read -rd '' "$1" ||: ;}
-
-__classh[Class]=Class
-__classh[Object]=Class
 
 __methodsh[ancestors]=' Class '
 __methodsh[methods]=' Class '
@@ -33,18 +31,18 @@ defs __method_bodyh[Class.methods] <<'end'
   __='([0]="ancestors" [1]="methods")'
 end
 
-Object () {
+__dispatch () {
   local method=$1
+  local self=${FUNCNAME[1]}
   local statement
 
-  printf -v statement '__ () { %s ;}; __ Object "$@"' "${__method_bodyh[Object.$method]}"
+  printf -v statement '__ () { %s ;}; __ "$self" "$@"' "${__method_bodyh[$self.$method]}"
   eval "$statement"
 }
 
-Class () {
-  local method=$1
-  local statement
-
-  printf -v statement '__ () { %s ;}; __ Class "$@"' "${__method_bodyh[Class.$method]}"
+for class in Object Class; do
+  printf -v statement 'function %s { __dispatch "$@" ;}' "$class"
   eval "$statement"
-}
+  __classh[$class]=Class
+done
+unset -v class statement
