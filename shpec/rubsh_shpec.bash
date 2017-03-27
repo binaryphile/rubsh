@@ -33,6 +33,18 @@ describe Object
       assert equal Class "$__"
     end
   end
+
+  describe methods
+    it "lists an array string of methods"
+      Object methods
+      assert equal '([0]="ancestors" [1]="class" [2]="methods")' "$__"
+    end
+
+    it "only lists methods define on it when given false"
+      Object methods false
+      assert equal '()' "$__"
+    end
+  end
 end
 
 describe Class
