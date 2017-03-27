@@ -82,7 +82,7 @@ describe Object
   describe methods
     it "lists an array string of methods"
       Object methods
-      assert equal '([0]="ancestors" [1]="class" [2]="methods")' "$__"
+      assert equal '([0]="ancestors" [1]="class" [2]="instance_methods" [3]="methods")' "$__"
     end
 
     it "only lists methods defined on it when given false"
