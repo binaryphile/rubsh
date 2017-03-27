@@ -14,6 +14,32 @@ eval "source $shpec_cwd/../lib/rubsh.bash"
 
 is_function () { declare -f "$1" >/dev/null ;}
 
+describe Class
+  it "is a function"
+    is_function Class
+    assert equal 0 $?
+  end
+
+  describe ancestors
+    it "lists an array string of ancestor classes"
+      Class ancestors
+      assert equal '([0]="Class" [1]="Object")' "$__"
+    end
+  end
+
+  describe methods
+    it "lists an array string of methods"
+      Class methods
+      assert equal '([0]="ancestors" [1]="class" [2]="methods")' "$__"
+    end
+
+    it "only lists methods define on it when given false"
+      Class methods false
+      assert equal '()' "$__"
+    end
+  end
+end
+
 describe Object
   it "is a function"
     is_function Object
@@ -42,32 +68,6 @@ describe Object
 
     it "only lists methods define on it when given false"
       Object methods false
-      assert equal '()' "$__"
-    end
-  end
-end
-
-describe Class
-  it "is a function"
-    is_function Class
-    assert equal 0 $?
-  end
-
-  describe ancestors
-    it "lists an array string of ancestor classes"
-      Class ancestors
-      assert equal '([0]="Class" [1]="Object")' "$__"
-    end
-  end
-
-  describe methods
-    it "lists an array string of methods"
-      Class methods
-      assert equal '([0]="ancestors" [1]="class" [2]="methods")' "$__"
-    end
-
-    it "only lists methods define on it when given false"
-      Class methods false
       assert equal '()' "$__"
     end
   end
