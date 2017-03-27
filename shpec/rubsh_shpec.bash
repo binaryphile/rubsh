@@ -53,5 +53,10 @@ describe Class
       Class methods
       assert equal '([0]="ancestors" [1]="methods")' "$__"
     end
+
+    it "only lists methods define on it when given false"
+      Class methods false
+      assert equal '()' "$__"
+    end
   end
 end
