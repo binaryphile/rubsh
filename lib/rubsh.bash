@@ -8,9 +8,6 @@ __=''
 
 defs () { IFS=$'\n' read -rd '' "$1" ||: ;}
 
-__methodsh[ancestors]=' Class '
-__methodsh[methods]=' Class '
-
 defs __method_bodyh[Object.ancestors] <<'end'
   __='([0]="Object")'
 end
