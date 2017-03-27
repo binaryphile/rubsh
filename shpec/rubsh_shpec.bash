@@ -33,7 +33,7 @@ describe Class
       assert equal '([0]="ancestors" [1]="class" [2]="methods")' "$__"
     end
 
-    it "only lists methods define on it when given false"
+    it "only lists methods defined on it when given false"
       Class methods false
       assert equal '()' "$__"
     end
@@ -66,7 +66,7 @@ describe Object
       assert equal '([0]="ancestors" [1]="class" [2]="methods")' "$__"
     end
 
-    it "only lists methods define on it when given false"
+    it "only lists methods defined on it when given false"
       Object methods false
       assert equal '()' "$__"
     end
