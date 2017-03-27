@@ -27,6 +27,18 @@ describe Class
     end
   end
 
+  describe instance_methods
+    # it "lists an array string of instance methods"
+    #   Object instance_methods
+    #   assert equal '([0]="ancestors" [1]="class" [2]="methods")' "$__"
+    # end
+
+    it "only lists methods defined on it when given false"
+      Class instance_methods false
+      assert equal '([0]="ancestors" [1]="instance_methods")' "$__"
+    end
+  end
+
   describe methods
     it "lists an array string of methods"
       Class methods
@@ -59,6 +71,13 @@ describe Object
       assert equal Class "$__"
     end
   end
+
+  # describe instance_methods
+  #   it "only lists methods defined on it when given false"
+  #     Object instance_methods false
+  #     assert equal '([0]="class" [1]="methods")' "$__"
+  #   end
+  # end
 
   describe methods
     it "lists an array string of methods"
