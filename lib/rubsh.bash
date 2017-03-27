@@ -36,9 +36,9 @@ defs __method_bodyh[Class.methods] <<'end'
   local show_inherited=${2:-true}
 
   case $show_inherited in
-    'false' ) __='()'                               ;;
-    'true'  ) __='([0]="ancestors" [1]="methods")'  ;;
-    *       ) return 1                              ;;
+    'false' ) __='()'                                           ;;
+    'true'  ) __='([0]="ancestors" [1]="class" [2]="methods")'  ;;
+    *       ) return 1                                          ;;
   esac
 end
 
