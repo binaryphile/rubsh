@@ -6,8 +6,9 @@ unset   -v  __classh __instance_methodsh __method_bodyh __
 declare -Ag __classh __instance_methodsh __method_bodyh
 __=''
 
-__instance_methodsh[ancestors]=' Class '
-__instance_methodsh[instance_methods]=' Class '
+__instance_methodsh[Class]=' ancestors instance_methods '
+__instance_method_classesh[ancestors]=' Class '
+__instance_method_classesh[instance_methods]=' Class '
 
 defs () { IFS=$'\n' read -rd '' "$1" ||: ;}
 
@@ -18,12 +19,16 @@ end
 defs __method_bodyh[Class.instance_methods] <<'end'
   local cls=$1
   local show_inherited=${2:-true}
+  local array
 
   case $show_inherited in
-    'false' ) __='([0]="ancestors" [1]="instance_methods")'     ;;
+    'false' ) array=( ${__instance_methodsh[$cls]} )            ;;
     'true'  ) __='([0]="ancestors" [1]="class" [2]="methods")'  ;;
     *       ) return 1                                          ;;
   esac
+  __=$(declare -p array)
+  __=${__#*=}
+  __=${__:1:-1}
 end
 
 defs __method_bodyh[Class.methods] <<'end'
