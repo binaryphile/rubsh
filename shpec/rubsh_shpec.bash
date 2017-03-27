@@ -40,4 +40,11 @@ describe Class
       assert equal '([0]="Object")' "$__"
     end
   end
+
+  describe methods
+    it "lists an array string of methods"
+      Class methods
+      assert equal '([0]="ancestors" [1]="methods")' "$__"
+    end
+  end
 end
