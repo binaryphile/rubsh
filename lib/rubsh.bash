@@ -36,7 +36,7 @@ __dispatch () {
   local self=${FUNCNAME[1]}
   local statement
 
-  printf -v statement '__ () { %s ;}; __ "$self" "$@"' "${__method_bodyh[$self.$method]}"
+  printf -v statement 'function __ { %s ;}; __ "$self" "$@"' "${__method_bodyh[$self.$method]}"
   eval "$statement"
 }
 
