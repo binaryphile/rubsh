@@ -23,7 +23,7 @@ describe Object
   describe ancestors
     it "lists an array string of ancestor classes"
       Object ancestors
-      assert equal '' "$__"
+      assert equal '([0]="Object")' "$__"
     end
   end
 end
@@ -37,7 +37,7 @@ describe Class
   describe ancestors
     it "lists an array string of ancestor classes"
       Class ancestors
-      assert equal '([0]="Object")' "$__"
+      assert equal '([0]="Class" [1]="Object")' "$__"
     end
   end
 

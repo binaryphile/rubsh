@@ -13,14 +13,14 @@ __methodsh[ancestors]=' Class '
 __methodsh[methods]=' Class '
 
 defs __method_bodyh[Class.ancestors] <<'end'
-  __='([0]="Object")'
+  __='([0]="Class" [1]="Object")'
 end
 
 defs __method_bodyh[Class.methods] <<'end'
   __='([0]="ancestors" [1]="methods")'
 end
 
-Object () { :;}
+Object () { __='([0]="Object")' ;}
 
 Class () {
   local method=$1
