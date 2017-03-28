@@ -78,7 +78,7 @@ class Class , Object; {
           instance_methods+=( ${__methodsh[$class]} )
         done
         ;;
-      *       ) return 1                                          ;;
+      * ) return 1;;
     esac
     __ary_to_str instance_methods
   end
