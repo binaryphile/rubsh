@@ -90,6 +90,8 @@ class Class , Object; {
     eval "$statement"
     __classh[$self]=$class
   end
+
+  def superclass '__=${__superh[$1]}'
 }
 
 __ary_to_str () {

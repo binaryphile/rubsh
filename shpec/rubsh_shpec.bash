@@ -35,7 +35,7 @@ describe Object
   describe methods
     it "lists an array string of Object methods"
       Object methods
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="class" [4]="methods")' "$__"
+      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass" [4]="class" [5]="methods")' "$__"
     end
 
     it "only lists Object methods defined on it when given false"
@@ -45,7 +45,7 @@ describe Object
 
     it "lists an array string of Class methods"
       Class methods
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="class" [4]="methods")' "$__"
+      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass" [4]="class" [5]="methods")' "$__"
     end
 
     it "only lists Class methods defined on it when given false"
@@ -76,12 +76,12 @@ describe Class
   describe instance_methods
     it "lists an array string of Class instance methods"
       Class instance_methods
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="class" [4]="methods")' "$__"
+      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass" [4]="class" [5]="methods")' "$__"
     end
 
     it "only lists Class methods defined on it when given false"
       Class instance_methods false
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new")' "$__"
+      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass")' "$__"
     end
 
     it "lists an array string of Object instance methods"
@@ -117,6 +117,13 @@ describe Class
       Class instance_methods
       assert equal "$methods" "$__"
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+  end
+
+  describe superclass
+    it "gives the superclass of Class as Object"
+      Class superclass
+      assert equal Object "$__"
     end
   end
 end
