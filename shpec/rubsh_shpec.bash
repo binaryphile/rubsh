@@ -102,5 +102,12 @@ describe Class
       assert equal 0 $?
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
+
+    it "gives it the class of the receiver"; (
+      Class new myclass
+      myclass class
+      assert equal Class $__
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
   end
 end
