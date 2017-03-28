@@ -59,9 +59,7 @@ class Object; {
   end
 
   def to_s <<'  end'
-    local self=$1
-
-    __=$(declare -p "$self" 2>/dev/null) || return
+    __=$(declare -p "$1" 2>/dev/null) || return
     __=${__#*=}
   end
 }
@@ -109,7 +107,7 @@ class Class , Object; {
   def superclass <<'  end'
     local class=$1
 
-    [[ " ${!__superh[*]} " == *" $class " ]] && { __=${__superh[$class]}; return ;}
+    [[ " ${!__superh[*]} " == *" $class "* ]] && { __=${__superh[$class]}; return ;}
     __=''
   end
 }
@@ -117,6 +115,7 @@ class Class , Object; {
 class Array; {
   def append <<'  end'
     local -n __vals=$1; shift
+    local __results=()
     local __statement
 
     case $# in
@@ -125,13 +124,16 @@ class Array; {
         printf -v __statement '__vals+=( "${%s[@]}" )' "$1"
         eval "$__statement"
         ;;
-      * ) "$@"; __vals+=( "${__[@]}" );;
+      * )
+        "$@"
+        eval __results="$__"
+        __vals+=( "${__results[@]}" );;
     esac
   end
 
   def join <<'  end'
-    local -n __vals=$1; shift
-    local IFS=$1
+    local -n __vals=$1
+    local IFS=${1:- }
 
     __=${__vals[*]}
   end
@@ -163,7 +165,7 @@ class Hash; {
 
 class String
 
-puts () { ( IFS=; printf '%s\n' "$*" ) }
+puts () { local IFS=; printf '%s\n' "$*" ;}
 
 class File , Path; {
   def each <<'  end'
@@ -207,13 +209,13 @@ class Path , String; {
 }
 
 __ary_to_str () {
-  __=$(declare -p "$1")
+  __=$(declare -p "$1" 2>/dev/null) || return
   __=${__#*=}
   __=${__:1:-1}
 }
 
 __dispatch () {
-  local method=$1; shift
+  local method=${1:-to_s}; shift
   local receiver=${FUNCNAME[1]}
   local class=${__classh[$receiver]}
   local statement
