@@ -14,6 +14,51 @@ eval "source $shpec_cwd/../lib/rubsh.bash"
 
 is_function () { declare -f "$1" >/dev/null ;}
 
+describe Object
+  it "is a function"
+    is_function Object
+    assert equal 0 $?
+  end
+
+  describe ancestors
+    it "lists an array string of ancestor classes"
+      Object ancestors
+      assert equal '([0]="Object")' "$__"
+    end
+  end
+
+  describe class
+    it "is class Class"
+      Object class
+      assert equal Class "$__"
+    end
+  end
+
+  describe instance_methods
+    it "lists an array string of instance methods"
+      Object instance_methods
+      assert equal '([0]="class" [1]="methods")' "$__"
+    end
+
+    it "only lists methods defined on it when given false"
+      Object instance_methods false
+      assert equal '([0]="class" [1]="methods")' "$__"
+    end
+  end
+
+  describe methods
+    it "lists an array string of methods"
+      Object methods
+      assert equal '([0]="ancestors" [1]="instance_methods" [2]="class" [3]="methods")' "$__"
+    end
+
+    it "only lists methods defined on it when given false"
+      Object methods false
+      assert equal '()' "$__"
+    end
+  end
+end
+
 describe Class
   it "is a function"
     is_function Class
@@ -47,46 +92,6 @@ describe Class
 
     it "only lists methods defined on it when given false"
       Class methods false
-      assert equal '()' "$__"
-    end
-  end
-end
-
-describe Object
-  it "is a function"
-    is_function Object
-    assert equal 0 $?
-  end
-
-  describe ancestors
-    it "lists an array string of ancestor classes"
-      Object ancestors
-      assert equal '([0]="Object")' "$__"
-    end
-  end
-
-  describe class
-    it "is class Class"
-      Object class
-      assert equal Class "$__"
-    end
-  end
-
-  # describe instance_methods
-  #   it "only lists methods defined on it when given false"
-  #     Object instance_methods false
-  #     assert equal '([0]="class" [1]="methods")' "$__"
-  #   end
-  # end
-
-  describe methods
-    it "lists an array string of methods"
-      Object methods
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="class" [3]="methods")' "$__"
-    end
-
-    it "only lists methods defined on it when given false"
-      Object methods false
       assert equal '()' "$__"
     end
   end
