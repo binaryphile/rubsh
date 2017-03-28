@@ -7,16 +7,23 @@ declare -Ag __classh __method_classesh __methodsh __method_bodyh __superh
 
 class () {
   __class=$1 # global
-  local super=${3:-Object}
+  local super=${3-Object}
   local statement
 
-  [[ -z ${2:-} || $2 == ','                 ]] || return
-  [[ " ${!__superh[*]} " == *" $super "*    ]] || return
-  [[ " ${!__superh[*]} " != *" $__class "*  ]] || return
+  [[ -z ${2:-} || $2 == ',' ]] || return
+  case $super in
+    '' ) ;;
+    *  )
+      declare -f "$super" >/dev/null || return
+      [[ " ${!__superh[*]} " == *" $__class "* ]] && {
+        [[ ${__superh[$class]} == 'Object' ]] || return
+      }
+      __superh[$__class]=$super
+      ;;
+  esac
   printf -v statement 'function %s { __dispatch "$@" ;}' "$__class"
   eval "$statement"
   __classh[$__class]=Class
-  __superh[$__class]=$super
 }
 
 def () {
@@ -28,9 +35,7 @@ def () {
   __method_bodyh[$__class.$method]=$body
 }
 
-class Object; {
-  unset -v __superh[Object]
-
+class Object , ''; {
   def class '__=${__classh[$1]}'
 
   def methods <<'  end'
