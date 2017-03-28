@@ -9,7 +9,6 @@ initialize_shpec_helper
 stop_on_error=true
 stop_on_error
 
-shpec_test=true
 eval "source $shpec_cwd/../lib/rubsh.bash"
 
 is_function () { declare -f "$1" >/dev/null ;}
@@ -98,22 +97,22 @@ describe Class
   describe new
     describe Class
       it "creates a function"; (
-        Class new myclass
-        is_function myclass
+        Class new Myclass
+        is_function Myclass
         assert equal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "is of the class of the receiver"; (
-        Class new myclass
-        myclass class
+        Class new Myclass
+        Myclass class
         assert equal Class "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the instance methods of the class"; (
-        Class new myclass
-        myclass methods
+        Class new Myclass
+        Myclass methods
         methods=$__
         Class instance_methods
         assert equal "$methods" "$__"
