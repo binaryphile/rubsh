@@ -35,7 +35,7 @@ describe Object
   describe methods
     it "lists an array string of Object methods"
       Object methods
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="class" [3]="methods")' "$__"
+      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="class" [4]="methods")' "$__"
     end
 
     it "only lists Object methods defined on it when given false"
@@ -45,7 +45,7 @@ describe Object
 
     it "lists an array string of Class methods"
       Class methods
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="class" [3]="methods")' "$__"
+      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="class" [4]="methods")' "$__"
     end
 
     it "only lists Class methods defined on it when given false"
@@ -76,12 +76,12 @@ describe Class
   describe instance_methods
     it "lists an array string of Class instance methods"
       Class instance_methods
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="class" [3]="methods")' "$__"
+      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="class" [4]="methods")' "$__"
     end
 
     it "only lists Class methods defined on it when given false"
       Class instance_methods false
-      assert equal '([0]="ancestors" [1]="instance_methods")' "$__"
+      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new")' "$__"
     end
 
     it "lists an array string of Object instance methods"
@@ -92,6 +92,15 @@ describe Class
     it "only lists Object methods defined on it when given false"
       Object instance_methods false
       assert equal '([0]="class" [1]="methods")' "$__"
+    end
+  end
+
+  describe new
+    it "creates a function"; (
+      Class new myclass
+      is_function myclass
+      assert equal 0 $?
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
   end
 end

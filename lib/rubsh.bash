@@ -82,6 +82,15 @@ class Class , Object; {
     esac
     __ary_to_str instance_methods
   end
+
+  def new <<'  end'
+    local class=$1
+    local self=$2
+    local statement
+
+    printf -v statement 'function %s { __dispatch "$@" ;}' "$self"
+    __classh[$self]=$class
+  end
 }
 
 __ary_to_str () {
