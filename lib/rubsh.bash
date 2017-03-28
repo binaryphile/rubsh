@@ -223,7 +223,7 @@ class Path , String; {
       __pathname=$(dirname "$__pathname")
     }
     __pathname=$(cd "$__pathname" && pwd) || return
-    __=$pathname${filename:+/}${filename:-}
+    __=$__pathname${__filename:+/}${__filename:-}
   end
 }
 
