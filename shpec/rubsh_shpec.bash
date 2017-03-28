@@ -96,27 +96,79 @@ describe Class
   end
 
   describe new
-    it "creates a function"; (
-      Class new myclass
-      is_function myclass
-      assert equal 0 $?
-      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    describe Class
+      it "creates a function"; (
+        Class new myclass
+        is_function myclass
+        assert equal 0 $?
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "is of the class of the receiver"; (
+        Class new myclass
+        myclass class
+        assert equal Class "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "has the instance methods of the class"; (
+        Class new myclass
+        myclass methods
+        methods=$__
+        Class instance_methods
+        assert equal "$methods" "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
     end
 
-    it "is of the class of the receiver"; (
-      Class new myclass
-      myclass class
-      assert equal Class "$__"
-      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    describe Object
+      it "creates a function"; (
+        Object new myobject
+        is_function myobject
+        assert equal 0 $?
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "is of the class of the receiver"; (
+        Object new myobject
+        myobject class
+        assert equal Object "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "has the instance methods of the class"; (
+        Object new myobject
+        myobject methods
+        methods=$__
+        Object instance_methods
+        assert equal "$methods" "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
     end
 
-    it "has the instance methods of the class"; (
-      Class new myclass
-      myclass methods
-      methods=$__
-      Class instance_methods
-      assert equal "$methods" "$__"
-      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    describe Array
+      it "creates a function"; (
+        Array new myarray
+        is_function myarray
+        assert equal 0 $?
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "is of the class of the receiver"; (
+        Array new myarray
+        myarray class
+        assert equal Array "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "has the instance methods of the class"; (
+        Array new myarray
+        myarray methods
+        methods=$__
+        Array instance_methods
+        assert equal "$methods" "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
     end
   end
 

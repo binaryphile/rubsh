@@ -7,13 +7,12 @@ declare -Ag __classh __method_classesh __methodsh __method_bodyh __superh
 
 class () {
   __class=$1 # global
-  local super=${3:-}
+  local super=${3:-Object}
   local statement
 
   printf -v statement 'function %s { __dispatch "$@" ;}' "$__class"
   eval "$statement"
   __classh[$__class]=Class
-  [[ -z $super ]] && return
   [[ " ${!__superh[*]} " != *" $__class "* ]] || return
   __superh[$__class]=$super
 }
