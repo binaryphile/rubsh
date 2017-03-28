@@ -91,7 +91,12 @@ class Class , Object; {
     __classh[$self]=$class
   end
 
-  def superclass '__=${__superh[$1]}'
+  def superclass <<'  end'
+    local class=$1
+
+    [[ " ${!__superh[*]} " != *" $class " ]] && { __=''; return ;}
+    __=${__superh[$class]}
+  end
 }
 
 __ary_to_str () {

@@ -125,5 +125,10 @@ describe Class
       Class superclass
       assert equal Object "$__"
     end
+
+    it "gives the superclass of Object as empty string"
+      Object superclass
+      assert equal '' "$__"
+    end
   end
 end
