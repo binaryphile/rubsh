@@ -78,10 +78,11 @@ __dispatch () {
   local class=${__classh[$receiver]}
   local statement
 
-  while [[ ${__method_classesh[$method]} != *" $class "* && " ${!__superh[*]} " == *" $class "* ]]; do
-    [[ -n ${__superh[$class]} ]] || return
+  while [[ ${__method_classesh[$method]} != *" $class "* ]]; do
+    [[ " ${!__superh[*]} " == *" $class "* && -n ${__superh[$class]} ]] || return
     class=${__superh[$class]}
   done
+  [[ " ${!__method_bodyh[*]} " == *" $class.$method "* && -n ${__method_bodyh[$class.$method]} ]] || return
   printf -v statement 'function __ { %s ;}; __ "$receiver" "$@"' "${__method_bodyh[$class.$method]}"
   eval "$statement"
 }
