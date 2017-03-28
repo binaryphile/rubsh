@@ -56,9 +56,7 @@ defs __method_bodyh[Class.instance_methods] <<'end'
     'true'  ) __='([0]="ancestors" [1]="class" [2]="methods")'  ;;
     *       ) return 1                                          ;;
   esac
-  __=$(declare -p array)
-  __=${__#*=}
-  __=${__:1:-1}
+  array.to_s array
 end
 
 defs __method_bodyh[Object.class] <<'end'
