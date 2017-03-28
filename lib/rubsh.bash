@@ -94,8 +94,8 @@ class Class , Object; {
   def superclass <<'  end'
     local class=$1
 
-    [[ " ${!__superh[*]} " != *" $class " ]] && { __=''; return ;}
-    __=${__superh[$class]}
+    [[ " ${!__superh[*]} " == *" $class " ]] && { __=${__superh[$class]}; return ;}
+    __=''
   end
 }
 
