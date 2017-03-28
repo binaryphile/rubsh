@@ -64,7 +64,7 @@ class Object; {
   end
 }
 
-class Class , Object; {
+class Class; {
   def ancestors <<'  end'
     local class=$1
     local ancestors=( $class )
@@ -137,6 +137,12 @@ class Array; {
 
     __=${__vals[*]}
   end
+
+  def to_s <<'  end'
+    __=$(declare -p "$1" 2>/dev/null) || return
+    __=${__#*=}
+    __=${__:1:-1}
+  end
 }
 
 class Hash; {
@@ -161,11 +167,17 @@ class Hash; {
 
     __ary_to_str __retvals
   end
+
+  def to_s <<'  end'
+    __=$(declare -p "$1" 2>/dev/null) || return
+    __=${__#*=}
+    __=${__:1:-1}
+  end
 }
 
 class String
 
-puts () { local IFS=; printf '%s\n' "$*" ;}
+puts () { local IFS=''; printf '%s\n' "$*" ;}
 
 class File , Path; {
   def each <<'  end'
