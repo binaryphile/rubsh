@@ -6,16 +6,16 @@ unset   -v  __classh __method_classesh __methodsh __method_bodyh __superh __ __c
 declare -Ag __classh __method_classesh __methodsh __method_bodyh __superh
 
 class () {
-  # TODO verify super exists as class
   __class=$1 # global
   local super=${3:-Object}
   local statement
 
+  [[ -z ${2:-} || $2 == ','                 ]] || return
+  [[ " ${!__superh[*]} " == *" $super "*    ]] || return
+  [[ " ${!__superh[*]} " != *" $__class "*  ]] || return
   printf -v statement 'function %s { __dispatch "$@" ;}' "$__class"
   eval "$statement"
   __classh[$__class]=Class
-  [[ " ${!__superh[*]} " != *" $__class "* ]] || return
-  [[ $__class == 'Object' ]] && return
   __superh[$__class]=$super
 }
 
@@ -29,6 +29,8 @@ def () {
 }
 
 class Object; {
+  unset -v __superh[Object]
+
   def class '__=${__classh[$1]}'
 
   def methods <<'  end'
@@ -100,8 +102,10 @@ class Class; {
     local self=$2
     local statement
 
+    [[ " ${!__superh[*]} " != *" $self "* ]] || return
     printf -v statement 'function %s { __dispatch "$@" ;}' "$self"
     eval "$statement"
+    [[ $class == 'Class' ]] && __superh[$self]=Object
     __classh[$self]=$class
   end
 
