@@ -35,7 +35,7 @@ describe Object
   describe methods
     it "lists an array string of Object methods"
       Object methods
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass" [4]="class" [5]="methods")' "$__"
+      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass" [4]="class" [5]="methods" [6]="set" [7]="to_s")' "$__"
     end
 
     it "only lists Object methods defined on it when given false"
@@ -45,7 +45,7 @@ describe Object
 
     it "lists an array string of Class methods"
       Class methods
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass" [4]="class" [5]="methods")' "$__"
+      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass" [4]="class" [5]="methods" [6]="set" [7]="to_s")' "$__"
     end
 
     it "only lists Class methods defined on it when given false"
@@ -76,7 +76,7 @@ describe Class
   describe instance_methods
     it "lists an array string of Class instance methods"
       Class instance_methods
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass" [4]="class" [5]="methods")' "$__"
+      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass" [4]="class" [5]="methods" [6]="set" [7]="to_s")' "$__"
     end
 
     it "only lists Class methods defined on it when given false"
@@ -86,12 +86,12 @@ describe Class
 
     it "lists an array string of Object instance methods"
       Object instance_methods
-      assert equal '([0]="class" [1]="methods")' "$__"
+      assert equal '([0]="class" [1]="methods" [2]="set" [3]="to_s")' "$__"
     end
 
     it "only lists Object methods defined on it when given false"
       Object instance_methods false
-      assert equal '([0]="class" [1]="methods")' "$__"
+      assert equal '([0]="class" [1]="methods" [2]="set" [3]="to_s")' "$__"
     end
   end
 

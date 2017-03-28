@@ -49,6 +49,21 @@ class Object; {
     esac
     __ary_to_str methods
   end
+
+  def set <<'  end'
+    local -n __self=$1; shift
+
+    __=''
+    "$@"
+    eval __self="$__"
+  end
+
+  def to_s <<'  end'
+    local self=$1
+
+    __=$(declare -p "$self" 2>/dev/null) || return
+    __=${__#*=}
+  end
 }
 
 class Class , Object; {
@@ -114,20 +129,6 @@ class Array; {
     esac
   end
 
-  def set <<'  end'
-    local -n __vals=$1; shift
-    local __statement
-
-    case $# in
-      '0' ) return;;
-      '1' )
-        printf -v __statement '__vals=( "${%s[@]}" )' "$1"
-        eval "$__statement"
-        ;;
-      * ) "$@"; __vals=( "${__[@]}" );;
-    esac
-  end
-
   def join <<'  end'
     local -n __vals=$1; shift
     local IFS=$1
@@ -137,17 +138,6 @@ class Array; {
 }
 
 class Hash; {
-  def set <<'  end'
-    local -n __valh=$1; shift
-
-    case $# in
-      '0' ) return          ;;
-      '1' ) Hash to_s "$1"  ;;
-      *   ) "$@"            ;;
-    esac
-    eval __valh="$__"
-  end
-
   def map <<'  end'
     local -n __valh=$1
     local __keyparm=$3
@@ -159,7 +149,7 @@ class Hash; {
     local __retvals=()
     local __statement
 
-    printf -v __statement '__retvals+=( "$(echo "%s")" )' "$__lambda"
+    printf -v __statement '__retvals+=( "$(puts "%s")" )' "$__lambda"
 
     for __key in "${!__valh[@]}"; do
       printf -v "$__keyparm" '%s' "$__key"
@@ -169,21 +159,9 @@ class Hash; {
 
     __ary_to_str __retvals
   end
-
-  def to_s '__ary_to_str "$1"'
 }
 
-class String; {
-  def set <<'  end'
-    local __val=$1; shift
-
-    case $# in
-      '0' ) return                              ;;
-      '1' ) printf -v "$__val" '%s' "${!1}"     ;;
-      *   ) "$@"; printf -v "$__val" '%s' "$__" ;;
-    esac
-  end
-}
+class String
 
 puts () { ( IFS=; printf '%s\n' "$*" ) }
 
@@ -208,7 +186,7 @@ class File , Path; {
       '1' ) __string=${!1}      ;;
       *   ) "$@"; __string=$__  ;;
     esac
-    echo "$__string" >"$__filename"
+    puts "$__string" >"$__filename"
   end
 }
 
@@ -222,7 +200,8 @@ class Path , String; {
       __filename=$(basename "$__pathname")
       __pathname=$(dirname "$__pathname")
     }
-    __pathname=$(cd "$__pathname" && pwd) || return
+    [[ -d $__pathname ]] || return
+    __pathname=$(cd "$__pathname"; pwd)
     __=$__pathname${__filename:+/}${__filename:-}
   end
 }
