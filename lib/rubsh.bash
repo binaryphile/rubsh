@@ -6,6 +6,7 @@ unset   -v  __classh __method_classesh __methodsh __method_bodyh __superh __ __c
 declare -Ag __classh __method_classesh __methodsh __method_bodyh __superh
 
 class () {
+  # TODO verify super exists as class
   __class=$1 # global
   local super=${3:-Object}
   local statement
@@ -179,6 +180,22 @@ class String
 
 puts () { local IFS=''; printf '%s\n' "$*" ;}
 
+class Path , String; {
+  def expand_path <<'  end'
+    local __pathname=${!1}
+    local __filename
+
+    unset -v CDPATH
+    [[ -e $__pathname ]] && {
+      __filename=$(basename "$__pathname")
+      __pathname=$(dirname "$__pathname")
+    }
+    [[ -d $__pathname ]] || return
+    __pathname=$(cd "$__pathname"; pwd)
+    __=$__pathname${__filename:+/}${__filename:-}
+  end
+}
+
 class File , Path; {
   def each <<'  end'
     local __filename=${!1}
@@ -201,22 +218,6 @@ class File , Path; {
       *   ) "$@"; __string=$__  ;;
     esac
     puts "$__string" >"$__filename"
-  end
-}
-
-class Path , String; {
-  def expand_path <<'  end'
-    local __pathname=${!1}
-    local __filename
-
-    unset -v CDPATH
-    [[ -e $__pathname ]] && {
-      __filename=$(basename "$__pathname")
-      __pathname=$(dirname "$__pathname")
-    }
-    [[ -d $__pathname ]] || return
-    __pathname=$(cd "$__pathname"; pwd)
-    __=$__pathname${__filename:+/}${__filename:-}
   end
 }
 
