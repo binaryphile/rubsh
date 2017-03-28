@@ -20,40 +20,36 @@ describe Object
     assert equal 0 $?
   end
 
-  describe ancestors
-    it "lists an array string of ancestor classes"
-      Object ancestors
-      assert equal '([0]="Object")' "$__"
-    end
-  end
-
   describe class
-    it "is class Class"
+    it "Object is class Class"
       Object class
+      assert equal Class "$__"
+    end
+
+    it "Class is class Class"
+      Class class
       assert equal Class "$__"
     end
   end
 
-  describe instance_methods
-    it "lists an array string of instance methods"
-      Object instance_methods
-      assert equal '([0]="class" [1]="methods")' "$__"
-    end
-
-    it "only lists methods defined on it when given false"
-      Object instance_methods false
-      assert equal '([0]="class" [1]="methods")' "$__"
-    end
-  end
-
   describe methods
-    it "lists an array string of methods"
+    it "lists an array string of Object methods"
       Object methods
       assert equal '([0]="ancestors" [1]="instance_methods" [2]="class" [3]="methods")' "$__"
     end
 
-    it "only lists methods defined on it when given false"
+    it "only lists Object methods defined on it when given false"
       Object methods false
+      assert equal '()' "$__"
+    end
+
+    it "lists an array string of Class methods"
+      Class methods
+      assert equal '([0]="ancestors" [1]="instance_methods" [2]="class" [3]="methods")' "$__"
+    end
+
+    it "only lists Class methods defined on it when given false"
+      Class methods false
       assert equal '()' "$__"
     end
   end
@@ -66,33 +62,36 @@ describe Class
   end
 
   describe ancestors
-    it "lists an array string of ancestor classes"
+    it "lists an array string of Class ancestor classes"
       Class ancestors
       assert equal '([0]="Class" [1]="Object")' "$__"
+    end
+
+    it "lists an array string of Object ancestor classes"
+      Object ancestors
+      assert equal '([0]="Object")' "$__"
     end
   end
 
   describe instance_methods
-    it "lists an array string of instance methods"
+    it "lists an array string of Class instance methods"
       Class instance_methods
       assert equal '([0]="ancestors" [1]="instance_methods" [2]="class" [3]="methods")' "$__"
     end
 
-    it "only lists methods defined on it when given false"
+    it "only lists Class methods defined on it when given false"
       Class instance_methods false
       assert equal '([0]="ancestors" [1]="instance_methods")' "$__"
     end
-  end
 
-  describe methods
-    it "lists an array string of methods"
-      Class methods
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="class" [3]="methods")' "$__"
+    it "lists an array string of Object instance methods"
+      Object instance_methods
+      assert equal '([0]="class" [1]="methods")' "$__"
     end
 
-    it "only lists methods defined on it when given false"
-      Class methods false
-      assert equal '()' "$__"
+    it "only lists Object methods defined on it when given false"
+      Object instance_methods false
+      assert equal '([0]="class" [1]="methods")' "$__"
     end
   end
 end
