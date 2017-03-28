@@ -72,7 +72,12 @@ class Class , Object; {
 
     case $inherited in
       'false' ) ;;
-      'true'  ) __='([0]="ancestors" [1]="class" [2]="methods")'  ;;
+      'true'  )
+        while [[ " ${!__superh[*]} " == *" $class "* && -n ${__superh[$class]} ]]; do
+          class=${__superh[$class]}
+          instance_methods+=( ${__methodsh[$class]} )
+        done
+        ;;
       *       ) return 1                                          ;;
     esac
     __ary_to_str instance_methods
