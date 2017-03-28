@@ -99,6 +99,134 @@ class Class , Object; {
   end
 }
 
+class Array; {
+  def append <<'  end'
+    local -n __vals=$1; shift
+    local __statement
+
+    case $# in
+      '0' ) return;;
+      '1' )
+        printf -v __statement '__vals+=( "${%s[@]}" )' "$1"
+        eval "$__statement"
+        ;;
+      * ) "$@"; __vals+=( "${__[@]}" );;
+    esac
+  end
+
+  def set <<'  end'
+    local -n __vals=$1; shift
+    local __statement
+
+    case $# in
+      '0' ) return;;
+      '1' )
+        printf -v __statement '__vals=( "${%s[@]}" )' "$1"
+        eval "$__statement"
+        ;;
+      * ) "$@"; __vals=( "${__[@]}" );;
+    esac
+  end
+
+  def join <<'  end'
+    local -n __vals=$1; shift
+    local IFS=$1
+
+    __=${__vals[*]}
+  end
+}
+
+class Hash; {
+  def set <<'  end'
+    local -n __valh=$1; shift
+
+    case $# in
+      '0' ) return          ;;
+      '1' ) Hash to_s "$1"  ;;
+      *   ) "$@"            ;;
+    esac
+    eval __valh="$__"
+  end
+
+  def map <<'  end'
+    local -n __valh=$1
+    local __keyparm=$3
+    local __valparm=$4
+    local __lambda=$5
+    local "$__keyparm"
+    local "$__valparm"
+    local __key
+    local __retvals=()
+    local __statement
+
+    printf -v __statement '__retvals+=( "$(echo "%s")" )' "$__lambda"
+
+    for __key in "${!__valh[@]}"; do
+      printf -v "$__keyparm" '%s' "$__key"
+      printf -v "$__valparm" '%s' "${__valh[$__key]}"
+      eval "$__statement"
+    done
+
+    __ary_to_str __retvals
+  end
+
+  def to_s '__ary_to_str "$1"'
+}
+
+class String; {
+  def set <<'  end'
+    local __val=$1; shift
+
+    case $# in
+      '0' ) return                              ;;
+      '1' ) printf -v "$__val" '%s' "${!1}"     ;;
+      *   ) "$@"; printf -v "$__val" '%s' "$__" ;;
+    esac
+  end
+}
+
+puts () { ( IFS=; printf '%s\n' "$*" ) }
+
+class File , Path; {
+  def each <<'  end'
+    local __filename=${!1}
+    local __lineparm=$3
+    local __lambda=${4:-$(</dev/stdin)}
+    local "$__lineparm"
+
+    while read -r "$__lineparm"; do
+      eval "$__lambda"
+    done <"$__filename" ||:
+  end
+
+  def write <<'  end'
+    local __filename=${!1}; shift
+    local __string
+
+    case $# in
+      '0' ) return              ;;
+      '1' ) __string=${!1}      ;;
+      *   ) "$@"; __string=$__  ;;
+    esac
+    echo "$__string" >"$__filename"
+  end
+}
+
+class Path , String; {
+  def expand_path <<'  end'
+    local __pathname=${!1}
+    local __filename
+
+    unset -v CDPATH
+    [[ -e $__pathname ]] && {
+      __filename=$(basename "$__pathname")
+      __pathname=$(dirname "$__pathname")
+    }
+    __pathname=$(cd "$__pathname" && pwd) || return
+    __=$pathname${filename:+/}${filename:-}
+  end
+}
+
 __ary_to_str () {
   __=$(declare -p "$1")
   __=${__#*=}
