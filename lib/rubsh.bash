@@ -28,9 +28,7 @@ def () {
 }
 
 class Object; {
-  def class <<'  end'
-    __=${__classh[$1]}
-  end
+  def class '__=${__classh[$1]}'
 
   def methods <<'  end'
     local self=$1
