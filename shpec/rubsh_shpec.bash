@@ -21,34 +21,34 @@ describe Object
 
   describe class
     it "Object is class Class"
-      Object class
+      Object .class
       assert equal Class "$__"
     end
 
     it "Class is class Class"
-      Class class
+      Class .class
       assert equal Class "$__"
     end
   end
 
   describe methods
     it "lists an array string of Object methods"
-      Object methods
+      Object .methods
       assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass" [4]="class" [5]="methods" [6]="set" [7]="to_s")' "$__"
     end
 
     it "only lists Object methods defined on it when given false"
-      Object methods false
+      Object .methods false
       assert equal '()' "$__"
     end
 
     it "lists an array string of Class methods"
-      Class methods
+      Class .methods
       assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass" [4]="class" [5]="methods" [6]="set" [7]="to_s")' "$__"
     end
 
     it "only lists Class methods defined on it when given false"
-      Class methods false
+      Class .methods false
       assert equal '()' "$__"
     end
   end
@@ -62,34 +62,34 @@ describe Class
 
   describe ancestors
     it "lists an array string of Class ancestor classes"
-      Class ancestors
+      Class .ancestors
       assert equal '([0]="Class" [1]="Object")' "$__"
     end
 
     it "lists an array string of Object ancestor classes"
-      Object ancestors
+      Object .ancestors
       assert equal '([0]="Object")' "$__"
     end
   end
 
   describe instance_methods
     it "lists an array string of Class instance methods"
-      Class instance_methods
+      Class .instance_methods
       assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass" [4]="class" [5]="methods" [6]="set" [7]="to_s")' "$__"
     end
 
     it "only lists Class methods defined on it when given false"
-      Class instance_methods false
+      Class .instance_methods false
       assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass")' "$__"
     end
 
     it "lists an array string of Object instance methods"
-      Object instance_methods
+      Object .instance_methods
       assert equal '([0]="class" [1]="methods" [2]="set" [3]="to_s")' "$__"
     end
 
     it "only lists Object methods defined on it when given false"
-      Object instance_methods false
+      Object .instance_methods false
       assert equal '([0]="class" [1]="methods" [2]="set" [3]="to_s")' "$__"
     end
   end
@@ -97,24 +97,24 @@ describe Class
   describe new
     describe Class
       it "creates a function"; (
-        Class new Myclass
+        Class .new Myclass
         is_function Myclass
         assert equal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "is of the class of the receiver"; (
-        Class new Myclass
-        Myclass class
+        Class .new Myclass
+        Myclass .class
         assert equal Class "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the instance methods of the class"; (
-        Class new Myclass
-        Myclass methods
+        Class .new Myclass
+        Myclass .methods
         methods=$__
-        Class instance_methods
+        Class .instance_methods
         assert equal "$methods" "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -122,24 +122,24 @@ describe Class
 
     describe Object
       it "creates a function"; (
-        Object new myobject
+        Object .new myobject
         is_function myobject
         assert equal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "is of the class of the receiver"; (
-        Object new myobject
-        myobject class
+        Object .new myobject
+        myobject .class
         assert equal Object "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the instance methods of the class"; (
-        Object new myobject
-        myobject methods
+        Object .new myobject
+        myobject .methods
         methods=$__
-        Object instance_methods
+        Object .instance_methods
         assert equal "$methods" "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -147,24 +147,24 @@ describe Class
 
     describe Array
       it "creates a function"; (
-        Array new myarray
+        Array .new myarray
         is_function myarray
         assert equal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "is of the class of the receiver"; (
-        Array new myarray
-        myarray class
+        Array .new myarray
+        myarray .class
         assert equal Array "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the instance methods of the class"; (
-        Array new myarray
-        myarray methods
+        Array .new myarray
+        myarray .methods
         methods=$__
-        Array instance_methods
+        Array .instance_methods
         assert equal "$methods" "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -173,12 +173,12 @@ describe Class
 
   describe superclass
     it "gives the superclass of Class as Object"
-      Class superclass
+      Class .superclass
       assert equal Object "$__"
     end
 
     it "gives the superclass of Object as empty string"
-      Object superclass
+      Object .superclass
       assert equal '' "$__"
     end
   end

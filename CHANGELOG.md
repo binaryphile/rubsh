@@ -11,6 +11,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 -   eliminated all existing work and started from scratch
 
+-   made methods start with .
+
 ### Added
 
 -   tests
