@@ -2,77 +2,79 @@
 [[ -n ${reload:-}                   ]] && { unset -v reload && echo reloaded || return ;}
 [[ -z ${_rubsh:-}                   ]] && readonly _rubsh=loaded
 
-unset   -v  __classh __method_classesh __methodsh __method_bodyh __superh __
+unset   -v  __classh __method_classesh __methodsh __method_bodyh __superh __ __class
 declare -Ag __classh __method_classesh __methodsh __method_bodyh __superh
-__=''
 
-__methodsh=(
-  [Class]=' ancestors instance_methods '
-  [Object]=' class methods '
-)
+class () {
+  __class=$1 # global
+  local super=${3:-}
+  local statement
 
-__superh[Class]=Object
-
-__method_classesh=(
-  [ancestors]=' Class '
-  [instance_methods]=' Class '
-  [class]=' Object '
-  [methods]=' Object '
-)
-
-for class in Object Class; do
-  __classh[$class]=Class
-  printf -v statement 'function %s { __dispatch "$@" ;}' "$class"
+  printf -v statement 'function %s { __dispatch "$@" ;}' "$__class"
   eval "$statement"
-done
-unset -v class statement
+  __classh[$__class]=Class
+  [[ -z $super ]] && return
+  [[ " ${!__superh[*]} " != *" $__class "* ]] || return
+  __superh[$__class]=$super
+}
 
-defs () { IFS=$'\n' read -rd '' "$1" ||: ;}
+def () {
+  local method=$1
+  local body=${2:-$(</dev/stdin)}
 
-array.to_s () {
+  __methodsh[$__class]+="$method "
+  __method_classesh[$method]+=" $__class "
+  __method_bodyh[$__class.$method]=$body
+}
+
+class Object; {
+  def class <<'  end'
+    __=${__classh[$1]}
+  end
+
+  def methods <<'  end'
+    local self=$1
+    local inherited=${2:-true}
+
+    case $inherited in
+      'false' ) __='()'                                                                 ;;
+      'true'  ) __='([0]="ancestors" [1]="class" [2]="instance_methods" [3]="methods")' ;;
+      *       ) return 1                                                                ;;
+    esac
+  end
+}
+
+class Class , Object; {
+  def ancestors <<'  end'
+    local class=$1
+    local ancestors=( $class )
+
+    while [[ " ${!__superh[*]} " == *" $class "* && -n ${__superh[$class]} ]]; do
+      class=${__superh[$class]}
+      ancestors+=( "$class" )
+    done
+    __ary_to_str ancestors
+  end
+
+  def instance_methods <<'  end'
+    local class=$1
+    local inherited=${2:-true}
+    local array
+
+    case $inherited in
+      'false' ) array=( ${__methodsh[$class]} )            ;;
+      'true'  ) __='([0]="ancestors" [1]="class" [2]="methods")'  ;;
+      *       ) return 1                                          ;;
+    esac
+    __ary_to_str array
+  end
+}
+
+__ary_to_str () {
   __=$(declare -p "$1")
   __=${__#*=}
   __=${__:1:-1}
 }
-
-defs __method_bodyh[Class.ancestors] <<'end'
-  local class=$1
-  local ancestors=( $class )
-
-  while [[ " ${!__superh[*]} " == *" $class "* && -n ${__superh[$class]} ]]; do
-    class=${__superh[$class]}
-    ancestors+=( "$class" )
-  done
-  array.to_s ancestors
-end
-
-defs __method_bodyh[Class.instance_methods] <<'end'
-  local class=$1
-  local inherited=${2:-true}
-  local array
-
-  case $inherited in
-    'false' ) array=( ${__methodsh[$class]} )            ;;
-    'true'  ) __='([0]="ancestors" [1]="class" [2]="methods")'  ;;
-    *       ) return 1                                          ;;
-  esac
-  array.to_s array
-end
-
-defs __method_bodyh[Object.class] <<'end'
-  __=${__classh[$1]}
-end
-
-defs __method_bodyh[Object.methods] <<'end'
-  local class=$1
-  local inherited=${2:-true}
-
-  case $inherited in
-    'false' ) __='()'                                                                 ;;
-    'true'  ) __='([0]="ancestors" [1]="class" [2]="instance_methods" [3]="methods")' ;;
-    *       ) return 1                                                                ;;
-  esac
-end
 
 __dispatch () {
   local method=$1; shift
@@ -88,5 +90,3 @@ __dispatch () {
   printf -v statement 'function __ { %s ;}; __ "$receiver" "$@"' "${__method_bodyh[$class.$method]}"
   eval "$statement"
 }
-
-unset -f defs
