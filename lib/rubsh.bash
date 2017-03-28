@@ -36,19 +36,20 @@ class Object; {
     local self=$1
     local inherited=${2:-true}
     local class=${__classh[$self]}
-    local array=( ${__methodsh[$class]} )
+    local methods=()
 
     case $inherited in
-      'false' ) __='()' ;;
+      'false' ) ;;
       'true'  )
+        methods=( ${__methodsh[$class]} )
         while [[ " ${!__superh[*]} " == *" $class "* && -n ${__superh[$class]} ]]; do
           class=${__superh[$class]}
-          array+=( ${__methodsh[$class]} )
+          methods+=( ${__methodsh[$class]} )
         done
-        __ary_to_str array
         ;;
-      *       ) return 1                                                                ;;
+      * ) return 1;;
     esac
+    __ary_to_str methods
   end
 }
 
@@ -67,14 +68,14 @@ class Class , Object; {
   def instance_methods <<'  end'
     local class=$1
     local inherited=${2:-true}
-    local array
+    local instance_methods=( ${__methodsh[$class]} )
 
     case $inherited in
-      'false' ) array=( ${__methodsh[$class]} )            ;;
+      'false' ) ;;
       'true'  ) __='([0]="ancestors" [1]="class" [2]="methods")'  ;;
       *       ) return 1                                          ;;
     esac
-    __ary_to_str array
+    __ary_to_str instance_methods
   end
 }
 
