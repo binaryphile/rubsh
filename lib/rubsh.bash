@@ -29,6 +29,12 @@ unset -v class statement
 
 defs () { IFS=$'\n' read -rd '' "$1" ||: ;}
 
+array.to_s () {
+  __=$(declare -p "$1")
+  __=${__#*=}
+  __=${__:1:-1}
+}
+
 defs __method_bodyh[Class.ancestors] <<'end'
   local class=$1
   local ancestors=( $class )
@@ -37,9 +43,7 @@ defs __method_bodyh[Class.ancestors] <<'end'
     class=${__superh[$class]}
     ancestors+=( "$class" )
   done
-  __=$(declare -p ancestors)
-  __=${__#*=}
-  __=${__:1:-1}
+  array.to_s ancestors
 end
 
 defs __method_bodyh[Class.instance_methods] <<'end'
@@ -86,3 +90,5 @@ __dispatch () {
   printf -v statement 'function __ { %s ;}; __ "$receiver" "$@"' "${__method_bodyh[$class.$method]}"
   eval "$statement"
 }
+
+unset -f defs
