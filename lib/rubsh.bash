@@ -89,6 +89,7 @@ class Class , Object; {
     local statement
 
     printf -v statement 'function %s { __dispatch "$@" ;}' "$self"
+    eval "$statement"
     __classh[$self]=$class
   end
 }
