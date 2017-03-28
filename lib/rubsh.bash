@@ -35,9 +35,10 @@ class Object; {
   def methods <<'  end'
     local self=$1
     local inherited=${2:-true}
+    local array=( ${__methodsh[$__classh[$self]]} )
 
     case $inherited in
-      'false' ) __='()'                                                                 ;;
+      'false' ) __ary_to_str array ;;
       'true'  ) __='([0]="ancestors" [1]="class" [2]="instance_methods" [3]="methods")' ;;
       *       ) return 1                                                                ;;
     esac
