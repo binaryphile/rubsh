@@ -14,6 +14,7 @@ class () {
   eval "$statement"
   __classh[$__class]=Class
   [[ " ${!__superh[*]} " != *" $__class "* ]] || return
+  [[ $__class == 'Object' ]] && return
   __superh[$__class]=$super
 }
 
