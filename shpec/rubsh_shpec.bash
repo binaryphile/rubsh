@@ -103,10 +103,19 @@ describe Class
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
 
-    it "gives it the class of the receiver"; (
+    it "is of the class of the receiver"; (
       Class new myclass
       myclass class
-      assert equal Class $__
+      assert equal Class "$__"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+
+    it "has the instance methods of the class"; (
+      Class new myclass
+      myclass methods
+      methods=$__
+      Class instance_methods
+      assert equal "$methods" "$__"
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
   end
