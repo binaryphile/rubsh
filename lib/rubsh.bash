@@ -11,16 +11,11 @@ class () {
   local statement
 
   [[ -z ${2:-} || $2 == ',' ]] || return
-  case $super in
-    '' ) ;;
-    *  )
-      declare -f "$super" >/dev/null || return
-      [[ " ${!__superh[*]} " == *" $__class "* ]] && {
-        [[ ${__superh[$class]} == 'Object' ]] || return
-      }
-      __superh[$__class]=$super
-      ;;
-  esac
+  [[ -n $super ]] && {
+    ! declare -f "$__class" >/dev/null || return
+      declare -f "$super"   >/dev/null || return
+    __superh[$__class]=$super
+  }
   printf -v statement 'function %s { __dispatch "$@" ;}' "$__class"
   eval "$statement"
   __classh[$__class]=Class
@@ -104,15 +99,25 @@ class Class; {
 
   def new <<'  end'
     local class=$1
-    local self=$2; shift 2
+    local self=$2
+    local value=${3:-}
     local statement
+    local statement2
 
     [[ " ${!__superh[*]} " != *" $self "* ]] || return
     printf -v statement 'function %s { __dispatch "$@" ;}' "$self"
     eval "$statement"
+    (( $$ != $BASHPID && ! __chain )) && {
+      [[ -n $value ]] && {
+        value=$(declare -p value)
+        value=${value#*=}
+      }
+      printf -v statement   'declare %s%s%s'  "$self"       "${3+=}"      "$value"
+      printf -v statement2  '%s .new %s %s'   "$class"      "$self"       "$value"
+      printf                'eval %s; %s\n'   "$statement"  "$statement2"
+    }
     [[ $class == 'Class' ]] && __superh[$self]=Object
     __classh[$self]=$class
-    (( $$ != $BASHPID && ! __chained )) && puts "declare $self${1+=\"}$1${1+\"}"
   end
 
   def superclass <<'  end'

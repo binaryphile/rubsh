@@ -112,21 +112,21 @@ describe Class
   describe new
     describe Class
       it "creates a function"; (
-        Class .new Myclass
+        __chain=1 Class .new Myclass
         is_function Myclass
         assert equal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "is of the class of the receiver"; (
-        Class .new Myclass
+        __chain=1 Class .new Myclass
         Myclass .class
         assert equal Class "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the instance methods of the class"; (
-        Class .new Myclass
+        __chain=1 Class .new Myclass
         Myclass .methods
         methods=$__
         Class .instance_methods
@@ -135,7 +135,7 @@ describe Class
       end
 
       it "has the superclass Object"; (
-        Class .new Myclass
+        __chain=1 Class .new Myclass
         Myclass .superclass
         assert equal Object "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -144,21 +144,21 @@ describe Class
 
     describe Object
       it "creates a function"; (
-        Object .new myobject
+        __chain=1 Object .new myobject
         is_function myobject
         assert equal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "is of the class of the receiver"; (
-        Object .new myobject
+        __chain=1 Object .new myobject
         myobject .class
         assert equal Object "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the instance methods of the class"; (
-        Object .new myobject
+        __chain=1 Object .new myobject
         myobject .methods
         methods=$__
         Object .instance_methods
@@ -167,33 +167,33 @@ describe Class
       end
 
       it "outputs a declaration when unchained in a subshell"; (
-        assert equal 'declare myobject' "$(Object .new myobject)"
+        assert equal 'eval declare myobject; Object .new myobject ' "$(Object .new myobject)"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "outputs a declaration with a value when unchained in a subshell"; (
-        assert equal 'declare myobject="howdy"' "$(Object .new myobject "howdy")"
+        assert equal 'eval declare myobject="howdy"; Object .new myobject "howdy"' "$(Object .new myobject "howdy")"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
     end
 
     describe Array
       it "creates a function"; (
-        Array .new myarray
+        __chain=1 Array .new myarray
         is_function myarray
         assert equal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "is of the class of the receiver"; (
-        Array .new myarray
+        __chain=1 Array .new myarray
         myarray .class
         assert equal Array "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the instance methods of the class"; (
-        Array .new myarray
+        __chain=1 Array .new myarray
         myarray .methods
         methods=$__
         Array .instance_methods
