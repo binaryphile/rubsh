@@ -107,15 +107,6 @@ class Class; {
     ! declare -f "$self" >/dev/null || return
     printf -v statement 'function %s { __dispatch "$@" ;}' "$self"
     eval "$statement"
-    (( $$ != $BASHPID && ! __chain )) && {
-      [[ -n $value ]] && {
-        value=$(declare -p value)
-        value=${value#*=}
-      }
-      printf -v statement   'declare %s%s%s'  "$self"       "${3+=}"      "$value"
-      printf -v statement2  '%s .new %s %s'   "$class"      "$self"       "$value"
-      printf                'eval %s; %s\n'   "$statement"  "$statement2"
-    }
     [[ $class == 'Class' ]] && __superh[$self]=Object
     __classh[$self]=$class
   end
