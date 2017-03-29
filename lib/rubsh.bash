@@ -112,7 +112,7 @@ class Class; {
     eval "$statement"
     [[ $class == 'Class' ]] && __superh[$self]=Object
     __classh[$self]=$class
-    (( $$ != $BASHPID && ! __chained )) && puts "declare $self${1+=}$1"
+    (( $$ != $BASHPID && ! __chained )) && puts "declare $self${1+=\"}$1${1+\"}"
   end
 
   def superclass <<'  end'
