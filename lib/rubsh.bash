@@ -25,7 +25,7 @@ def () {
   local method=$1
   local body=${2:-$(</dev/stdin)}
 
-  __methodsh[$__class]+="$method "
+  __methodsh[$__class]+=" $method "
   __method_classesh[$method]+=" $__class "
   __method_bodyh[$__class.$method]=$body
 }
@@ -104,7 +104,7 @@ class Class; {
     local statement
     local statement2
 
-    [[ " ${!__superh[*]} " != *" $self "* ]] || return
+    ! declare -f "$self" >/dev/null || return
     printf -v statement 'function %s { __dispatch "$@" ;}' "$self"
     eval "$statement"
     (( $$ != $BASHPID && ! __chain )) && {

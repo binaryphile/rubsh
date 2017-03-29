@@ -88,13 +88,12 @@ then use the ".new" method of the desired class to create the object:
 
 Or:
 
-    eval "$(File .new myfile ~/sample.txt)"
+    $(File .new myfile ~/sample.txt)
 
 When called this way, the File class outputs a declaration statement on
-stdout, while simultaneously creating the "myfile" object.  The `eval`
-then executes the declaration in the current scope, making the "myfile"
-bash variable local to the function in which the `eval` appears
-(equivalent to the `local` builtin).
+stdout, and also a statement to create the "myfile" object.  `eval` then
+executes the statements, making the "myfile" bash variable local to the
+current function (equivalent to the `local` builtin).
 
 The new "myfile" object then has its own methods:
 
