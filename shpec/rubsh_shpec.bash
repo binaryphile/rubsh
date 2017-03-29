@@ -165,6 +165,11 @@ describe Class
         assert equal "$methods" "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
+
+      it "outputs a declaration when unchained in a subshell"; (
+        assert equal "declare myobject" "$(Object .new myobject)"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
     end
 
     describe Array

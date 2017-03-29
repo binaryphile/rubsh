@@ -104,7 +104,7 @@ class Class; {
 
   def new <<'  end'
     local class=$1
-    local self=$2
+    local self=$2; shift 2
     local statement
 
     [[ " ${!__superh[*]} " != *" $self "* ]] || return
@@ -112,6 +112,7 @@ class Class; {
     eval "$statement"
     [[ $class == 'Class' ]] && __superh[$self]=Object
     __classh[$self]=$class
+    (( $$ != $BASHPID && ! __chained )) && puts "declare $self${1+=}$1"
   end
 
   def superclass <<'  end'
