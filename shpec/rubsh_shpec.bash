@@ -20,6 +20,12 @@ describe class
     assert equal Sample "$__class"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+
+  it ""; (
+    class Sample
+    assert equal Sample "$__class"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end
 
 describe Object
