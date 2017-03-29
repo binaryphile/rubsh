@@ -14,6 +14,14 @@ source "$(shpec_cwd)"/../lib/rubsh.bash
 
 is_function () { declare -f "$1" >/dev/null ;}
 
+describe class
+  it "sets __class"; (
+    class Sample
+    assert equal Sample "$__class"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+end
+
 describe Object
   it "is a function"
     is_function Object
