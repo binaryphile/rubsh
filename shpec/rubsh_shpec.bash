@@ -50,6 +50,13 @@ describe class
     assert equal Test "${__superh[Sample]}"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+
+  it "creates the class function"; (
+    class Sample
+    declare -f Sample >/dev/null
+    assert equal 0 $?
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end
 
 describe Object
