@@ -28,7 +28,7 @@ describe class
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
-  it "fails if super is given but the class already exists as a function"; (
+  it "fails if the superclass is given but the class already exists as a function"; (
     Sample () { :;}
     stop_on_error off
     class Sample : Class
@@ -36,11 +36,18 @@ describe class
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
-  it "fails if super is given but doesn't already exist as a function"; (
+  it "fails if the superclass is given but doesn't already exist as a function"; (
     unset -f Test
     stop_on_error off
     class Sample : Test
     assert unequal 0 $?
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "tracks the superclass"; (
+    Test () { :;}
+    class Sample : Test
+    assert equal Test "${__superh[Sample]}"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 end
