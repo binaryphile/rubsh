@@ -45,7 +45,7 @@ Rubsh provides some basic classes:
 
 Rubsh doesn't change the underlying data types, so for example, hashes
 can still only store strings as values, but the methods available to
-manipulate them are new to bash.
+manipulate them are new with rubsh.
 
 Each class is actually a bash function. According to the ruby convention
 for class names, they are all capitalized as shown above.
@@ -56,56 +56,80 @@ themselves are also simply bash functions, created for you by rubsh's
 normal syntax.
 
 The first argument to the objects (i.e. functions) are usually the names
-of methods, methods provided by the classes. While method names are just
-normal string arguments, for the sake of similarity to ruby syntax, they
-are invoked with a leading dot like so:
+of methods, provided by the classes. While method names are just normal
+string arguments, for the sake of similarity to ruby syntax, they are
+invoked with a leading dot like so:
 
-    File .new myfile
+    File .new =myfile
 
 This roughly corresponds to ruby's:
 
     myfile = File.new
 
-This rubsh command would make a function called "myfile", which has
-knowledge of all of the File class's associated methods. "myfile" is the
-object instance of the File class.
+Naturally, in order for rubsh to work, its functions ("File" in this
+case) need to be the first word in the command line, which dictates some
+differences from ruby's syntax.  Therefore the object name comes after
+instead of in front of the assignment.
 
-The "myfile" instance is supposed to represent what would normally be a
-bash variable holding a filename. However, since "myfile" is a function,
+The equals sign attached to the object name hints to rubsh that this is
+the object to create, rather than a normal argument to the .new method.
+If there weren't such an argument, File.new would create an anonymous
+file object, to be used by chaining with another method call or to be
+consumed as the argument to a method call. But we'll get to that in a
+bit.
+
+This rubsh command would create a bash function called "myfile", which
+has knowledge of all of the File class's associated methods.  myfile is
+the object instance of the File class.
+
+The myfile is supposed to represent what would normally be a bash
+variable holding a filename. However, since myfile is a bash function,
+
 it doesn't work as a bash variable. You can't reference it with
 "$myfile" and it doesn't hold a value.
 
 Instead, rubsh makes it appear as though the function is a variable by
-presuming it should reference the value of the actual bash "myfile"
+presuming it should reference the value of the actual bash myfile
 variable when the function is called.
 
-The "myfile" bash variable has a separate existence, but once set, the
-"myfile" object uses the variable's value automatically. In fact, the
+The myfile bash variable has a separate existence, but once set, the
+myfile function uses the variable's value automatically.  In fact, the
 object is fairly useless without the corresponding variable.
 
-The normal usage therefore is to first declare or set the bash variable,
-then use the ".new" method of the desired class to create the object:
+Therefore you could just set the bash variable, then use the ".new"
+method of the desired class to create the object:
 
     myfile=~/sample.txt
-    File .new myfile
+    File .new =myfile
 
-Or:
+File .new can't do this for you normally, since it could only create
+global variables and rubsh avoids using the global namespace as much as
+possible.  Instead, you can use the special form:
 
-    $(File .new myfile ~/sample.txt)
+    $(File .new ^myfile ~/sample.txt)
 
-The new "myfile" object then has its own methods:
+Note the caret instead of dot for the object name.  This tells the
+method to generate a statement on stdout, which the bash shell
+substitution then evaluates in the local context, instantiating the
+object and declaring the corresponding bash variable locally (like the
+`local` bash built-in) in one go.  The caret is supposed to be
+reminiscent of bash's redirection operators.
+
+The new myfile object then has its own methods:
 
     myfile .write "some text for a file"
     myfile .append "some text for the end of a file"
 
 As you can see, while rubsh is inspired by ruby's api, rubsh doesn't shy
-away from amending it to be more bash-y. Ruby would require you to open
-a file with a mode and to close the file as well, but rubsh does away
-with that in favor of direct one-line access. The simplicity also means
-rubsh is not as powerful as ruby, but rubsh is pretty ok with that
-trade-off.
+away from amending it to be more bash-ish. For example, Ruby would
+require you to open a file with a mode (and to close the file as well),
+but rubsh does away with that in favor of a one-liner more like the
+usual `echo "some text" >$filename`.
 
-The "myfile" object's target is defined by the "myfile" variable. Set
+This simplicity also means rubsh is not as powerful as ruby, but rubsh
+is pretty ok with that.
+
+The myfile object's target is defined by the myfile variable. Set
 the variable and you change what the object operates on:
 
     myfile=~/other_file.txt
@@ -124,7 +148,8 @@ Features
 -   the ability to return arrays and hashes from methods
 
 -   automatic chaining of the result of one method call to the input of
-    another method, including arrays and hashes
+    another method, including arrays and hashes (this is not piping of
+    stdout)
 
 -   ruby block syntax for functional-style methods
 
@@ -134,7 +159,9 @@ Features
 
 -   a near-complete lack of dollar signs and quotation marks
 
--   compatibility with regular bash syntax
+-   economic use of bash's variable and function namespaces
+
+-   intermixability with regular bash syntax
 
 Installation
 ------------
