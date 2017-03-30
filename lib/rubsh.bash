@@ -10,7 +10,7 @@ class () {
   local super=${3-Object}
   local statement
 
-  [[ -z ${2:-} || $2 == ',' ]] || return
+  [[ -z ${2:-} || $2 == ':' ]] || return
   [[ -n $super ]] && {
     ! declare -f "$__class" >/dev/null || return
       declare -f "$super"   >/dev/null || return
@@ -30,7 +30,7 @@ def () {
   __method_bodyh[$__class.$method]=$body
 }
 
-class Object , ''; {
+class Object : ''; {
   def class '__=${__classh[$1]}'
 
   def methods <<'  end'
@@ -186,7 +186,7 @@ class String
 
 puts () { local IFS=''; printf '%s\n' "$*" ;}
 
-class Path , String; {
+class Path : String; {
   def expand_path <<'  end'
     local __pathname=${!1}
     local __filename
@@ -202,7 +202,7 @@ class Path , String; {
   end
 }
 
-class File , Path; {
+class File : Path; {
   def each <<'  end'
     local __filename=${!1}
     local __lineparm=$3

@@ -21,9 +21,10 @@ describe class
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
-  it ""; (
-    class Sample
-    assert equal Sample "$__class"
+  it "fails if the inheritance operator is not :"; (
+    stop_on_error off
+    class Sample , Class
+    assert unequal 0 $?
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 end
