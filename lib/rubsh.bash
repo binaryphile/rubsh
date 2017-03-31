@@ -19,13 +19,14 @@ class () {
   printf -v statement 'function %s { __dispatch "$@" ;}' "$__class"
   eval "$statement"
   __classh[$__class]=Class
+  __methodsh[$__class]=' '
 }
 
 def () {
   local method=$1
-  local body=${2:-$(</dev/stdin)}
+  local body=${2-$(</dev/stdin)}
 
-  __methodsh[$__class]+=" $method "
+  __methodsh[$__class]+="$method "
   __method_classesh[$method]+=" $__class "
   __method_bodyh[$__class.$method]=$body
 }
@@ -43,7 +44,7 @@ class Object : ''; {
       'false' ) ;;
       'true'  )
         methods=( ${__methodsh[$class]} )
-        while [[ " ${!__superh[*]} " == *" $class "* && -n ${__superh[$class]} ]]; do
+        while [[ -n ${__superh[$class]:-} ]]; do
           class=${__superh[$class]}
           methods+=( ${__methodsh[$class]} )
         done
@@ -72,7 +73,7 @@ class Class; {
     local class=$1
     local ancestors=( $class )
 
-    while [[ " ${!__superh[*]} " == *" $class "* && -n ${__superh[$class]} ]]; do
+    while [[ -n ${__superh[$class]:-} ]]; do
       class=${__superh[$class]}
       ancestors+=( "$class" )
     done
@@ -87,7 +88,7 @@ class Class; {
     case $inherited in
       'false' ) ;;
       'true'  )
-        while [[ " ${!__superh[*]} " == *" $class "* && -n ${__superh[$class]} ]]; do
+        while [[ -n ${__superh[$class]:-} ]]; do
           class=${__superh[$class]}
           instance_methods+=( ${__methodsh[$class]} )
         done
@@ -114,8 +115,7 @@ class Class; {
   def superclass <<'  end'
     local class=$1
 
-    [[ " ${!__superh[*]} " == *" $class "* ]] && { __=${__superh[$class]}; return ;}
-    __=''
+    __=${__superh[$class]:-}
   end
 }
 
@@ -242,10 +242,10 @@ __dispatch () {
   [[ $method == '.'* ]] || return
   method=${method#.}
   while [[ ${__method_classesh[$method]} != *" $class "* ]]; do
-    [[ " ${!__superh[*]} " == *" $class "* && -n ${__superh[$class]} ]] || return
+    [[ -n ${__superh[$class]:-} ]] || return
     class=${__superh[$class]}
   done
-  [[ " ${!__method_bodyh[*]} " == *" $class.$method "* && -n ${__method_bodyh[$class.$method]} ]] || return
+  [[ -n ${__method_bodyh[$class.$method]:-} ]] || return
   printf -v statement 'function __ { %s ;}; __ "$receiver" "$@"' "${__method_bodyh[$class.$method]}"
   eval "$statement"
 }

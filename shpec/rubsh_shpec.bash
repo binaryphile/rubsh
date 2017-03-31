@@ -65,6 +65,15 @@ describe class
   end
 end
 
+describe def
+  it "tracks the method's class"; (
+    class Sample
+    def sample ''
+    assert equal ' sample ' "${__methodsh[Sample]}"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+end
+
 describe Object
   it "is a function"
     is_function Object
