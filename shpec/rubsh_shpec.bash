@@ -57,6 +57,12 @@ describe class
     assert equal 0 $?
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+
+  it "sets the class to Class"; (
+    class Sample
+    assert equal Class "${__classh[Sample]}"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end
 
 describe Object
