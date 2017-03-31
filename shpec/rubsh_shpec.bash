@@ -53,7 +53,7 @@ describe class
 
   it "creates the class function"; (
     class Sample
-    declare -f Sample >/dev/null
+    is_function Sample
     assert equal 0 $?
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
