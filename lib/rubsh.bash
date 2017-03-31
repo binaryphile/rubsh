@@ -1,6 +1,6 @@
-[[ -n ${_rubsh:-} && -z ${reload:-} ]] && return
-[[ -n ${reload:-}                   ]] && { unset -v reload && echo reloaded || return ;}
-[[ -z ${_rubsh:-}                   ]] && readonly _rubsh=loaded
+[[ -n ${_rubsh-} && -z ${reload-} ]] && return
+[[ -n ${reload-}                  ]] && { unset -v reload && echo reloaded || return ;}
+[[ -z ${_rubsh-}                  ]] && readonly _rubsh=loaded
 
 unset   -v  __classh __method_classesh __methodsh __method_bodyh __superh __ __class
 declare -Ag __classh __method_classesh __methodsh __method_bodyh __superh
@@ -10,7 +10,7 @@ class () {
   local super=${3-Object}
   local statement
 
-  [[ -z ${2:-} || $2 == ':' ]] || return
+  [[ -z ${2-}  || $2 == ':' ]] || return
   [[ -n $super ]] && {
     ! declare -f "$__class" >/dev/null || return
       declare -f "$super"   >/dev/null || return
@@ -27,7 +27,8 @@ def () {
   local body=${2-$(</dev/stdin)}
 
   __methodsh[$__class]+="$method "
-  __method_classesh[$method]+=" $__class "
+  [[ -z ${__method_classesh[$method]-} ]] && __method_classesh[$method]=' '
+  __method_classesh[$method]+="$__class "
   __method_bodyh[$__class.$method]=$body
 }
 
@@ -36,7 +37,7 @@ class Object : ''; {
 
   def methods <<'  end'
     local self=$1
-    local inherited=${2:-true}
+    local inherited=${2-true}
     local class=${__classh[$self]}
     local methods=()
 
@@ -44,7 +45,7 @@ class Object : ''; {
       'false' ) ;;
       'true'  )
         methods=( ${__methodsh[$class]} )
-        while [[ -n ${__superh[$class]:-} ]]; do
+        while [[ -n ${__superh[$class]-} ]]; do
           class=${__superh[$class]}
           methods+=( ${__methodsh[$class]} )
         done
@@ -73,7 +74,7 @@ class Class; {
     local class=$1
     local ancestors=( $class )
 
-    while [[ -n ${__superh[$class]:-} ]]; do
+    while [[ -n ${__superh[$class]-} ]]; do
       class=${__superh[$class]}
       ancestors+=( "$class" )
     done
@@ -82,13 +83,13 @@ class Class; {
 
   def instance_methods <<'  end'
     local class=$1
-    local inherited=${2:-true}
+    local inherited=${2-true}
     local instance_methods=( ${__methodsh[$class]} )
 
     case $inherited in
       'false' ) ;;
       'true'  )
-        while [[ -n ${__superh[$class]:-} ]]; do
+        while [[ -n ${__superh[$class]-} ]]; do
           class=${__superh[$class]}
           instance_methods+=( ${__methodsh[$class]} )
         done
@@ -101,7 +102,7 @@ class Class; {
   def new <<'  end'
     local class=$1
     local self=$2
-    local value=${3:-}
+    local value=${3-}
     local statement
     local statement2
 
@@ -115,7 +116,7 @@ class Class; {
   def superclass <<'  end'
     local class=$1
 
-    __=${__superh[$class]:-}
+    __=${__superh[$class]-}
   end
 }
 
@@ -140,7 +141,7 @@ class Array; {
 
   def join <<'  end'
     local -n __vals=$1
-    local IFS=${1:- }
+    local IFS=${1- }
 
     __=${__vals[*]}
   end
@@ -198,7 +199,7 @@ class Path : String; {
     }
     [[ -d $__pathname ]] || return
     __pathname=$(cd "$__pathname"; pwd)
-    __=$__pathname${__filename:+/}${__filename:-}
+    __=$__pathname${__filename:+/}${__filename-}
   end
 }
 
@@ -206,7 +207,7 @@ class File : Path; {
   def each <<'  end'
     local __filename=${!1}
     local __lineparm=$3
-    local __lambda=${4:-$(</dev/stdin)}
+    local __lambda=${4-$(</dev/stdin)}
     local "$__lineparm"
 
     while read -r "$__lineparm"; do
@@ -234,7 +235,7 @@ __ary_to_str () {
 }
 
 __dispatch () {
-  local method=${1:-.to_s}; shift
+  local method=${1-.to_s}; shift
   local receiver=${FUNCNAME[1]}
   local class=${__classh[$receiver]}
   local statement
@@ -242,10 +243,10 @@ __dispatch () {
   [[ $method == '.'* ]] || return
   method=${method#.}
   while [[ ${__method_classesh[$method]} != *" $class "* ]]; do
-    [[ -n ${__superh[$class]:-} ]] || return
+    [[ -n ${__superh[$class]-} ]] || return
     class=${__superh[$class]}
   done
-  [[ -n ${__method_bodyh[$class.$method]:-} ]] || return
+  [[ -n ${__method_bodyh[$class.$method]-} ]] || return
   printf -v statement 'function __ { %s ;}; __ "$receiver" "$@"' "${__method_bodyh[$class.$method]}"
   eval "$statement"
 }
