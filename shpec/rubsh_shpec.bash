@@ -272,16 +272,16 @@ describe Class
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
-    #   it "has the instance methods of the class"; (
-    #     Object .new myobject
-    #     myobject .methods
-    #     methods=$__
-    #     Object .instance_methods
-    #     assert equal "$methods" "$__"
-    #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-    #   end
-    # end
-    #
+      it "has the instance methods of the class"; (
+        Object .new =myobject
+        myobject .methods
+        methods=$__
+        Object .instance_methods
+        assert equal "$methods" "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+    end
+
     # describe Array
     #   it "creates a function"; (
     #     Array .new myarray
@@ -306,7 +306,7 @@ describe Class
     #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     #   end
     # end
-  end
+  # end
 
   describe superclass
     it "gives the superclass of Class as Object"
