@@ -240,7 +240,7 @@ __ary_to_str () {
 }
 
 __dispatch () {
-  local method=${1-.to_s}; shift
+  local method=${1-.to_s}; shift ||:
   local receiver=${FUNCNAME[1]}
   local class=${__classh[$receiver]}
   local statement
