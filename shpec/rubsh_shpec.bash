@@ -282,14 +282,14 @@ describe Class
       end
     end
 
-    # describe Array
-    #   it "creates a function"; (
-    #     Array .new myarray
-    #     is_function myarray
-    #     assert equal 0 $?
-    #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-    #   end
-    #
+    describe Array
+      it "creates a function"; (
+        Array .new =myarray
+        is_function myarray
+        assert equal 0 $?
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
     #   it "is of the class of the receiver"; (
     #     Array .new myarray
     #     myarray .class
@@ -306,7 +306,7 @@ describe Class
     #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     #   end
     # end
-  # end
+  end
 
   describe superclass
     it "gives the superclass of Class as Object"
