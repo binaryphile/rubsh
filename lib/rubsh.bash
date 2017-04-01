@@ -103,11 +103,13 @@ class Class; {
 
   def new <<'  end'
     local class=$1
-    local self=${2#?}
+    local self=$2
     local value=${3-}
     local statement
     local statement2
 
+    [[ $self == '='* ]] || return
+    self=${self#=}
     ! declare -f "$self" >/dev/null || return
     printf -v statement 'function %s { __dispatch "$@" ;}' "$self"
     eval "$statement"
