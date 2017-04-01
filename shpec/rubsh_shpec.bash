@@ -258,23 +258,16 @@ describe Class
     end
 
     describe Object
-      it "creates a function"; (
-        Object .new =myobject
-        is_function myobject
-        assert equal 0 $?
-        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-      end
-
       it "is of the class of the receiver"; (
-        Object .new =myobject
-        myobject .class
+        Object .new =sample
+        sample .class
         assert equal Object "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the instance methods of the class"; (
-        Object .new =myobject
-        myobject .methods
+        Object .new =sample
+        sample .methods
         methods=$__
         Object .instance_methods
         assert equal "$methods" "$__"
@@ -284,29 +277,29 @@ describe Class
 
     describe Array
       it "creates a function"; (
-        Array .new =myarray
-        is_function myarray
+        Array .new =samples
+        is_function samples
         assert equal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "is of the class of the receiver"; (
-        Array .new =myarray
-        myarray .class
+        Array .new =samples
+        samples .class
         assert equal Array "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the instance methods of the class"; (
-        Array .new =myarray
-        myarray .methods
+        Array .new =samples
+        samples .methods
         methods=$__
         Array .instance_methods
         assert equal "$methods" "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
-      it "assigns the contents of a new array"; (
+      it "takes a literal initializer"; (
         Array .new =samples '( zero one )'
         assert equal 'declare -a samples='\''([0]="zero" [1]="one")'\' "$(declare -p samples)"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -315,6 +308,14 @@ describe Class
       it "returns an assigned value unchanged"; (
         Array .new =samples '( zero one )'
         assert equal '( zero one )' "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+    end
+
+    describe String
+      it "takes a literal initializer"; (
+        String .new =sample "an example"
+        assert equal 'declare -- sample="an example"' "$(declare -p sample)"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
     end
@@ -333,16 +334,34 @@ describe Class
   end
 end
 
-describe Array
-  it "is a function"
-    is_function Array
+describe "an instance"
+  it "is a function"; (
+    Object .new =sample
+    is_function sample
     assert equal 0 $?
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
-  # describe concat
-  #   it "concatenates an array with this one"
-  #     Array .new samples
-  #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  #   end
+  # it "implicitly calls #to_s"; (
+  #   String .new =sample "an example"
+  #   sample
+  #   assert equal "an example" "$__"
+  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   # end
+end
+
+describe Array
+  describe concat
+    it "concatenates an array with this one"; (
+      Array .new =samples '( zero one   )'
+      Array .new =example '( two  three )'
+      samples .concat example
+      assert equal 'declare -a samples='\''([0]="zero" [1]="one" [2]="two" [3]="three")'\' "$(declare -p samples)"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+  end
+end
+
+describe String
+  
 end

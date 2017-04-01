@@ -105,8 +105,8 @@ class Class; {
     local class=$1
     local self=$2
     local value=${3-}
+    local format
     local statement
-    local statement2
 
     [[ $self == '='* ]] || return
     self=${self#=}
@@ -115,7 +115,14 @@ class Class; {
     eval "$statement"
     [[ $class == 'Class' ]] && __superh[$self]=Object
     __classh[$self]=$class
-    [[ -n $value ]] && eval "$self=$value"
+    [[ -n $value ]] && {
+      case $value in
+        '('* ) format='%s=%s';;
+        *    ) format='%s=%q';;
+      esac
+      printf -v statement "$format" "$self" "$value"
+      eval "$statement"
+    }
     __=$value
   end
 
@@ -132,17 +139,9 @@ class Array; {
     local __results=()
     local __statement
 
-    case $# in
-      '0' ) return;;
-      '1' )
-        printf -v __statement '__vals+=( "${%s[@]}" )' "$1"
-        eval "$__statement"
-        ;;
-      * )
-        "$@"
-        eval __results="$__"
-        __vals+=( "${__results[@]}" );;
-    esac
+    "$@"
+    eval __results="$__"
+    __vals+=( "${__results[@]}" )
   end
 
   def join <<'  end'
