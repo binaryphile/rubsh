@@ -79,6 +79,13 @@ describe def
     assert equal ' Sample ' "${__method_classesh[sample]}"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+
+  it "records the method body"; (
+    class Sample
+    def sample 'example'
+    assert equal example "${__method_bodyh[Sample.sample]}"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end
 
 describe Object
