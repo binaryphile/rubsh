@@ -233,15 +233,15 @@ describe Class
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
-    #   it "has the instance methods of the class"; (
-    #     Class .new Myclass
-    #     Myclass .methods
-    #     methods=$__
-    #     Class .instance_methods
-    #     assert equal "$methods" "$__"
-    #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-    #   end
-    #
+      it "has the instance methods of the class"; (
+        Class .new =Myclass
+        Myclass .methods
+        methods=$__
+        Class .instance_methods
+        assert equal "$methods" "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
     #   it "has the superclass Object"; (
     #     Class .new Myclass
     #     Myclass .superclass
