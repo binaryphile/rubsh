@@ -249,22 +249,22 @@ describe Class
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
-    #   it "returns nothing"; (
-    #     unset -v __
-    #     Class .new Myclass
-    #     assert equal '' "$__"
-    #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-    #   end
-    # end
-    #
-    # describe Object
-    #   it "creates a function"; (
-    #     Object .new myobject
-    #     is_function myobject
-    #     assert equal 0 $?
-    #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-    #   end
-    #
+      it "returns nothing"; (
+        unset -v __
+        Class .new =Myclass
+        assert equal '' "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+    end
+
+    describe Object
+      it "creates a function"; (
+        Object .new =myobject
+        is_function myobject
+        assert equal 0 $?
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
     #   it "is of the class of the receiver"; (
     #     Object .new myobject
     #     myobject .class
@@ -305,7 +305,7 @@ describe Class
     #     assert equal "$methods" "$__"
     #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     #   end
-    end
+    # end
   end
 
   describe superclass
