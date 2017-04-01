@@ -305,6 +305,18 @@ describe Class
         assert equal "$methods" "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
+
+      it "assigns the contents of a new array"; (
+        Array .new =samples '( zero one )'
+        assert equal 'declare -a samples='\''([0]="zero" [1]="one")'\' "$(declare -p samples)"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "returns an assigned value unchanged"; (
+        Array .new =samples '( zero one )'
+        assert equal '( zero one )' "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
     end
   end
 
@@ -321,21 +333,16 @@ describe Class
   end
 end
 
-# describe Array
-#   it "is a function"
-#     is_function Array
-#     assert equal 0 $?
-#   end
-#
-#   describe new
-#     it "assigns the contents of a new array"; (
-#       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-#     end
-#   end
-#   # describe concat
-#   #   it "concatenates an array with this one"
-#   #     Array .new samples
-#   #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-#   #   end
-#   # end
-# end
+describe Array
+  it "is a function"
+    is_function Array
+    assert equal 0 $?
+  end
+
+  # describe concat
+  #   it "concatenates an array with this one"
+  #     Array .new samples
+  #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  #   end
+  # end
+end
