@@ -342,12 +342,12 @@ describe "an instance"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
-  # it "implicitly calls #to_s"; (
-  #   String .new =sample "an example"
-  #   sample
-  #   assert equal "an example" "$__"
-  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  # end
+  it "implicitly calls #to_s"; (
+    String .new =sample "an example"
+    sample
+    assert equal '"an example"' "$__"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end
 
 # describe Array
