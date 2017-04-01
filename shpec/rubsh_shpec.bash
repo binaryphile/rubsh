@@ -297,15 +297,15 @@ describe Class
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
-    #   it "has the instance methods of the class"; (
-    #     Array .new myarray
-    #     myarray .methods
-    #     methods=$__
-    #     Array .instance_methods
-    #     assert equal "$methods" "$__"
-    #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-    #   end
-    # end
+      it "has the instance methods of the class"; (
+        Array .new =myarray
+        myarray .methods
+        methods=$__
+        Array .instance_methods
+        assert equal "$methods" "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+    end
   end
 
   describe superclass
