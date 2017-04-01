@@ -265,13 +265,13 @@ describe Class
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
-    #   it "is of the class of the receiver"; (
-    #     Object .new myobject
-    #     myobject .class
-    #     assert equal Object "$__"
-    #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-    #   end
-    #
+      it "is of the class of the receiver"; (
+        Object .new =myobject
+        myobject .class
+        assert equal Object "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
     #   it "has the instance methods of the class"; (
     #     Object .new myobject
     #     myobject .methods
