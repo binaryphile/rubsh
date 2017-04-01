@@ -94,6 +94,11 @@ describe Object
     assert equal 0 $?
   end
 
+  it "has no super"
+    [[ -z ${__superh[Object]-} ]]
+    assert equal 0 $?
+  end
+
   describe class
     it "Object is class Class"
       Object .class
