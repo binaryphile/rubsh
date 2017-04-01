@@ -113,6 +113,7 @@ class Class; {
     eval "$statement"
     [[ $class == 'Class' ]] && __superh[$self]=Object
     __classh[$self]=$class
+    __=''
   end
 
   def superclass <<'  end'
