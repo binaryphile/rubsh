@@ -63,6 +63,13 @@ describe class
     assert equal Class "${__classh[Sample]}"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+
+  it "returns nothing"; (
+    unset -v __
+    class Sample
+    assert equal '' "$__"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end
 
 describe def

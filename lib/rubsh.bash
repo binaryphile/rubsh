@@ -20,6 +20,7 @@ class () {
   eval "$statement"
   __classh[$__class]=Class
   __methodsh[$__class]=' '
+  __=''
 }
 
 def () {
