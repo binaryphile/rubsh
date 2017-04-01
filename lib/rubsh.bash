@@ -31,6 +31,7 @@ def () {
   [[ -z ${__method_classesh[$method]-} ]] && __method_classesh[$method]=' '
   __method_classesh[$method]+="$__class "
   __method_bodyh[$__class.$method]=$body
+  __=''
 }
 
 class Object : ''; {

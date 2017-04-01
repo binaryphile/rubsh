@@ -93,6 +93,14 @@ describe def
     assert equal example "${__method_bodyh[Sample.sample]}"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+
+  it "returns nothing"; (
+    unset -v __
+    class Sample
+    def sample ''
+    assert equal '' "$__"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end
 
 describe Object
