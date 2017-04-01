@@ -140,6 +140,10 @@ describe Class
     assert equal 0 $?
   end
 
+  it "has a super of Object"
+    assert equal Object "${__superh[Class]}"
+  end
+
   describe ancestors
     it "lists an array string of Class ancestor classes"
       Class .ancestors
