@@ -162,7 +162,7 @@ describe Class
   end
 
   describe ancestors
-    it "lists an array string of Class ancestor classes"
+    it "lists an array string of Class ancestor classes, starting with the class itself"
       Class .ancestors
       assert equal '([0]="Class" [1]="Object")' "$__"
     end
@@ -198,21 +198,21 @@ describe Class
   describe new
     describe Class
       it "creates a function"; (
-        __chain=1 Class .new Myclass
+        Class .new Myclass
         is_function Myclass
         assert equal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "is of the class of the receiver"; (
-        __chain=1 Class .new Myclass
+        Class .new Myclass
         Myclass .class
         assert equal Class "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the instance methods of the class"; (
-        __chain=1 Class .new Myclass
+        Class .new Myclass
         Myclass .methods
         methods=$__
         Class .instance_methods
@@ -221,7 +221,7 @@ describe Class
       end
 
       it "has the superclass Object"; (
-        __chain=1 Class .new Myclass
+        Class .new Myclass
         Myclass .superclass
         assert equal Object "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -230,21 +230,21 @@ describe Class
 
     describe Object
       it "creates a function"; (
-        __chain=1 Object .new myobject
+        Object .new myobject
         is_function myobject
         assert equal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "is of the class of the receiver"; (
-        __chain=1 Object .new myobject
+        Object .new myobject
         myobject .class
         assert equal Object "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the instance methods of the class"; (
-        __chain=1 Object .new myobject
+        Object .new myobject
         myobject .methods
         methods=$__
         Object .instance_methods
@@ -255,21 +255,21 @@ describe Class
 
     describe Array
       it "creates a function"; (
-        __chain=1 Array .new myarray
+        Array .new myarray
         is_function myarray
         assert equal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "is of the class of the receiver"; (
-        __chain=1 Array .new myarray
+        Array .new myarray
         myarray .class
         assert equal Array "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the instance methods of the class"; (
-        __chain=1 Array .new myarray
+        Array .new myarray
         myarray .methods
         methods=$__
         Array .instance_methods
