@@ -242,13 +242,13 @@ describe Class
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
-    #   it "has the superclass Object"; (
-    #     Class .new Myclass
-    #     Myclass .superclass
-    #     assert equal Object "$__"
-    #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-    #   end
-    #
+      it "has the superclass Object"; (
+        Class .new =Myclass
+        Myclass .superclass
+        assert equal Object "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
     #   it "returns nothing"; (
     #     unset -v __
     #     Class .new Myclass
