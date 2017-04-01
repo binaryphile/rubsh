@@ -103,7 +103,7 @@ class Class; {
 
   def new <<'  end'
     local class=$1
-    local self=$2
+    local self=${2#?}
     local value=${3-}
     local statement
     local statement2
@@ -124,7 +124,7 @@ class Class; {
 }
 
 class Array; {
-  def append <<'  end'
+  def concat <<'  end'
     local -n __vals=$1; shift
     local __results=()
     local __statement
