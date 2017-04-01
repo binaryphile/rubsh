@@ -132,6 +132,23 @@ describe Object
       assert equal '()' "$__"
     end
   end
+
+  describe set
+    it "sets the associated variable with the output left in __ by the following command"; (
+      Class .set printf -v __ sample
+      assert equal sample "$Class"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+  end
+
+  describe to_s
+    it "puts the contents of the associated variable in __ in eval form"; (
+      Class=sample
+      Class .to_s
+      assert equal '"sample"' "$__"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+  end
 end
 
 describe Class
