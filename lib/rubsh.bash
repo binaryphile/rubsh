@@ -35,7 +35,11 @@ def () {
 }
 
 class Object : ''; {
-  def class '__=${__classh[$1]}'
+  def class << '  end'
+    __=${__classh[$1]}
+    __=$(declare -p __)
+    __=${__#*=}
+  end
 
   def methods <<'  end'
     local self=$1

@@ -117,12 +117,12 @@ describe Object
   describe class
     it "Object is class Class"
       Object .class
-      assert equal Class "$__"
+      assert equal '"Class"' "$__"
     end
 
     it "Class is class Class"
       Class .class
-      assert equal Class "$__"
+      assert equal '"Class"' "$__"
     end
   end
 
@@ -229,7 +229,7 @@ describe Class
       it "is of the class of the receiver"; (
         Class .new =Myclass
         Myclass .class
-        assert equal Class "$__"
+        assert equal '"Class"' "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
@@ -261,7 +261,7 @@ describe Class
       it "is of the class of the receiver"; (
         Object .new =sample
         sample .class
-        assert equal Object "$__"
+        assert equal '"Object"' "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
@@ -286,7 +286,7 @@ describe Class
       it "is of the class of the receiver"; (
         Array .new =samples
         samples .class
-        assert equal Array "$__"
+        assert equal '"Array"' "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
