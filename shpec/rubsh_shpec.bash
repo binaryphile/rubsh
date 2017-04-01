@@ -290,13 +290,13 @@ describe Class
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
-    #   it "is of the class of the receiver"; (
-    #     Array .new myarray
-    #     myarray .class
-    #     assert equal Array "$__"
-    #     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-    #   end
-    #
+      it "is of the class of the receiver"; (
+        Array .new =myarray
+        myarray .class
+        assert equal Array "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
     #   it "has the instance methods of the class"; (
     #     Array .new myarray
     #     myarray .methods
