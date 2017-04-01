@@ -72,6 +72,13 @@ describe def
     assert equal ' sample ' "${__methodsh[Sample]}"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+
+  it "tracks the class of the method"; (
+    class Sample
+    def sample ''
+    assert equal ' Sample ' "${__method_classesh[sample]}"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end
 
 describe Object
