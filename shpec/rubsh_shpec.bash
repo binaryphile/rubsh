@@ -291,3 +291,10 @@ describe Class
     end
   end
 end
+
+describe Array
+  it "is a function"
+    is_function Array
+    assert equal 0 $?
+  end
+end
