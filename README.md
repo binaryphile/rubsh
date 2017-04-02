@@ -52,13 +52,11 @@ for class names, they are all capitalized as shown above.
 
 These classes are used to create "object" instances, which correspond to
 individual variables you might use in your script. The objects
-themselves are also simply bash functions, created for you by rubsh's
-normal syntax.
+themselves are also simply bash functions, created for you by rubsh.
 
 The first argument to an object (i.e. function) is usually the name of a
 method. While method names are just normal string arguments, for the
-sake of similarity to ruby syntax, they are invoked with a leading dot
-like so:
+sake of similarity to ruby syntax, they are supplied with a leading dot:
 
     File .new <arguments>
 
@@ -105,23 +103,35 @@ needs to determine the filename on which it should operate, it uses
 myfile, the variable. Unsurprisingly, changing the variable contents
 changes the filename targeted by the function.
 
-If the variable myfile already existed, then its current scope (global
-or local) remains in effect. Otherwise the variable is created globally
-by default. This may be what you want, in which case the normal
-invocation is fine.
+The scope of the myfile variable (local to the current function or
+global) depends on a couple things.
 
-However, global scoping may not always be what you want. If you are in
-the body of a function and want a local myfile declaration, you can use
-an alternate syntax:
+If the variable myfile existed when #new was called, then its existing
+scope remains in effect.  This way you can directly control the scope
+with your own declaration prior to calling #new.
+
+Otherwise the variable is created globally by default. This may be what
+you want, in which case the normal invocation is fine.
+
+Hash variables are the one exception to this, since they require
+explicit declaration.  You should either declare hash variables yourself
+before instantiating their object, or use the following syntax instead.
+
+Global scoping may not always be what you want. If you are in the body
+of a function and want a local variable declaration, you can use an
+alternate syntax:
 
     $(File myfile ^ ~/sample.txt)
 
 The caret instead of equals sign tells the method to generate an eval
-statement on stdout. The statement both declares the variable local, as
-well as instantiates the object. The statement is captured and executed
-by the bash shell substitution `$()`.
+statement on stdout. The statement both declares the variable local and
+also instantiates the object. The statement is captured and executed by
+the bash shell substitution `$()`.
 
 The caret was chosen to be reminiscent of bash's redirection operators.
+
+This method works for hash variables as well, so they do not require a
+separate declaration of your own.
 
 Features
 --------
