@@ -145,9 +145,11 @@ Features
 
 -   ruby block syntax for functional-style methods (.each, .map)
 
--   a ruby-like DSL for creating classes using an actual object-model
+-   control over variable scope
 
 -   a near-complete lack of dollar signs and quotation marks
+
+-   a ruby-like DSL for creating classes using an actual object-model
 
 -   economic use of bash's variable and function namespaces
 

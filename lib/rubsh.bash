@@ -253,6 +253,14 @@ class File : Path; {
     done <"$__filename" ||:
   end
 
+  def readlines <<'  end'
+    local __filename=${!1}; shift
+    local __lines=()
+
+    IFS=$'\n' read -rd '' -a __lines <"$__filename"
+    __to_str __lines
+  end
+
   def write <<'  end'
     local __filename=${!1}; shift
     local __string
