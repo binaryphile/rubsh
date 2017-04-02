@@ -64,7 +64,7 @@ class Object : ''; {
   def set <<'  end'
     local -n __self=$1; shift
 
-    __=''
+    unset -v __
     "$@"
     eval __self="$__"
   end
