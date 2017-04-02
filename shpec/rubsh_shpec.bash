@@ -430,3 +430,9 @@ describe Hash
     end
   end
 end
+
+describe puts
+  it "prints the given output"
+    assert equal 'an example' "$(puts 'an example')"
+  end
+end
