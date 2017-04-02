@@ -20,7 +20,7 @@ class () {
   eval "$statement"
   __classh[$__class]=Class
   __methodsh[$__class]=' '
-  __=''
+  __='""'
 }
 
 def () {
@@ -31,7 +31,7 @@ def () {
   [[ -z ${__method_classesh[$method]-} ]] && __method_classesh[$method]=' '
   __method_classesh[$method]+="$__class "
   __method_bodyh[$__class.$method]=$body
-  __=''
+  __='""'
 }
 
 class Object : ''; {
@@ -58,7 +58,7 @@ class Object : ''; {
         ;;
       * ) return 1;;
     esac
-    __ary_to_str methods
+    __to_str methods
   end
 
   def set <<'  end'
@@ -84,7 +84,7 @@ class Class; {
       class=${__superh[$class]}
       ancestors+=( "$class" )
     done
-    __ary_to_str ancestors
+    __to_str ancestors
   end
 
   def instance_methods <<'  end'
@@ -102,7 +102,7 @@ class Class; {
         ;;
       * ) return 1;;
     esac
-    __ary_to_str instance_methods
+    __to_str instance_methods
   end
 
   def new <<'  end'
@@ -182,7 +182,7 @@ class Hash; {
       eval "$__statement"
     done
 
-    __ary_to_str __retvals
+    __to_str __retvals
   end
 
   def to_s <<'  end'
@@ -237,10 +237,10 @@ class File : Path; {
   end
 }
 
-__ary_to_str () {
+__to_str () {
   __=$(declare -p "$1" 2>/dev/null) || return
   __=${__#*=}
-  __=${__:1:-1}
+  if [[ $__ == \'* ]]; then __=${__:1:-1}; fi
 }
 
 __dispatch () {

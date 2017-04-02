@@ -67,7 +67,7 @@ describe class
   it "returns nothing"; (
     unset -v __
     class Sample
-    assert equal '' "$__"
+    assert equal '""' "$__"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 end
@@ -98,7 +98,7 @@ describe def
     unset -v __
     class Sample
     def sample ''
-    assert equal '' "$__"
+    assert equal '""' "$__"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 end
