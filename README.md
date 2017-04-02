@@ -69,14 +69,14 @@ Naturally, in order for rubsh to work, its functions need to be the
 first word in the command line. This dictates some differences from
 ruby's syntax.
 
-For example, ruby would normally assign the result of a \#new to a
+For example, ruby would normally assign the result of \#new to a
 variable:
 
     myfile = File.new "#{Dir.home}/sample.txt"
 
 You would then call methods such as \#readlines on the myfile object.
 
-rubsh needs File first on the command line, so it turns the syntax
+rubsh needs File to be first on the command line, so it turns the syntax
 around a bit by necessity:
 
     File myfile = ~/sample.txt
