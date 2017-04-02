@@ -436,8 +436,8 @@ describe puts
     assert equal "an example" "$(puts "an example")"
   end
 
-  it "ignores additional arguments"
-    assert equal "an example" "$(puts "an example" "of two arguments")"
+  it "prints additional arguments on successive lines"
+    assert equal $'an example\nof two arguments' "$(puts "an example" "of two arguments")"
   end
 
   it "outputs objects"; (

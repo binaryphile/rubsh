@@ -212,14 +212,16 @@ class Hash; {
 class String
 
 puts () {
-  local string=$1
+  local string
 
-  { declare -f "$string" >/dev/null && [[ " ${!__classh[*]} " == *" $string "* ]] ;} && {
-    "$string" .to_s
-    printf '%s\n' "$__"
-    return
-  }
-  printf '%s\n' "$string"
+  for string in "$@"; do
+    { declare -f "$string" >/dev/null && [[ " ${!__classh[*]} " == *" $string "* ]] ;} && {
+      "$string" .to_s
+      printf '%s\n' "$__"
+      continue
+    }
+    printf '%s\n' "$string"
+  done
 }
 
 class Path : String; {
