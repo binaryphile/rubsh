@@ -326,6 +326,12 @@ describe Class
         assert equal 'declare -- sample="an example"' "$(declare -p sample)"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
+
+      it "generates an eval string from a literal initializer"; (
+        result=$(String .new ^sample "an example")
+        assert equal 'eval declare sample="an example"; String .new =sample "an example"' "$result"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
     end
   end
 

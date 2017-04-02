@@ -110,20 +110,31 @@ class Class; {
     local self=$2
     local value=${3-}
     local format
+    local stdout
     local statement
 
-    [[ $self == '='* ]] || return
-    self=${self#=}
+    case $self in
+      '='* ) stdout=false ;;
+      '^'* ) stdout=true  ;;
+         * ) return 1     ;;
+    esac
+    self=${self#?}
     ! declare -f "$self" >/dev/null || return
+    [[ $stdout == 'true' ]] && {
+      value=$(declare -p value)
+      value=${value#*=}
+      printf 'eval declare %s=%s; %s .new =%s %s\n' "$self" "$value" "$class" "$self" "$value"
+      return
+    }
     printf -v statement 'function %s { __dispatch "$@" ;}' "$self"
     eval "$statement"
     [[ $class == 'Class' ]] && __superh[$self]=Object
     __classh[$self]=$class
     [[ -n $value ]] && {
       case $class in
-        'Array' ) format='%s=%s';;
-        'Hash'  ) format='declare -Ag %s=%s';;
-        *       ) format='%s=%q';;
+        'Array' ) format='%s=%s'              ;;
+        'Hash'  ) format='declare -Ag %s=%s'  ;;
+        *       ) format='%s=%q'              ;;
       esac
       printf -v statement "$format" "$self" "$value"
       eval "$statement"
