@@ -120,9 +120,10 @@ class Class; {
     [[ $class == 'Class' ]] && __superh[$self]=Object
     __classh[$self]=$class
     [[ -n $value ]] && {
-      case $value in
-        '('* ) format='%s=%s';;
-        *    ) format='%s=%q';;
+      case $class in
+        'Array' ) format='%s=%s';;
+        'Hash'  ) format='declare -Ag %s=%s';;
+        *       ) format='%s=%q';;
       esac
       printf -v statement "$format" "$self" "$value"
       eval "$statement"

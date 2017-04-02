@@ -312,6 +312,14 @@ describe Class
       end
     end
 
+    describe Hash
+      it "takes a literal initializer"; (
+        Hash .new =sampleh '( [zero]=0 [one]=1 )'
+        assert equal 'declare -A sampleh='\''([one]="1" [zero]="0" )'\' "$(declare -p sampleh)"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+    end
+
     describe String
       it "takes a literal initializer"; (
         String .new =sample "an example"
@@ -387,7 +395,3 @@ describe Array
     end
   end
 end
-
-# describe String
-#   
-# end
