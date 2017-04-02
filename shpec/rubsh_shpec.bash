@@ -359,6 +359,14 @@ describe Array
       assert equal 'declare -a samples='\''([0]="zero" [1]="one" [2]="two" [3]="three")'\' "$(declare -p samples)"
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
+
+    it "returns the concatenation"; (
+      Array .new =samples '( zero one   )'
+      Array .new =example '( two  three )'
+      samples .concat example
+      assert equal '([0]="zero" [1]="one" [2]="two" [3]="three")' "$__"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
   end
 end
 

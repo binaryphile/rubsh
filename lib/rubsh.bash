@@ -146,6 +146,9 @@ class Array; {
     "$@"
     eval __results="$__"
     __vals+=( "${__results[@]}" )
+    __to_str __vals
+    __=${__:1:-1}
+    __to_str "$__"
   end
 
   def join <<'  end'
