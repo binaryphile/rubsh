@@ -11,9 +11,8 @@ and difficult to accomplish complex tasks.
 
 Fortunately, bash does a lot for you as well. If there is system
 manipulation to be done on Unix, it can typically be done with bash, and
-frequently with a minimum of (albeit strange) syntax. It's Using bash
-for logic rather than system manipulation is where it tends to fall
-down.
+frequently with a minimum of (albeit strange) syntax. It's using bash
+for logic rather than system manipulation where it tends to fall down.
 
 While there are many ways bash could stand improvement, rubsh focuses on
 one: making it easier to work with bash's built-in data types.
@@ -24,8 +23,8 @@ array and hash (a.k.a. associative array) types, but it does provide
 useful and intuitive methods for manipulating them.
 
 It cribs some of its organization from ruby's core libraries, making it
-easier to absorb and remember. Rubsh also borrows file and path concepts
-from ruby's apis.
+easier to absorb, especially if you have ruby experience, but it should
+also be fairly easy for anyone familiar with object-oriented concepts.
 
 How It Works
 ------------
@@ -74,7 +73,7 @@ ruby's syntax.
 For example, ruby would normally assign the result of a #new to a
 variable:
 
-    myfile = File.new "${Dir.home}/sample.txt"
+    myfile = File.new "#{Dir.home}/sample.txt"
 
 You would then call methods such as #readlines on the myfile object.
 
@@ -92,35 +91,37 @@ named myfile (surprise!).  Second, it creates a bash function, also
 called myfile.
 
 The string variable stores the given filename, just like any other bash
-variable.  It can be used with all the usual bash functions and
+variable would.  It can be used with all the usual bash functions and
 expansions for strings.
 
-The function is what rubsh adds to this.  The myfile function represents
+The function is rubsh's contribution.  The myfile function represents
 the object instance of the File class.  It's what responds to File
 methods:
 
     Array lines = myfile .readlines
 
 myfile, the function, knows how to respond to File's methods.  When it
-needs to determine the filename it should reference, it uses myfile
-, the variable.  Changing the variable contents changes the filename
-used by the function.
+needs to determine the filename on which it should operate, it uses
+myfile, the variable.  Unsurprisingly, changing the variable contents
+changes the filename targeted by the function.
 
-Because of bash's scoping rules, the myfile variable is normally created
-globally.  This may be what you want, in which case the normal
+If the variable myfile already existed, then its current scope (global
+or local) remains in effect.  Otherwise the variable is created globally
+by default.  This may be what you want, in which case the normal
 invocation is fine.
 
-However, global scoping is not always what you want.  If you are in the
-body of a function and want a local myfile variable, you can use an
-alternate syntax:
+However, global scoping may not always be what you want.  If you are in
+the body of a function and want a local myfile declaration, you can use
+an alternate syntax:
 
     $(File myfile ^ ~/sample.txt)
 
 The caret instead of equals sign tells the method to generate an eval
-statement on stdout which both declares the variable local, as well as
-instantiates the object.  The statement is captured and executed by the
-bash shell substitution `$()`.  The caret was chosen to be reminiscent
-of bash's redirection operators.
+statement on stdout.  The statement both declares the variable local, as
+well as instantiates the object.  The statement is captured and executed
+by the bash shell substitution `$()`.
+
+The caret was chosen to be reminiscent of bash's redirection operators.
 
 Features
 --------
