@@ -63,63 +63,62 @@ like so:
     File .new <arguments>
 
 Because File is a function, the method name is separated by a space so
-that it is the first argument to the function.  In this case, the #new
-method creates a new object instance of the File class.  This roughly
+that it is the first argument to the function. In this case, the \#new
+method creates a new object instance of the File class. This roughly
 corresponds to ruby's `File.new`
 
 Naturally, in order for rubsh to work, its functions need to be the
-first word in the command line.  This dictates some differences from
+first word in the command line. This dictates some differences from
 ruby's syntax.
 
-For example, ruby would normally assign the result of a #new to a
+For example, ruby would normally assign the result of a \#new to a
 variable:
 
     myfile = File.new "#{Dir.home}/sample.txt"
 
-You would then call methods such as #readlines on the myfile object.
+You would then call methods such as \#readlines on the myfile object.
 
 rubsh needs File first on the command line, so it turns the syntax
 around a bit by necessity:
 
     File myfile = ~/sample.txt
 
-This is an unorthodox call to File#new, but it is still a method call.
+This is an unorthodox call to File\#new, but it is still a method call.
 This is one of the few cases where the method is inferred from the
 syntax.
 
-Our File#new does two things.  First, it creates a bash string variable
-named myfile (surprise!).  Second, it creates a bash function, also
+Our File\#new does two things. First, it creates a bash string variable
+named myfile (surprise!). Second, it creates a bash function, also
 called myfile.
 
 The string variable stores the given filename, just like any other bash
-variable would.  It can be used with all the usual bash functions and
+variable would. It can be used with all the usual bash functions and
 expansions for strings.
 
-The function is rubsh's contribution.  The myfile function represents
-the object instance of the File class.  It's what responds to File
-methods:
+The function is rubsh's contribution. The myfile function represents the
+object instance of the File class. It's what responds to File methods:
 
     Array lines = myfile .readlines
 
-myfile, the function, knows how to respond to File's methods.  When it
+myfile, the function, knows how to respond to File's methods. When it
 needs to determine the filename on which it should operate, it uses
-myfile, the variable.  Unsurprisingly, changing the variable contents
+myfile, the variable. Unsurprisingly, changing the variable contents
 changes the filename targeted by the function.
 
 If the variable myfile already existed, then its current scope (global
-or local) remains in effect.  Otherwise the variable is created globally
-by default.  This may be what you want, in which case the normal
+or local) remains in effect. Otherwise the variable is created globally
+by default. This may be what you want, in which case the normal
 invocation is fine.
 
-However, global scoping may not always be what you want.  If you are in
+However, global scoping may not always be what you want. If you are in
 the body of a function and want a local myfile declaration, you can use
 an alternate syntax:
 
     $(File myfile ^ ~/sample.txt)
 
 The caret instead of equals sign tells the method to generate an eval
-statement on stdout.  The statement both declares the variable local, as
-well as instantiates the object.  The statement is captured and executed
+statement on stdout. The statement both declares the variable local, as
+well as instantiates the object. The statement is captured and executed
 by the bash shell substitution `$()`.
 
 The caret was chosen to be reminiscent of bash's redirection operators.
@@ -132,8 +131,8 @@ Features
 -   the ability to return arrays and hashes from methods
 
 -   automatic chaining of the result of one method call to the input of
-    another method, including arrays and hashes (this is not piping of
-    stdout)
+    another method, including arrays and hashes (this is not piping
+    of stdout)
 
 -   ruby block syntax for functional-style methods (.each, .map)
 
