@@ -15,7 +15,9 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Added
 
--   eval declarations
+-   assignment syntax with =
+
+-   eval declarations, with ^ as well
 
 -   basic Array, Hash, String, Path and File classes
 
