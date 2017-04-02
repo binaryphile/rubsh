@@ -88,6 +88,23 @@ class Class; {
     __to_str ancestors
   end
 
+  def declare <<'  end'
+    local class=$1
+    local self=$2
+    local value=${3-}
+    local format
+
+    ! declare -f "$self" >/dev/null || return
+    value=$(declare -p value)
+    value=${value#*=}
+    case $class in
+      'Array' ) printf 'eval declare -a %s=%s; %s .new %s\n' "$self" "${value:1:-1}" "$class" "$self" ;;
+      'Hash'  ) printf 'eval declare -A %s=%s; %s .new %s\n' "$self" "${value:1:-1}" "$class" "$self" ;;
+      *       ) printf 'eval declare -- %s=%s; %s .new %s\n' "$self" "$value"        "$class" "$self" ;;
+    esac
+    __=$value
+  end
+
   def instance_methods <<'  end'
     local class=$1
     local inherited=${2-true}
@@ -114,28 +131,15 @@ class Class; {
     local stdout
     local statement
 
-    case $self in
-      '='* ) stdout=false ;;
-      '^'* ) stdout=true  ;;
-         * ) return 1     ;;
-    esac
-    self=${self#?}
     ! declare -f "$self" >/dev/null || return
-    [[ $stdout == 'true' ]] && {
-      value=$(declare -p value)
-      value=${value#*=}
-      printf 'eval declare %s=%s; %s .new =%s %s\n' "$self" "$value" "$class" "$self" "$value"
-      return
-    }
     printf -v statement 'function %s { __dispatch "$@" ;}' "$self"
     eval "$statement"
     [[ $class == 'Class' ]] && __superh[$self]=Object
     __classh[$self]=$class
     [[ -n $value ]] && {
-      case $class in
-        'Array' ) format='%s=%s'              ;;
-        'Hash'  ) format='declare -Ag %s=%s'  ;;
-        *       ) format='%s=%q'              ;;
+      case $value in
+        '('* ) format='%s=%s';;
+           * ) format='%s=%q';;
       esac
       printf -v statement "$format" "$self" "$value"
       eval "$statement"
@@ -274,7 +278,19 @@ __dispatch () {
   local class=${__classh[$receiver]}
   local statement
 
-  [[ $method == '.'* ]] || return
+  [[ $method != '.'* ]] && {
+    case $1 in
+      '=' )
+        set -- "$method" "${@:2}"
+        method=.new
+        ;;
+      '^' )
+        set -- "$method" "${@:2}"
+        method=.declare
+        ;;
+      * ) return 1;;
+    esac
+  }
   method=${method#.}
   while [[ ${__method_classesh[$method]} != *" $class "* ]]; do
     [[ -n ${__superh[$class]-} ]] || return

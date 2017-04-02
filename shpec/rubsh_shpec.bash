@@ -129,7 +129,7 @@ describe Object
   describe methods
     it "lists an array string of Object methods"
       Object .methods
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass" [4]="class" [5]="methods" [6]="set" [7]="to_s")' "$__"
+      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="methods" [7]="set" [8]="to_s")' "$__"
     end
 
     it "only lists Object methods defined on it when given false"
@@ -139,7 +139,7 @@ describe Object
 
     it "lists an array string of Class methods"
       Class .methods
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass" [4]="class" [5]="methods" [6]="set" [7]="to_s")' "$__"
+      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="methods" [7]="set" [8]="to_s")' "$__"
     end
 
     it "only lists Class methods defined on it when given false"
@@ -191,12 +191,12 @@ describe Class
   describe instance_methods
     it "lists an array string of Class instance methods"
       Class .instance_methods
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass" [4]="class" [5]="methods" [6]="set" [7]="to_s")' "$__"
+      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="methods" [7]="set" [8]="to_s")' "$__"
     end
 
     it "only lists Class methods defined on it when given false"
       Class .instance_methods false
-      assert equal '([0]="ancestors" [1]="instance_methods" [2]="new" [3]="superclass")' "$__"
+      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass")' "$__"
     end
 
     it "lists an array string of Object instance methods"
@@ -213,28 +213,51 @@ describe Class
   describe new
     describe Class
       it "creates a function"; (
-        Class .new =Myclass
+        Class .new Myclass
         is_function Myclass
         assert equal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
-      it "fails on other than ="; (
+      it "creates a function with the assignment syntax"; (
+        Class Myclass =
+        is_function Myclass
+        assert equal 0 $?
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "fails on other than = or ^"; (
         stop_on_error off
-        Class .new .Myclass
+        Class Myclass .
         assert unequal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "is of the class of the receiver"; (
-        Class .new =Myclass
+        Class .new Myclass
+        Myclass .class
+        assert equal '"Class"' "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "is of the class of the receiver with assignment syntax"; (
+        Class Myclass =
         Myclass .class
         assert equal '"Class"' "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the instance methods of the class"; (
-        Class .new =Myclass
+        Class .new Myclass
+        Myclass .methods
+        methods=$__
+        Class .instance_methods
+        assert equal "$methods" "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "has the instance methods of the class with assignment syntax"; (
+        Class Myclass =
         Myclass .methods
         methods=$__
         Class .instance_methods
@@ -243,7 +266,14 @@ describe Class
       end
 
       it "has the superclass Object"; (
-        Class .new =Myclass
+        Class .new Myclass
+        Myclass .superclass
+        assert equal Object "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "has the superclass Object with assignment syntax"; (
+        Class Myclass =
         Myclass .superclass
         assert equal Object "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -251,7 +281,14 @@ describe Class
 
       it "returns nothing"; (
         unset -v __
-        Class .new =Myclass
+        Class .new Myclass
+        assert equal '' "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "returns nothing with assignment syntax"; (
+        unset -v __
+        Class Myclass =
         assert equal '' "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -259,14 +296,30 @@ describe Class
 
     describe Object
       it "is of the class of the receiver"; (
-        Object .new =sample
+        Object .new sample
+        sample .class
+        assert equal '"Object"' "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "is of the class of the receiver with assignment syntax"; (
+        Object sample =
         sample .class
         assert equal '"Object"' "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the instance methods of the class"; (
-        Object .new =sample
+        Object .new sample
+        sample .methods
+        methods=$__
+        Object .instance_methods
+        assert equal "$methods" "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "has the instance methods of the class with assignment syntax"; (
+        Object sample =
         sample .methods
         methods=$__
         Object .instance_methods
@@ -277,21 +330,44 @@ describe Class
 
     describe Array
       it "creates a function"; (
-        Array .new =samples
+        Array .new samples
+        is_function samples
+        assert equal 0 $?
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "creates a function with assignment syntax"; (
+        Array samples =
         is_function samples
         assert equal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "is of the class of the receiver"; (
-        Array .new =samples
+        Array .new samples
+        samples .class
+        assert equal '"Array"' "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "is of the class of the receiver with assignment syntax"; (
+        Array samples =
         samples .class
         assert equal '"Array"' "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the instance methods of the class"; (
-        Array .new =samples
+        Array .new samples
+        samples .methods
+        methods=$__
+        Array .instance_methods
+        assert equal "$methods" "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "has the instance methods of the class with assignment syntax"; (
+        Array samples =
         samples .methods
         methods=$__
         Array .instance_methods
@@ -300,36 +376,92 @@ describe Class
       end
 
       it "takes a literal initializer"; (
-        Array .new =samples '( zero one )'
+        Array .new samples '( zero one )'
+        assert equal 'declare -a samples='\''([0]="zero" [1]="one")'\' "$(declare -p samples)"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "takes a literal initializer with assignment syntax"; (
+        Array samples = '( zero one )'
         assert equal 'declare -a samples='\''([0]="zero" [1]="one")'\' "$(declare -p samples)"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "returns an assigned value unchanged"; (
-        Array .new =samples '( zero one )'
+        Array .new samples '( zero one )'
         assert equal '( zero one )' "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "returns an assigned value unchanged with assignment syntax"; (
+        Array samples = '( zero one )'
+        assert equal '( zero one )' "$__"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "generates an eval string from a literal initializer"; (
+        result=$(Array .declare samples '( zero one )')
+        assert equal 'eval declare -a samples=( zero one ); Array .new samples' "$result"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "generates an eval string from a literal initializer with assignment syntax"; (
+        result=$(Array samples ^ '( zero one )')
+        assert equal 'eval declare -a samples=( zero one ); Array .new samples' "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
     end
 
     describe Hash
       it "takes a literal initializer"; (
-        Hash .new =sampleh '( [zero]=0 [one]=1 )'
+        declare -A sampleh
+        Hash .new sampleh '( [zero]=0 [one]=1 )'
         assert equal 'declare -A sampleh='\''([one]="1" [zero]="0" )'\' "$(declare -p sampleh)"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "takes a literal initializer with assignment syntax"; (
+        declare -A sampleh
+        Hash sampleh = '( [zero]=0 [one]=1 )'
+        assert equal 'declare -A sampleh='\''([one]="1" [zero]="0" )'\' "$(declare -p sampleh)"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "generates an eval string from a literal initializer"; (
+        result=$(Hash .declare sampleh '( [zero]=0 [one]=1 )')
+        assert equal 'eval declare -A sampleh=( [zero]=0 [one]=1 ); Hash .new sampleh' "$result"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "generates an eval string from a literal initializer with assignment syntax"; (
+        result=$(Hash sampleh ^ '( [zero]=0 [one]=1 )')
+        assert equal 'eval declare -A sampleh=( [zero]=0 [one]=1 ); Hash .new sampleh' "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
     end
 
     describe String
       it "takes a literal initializer"; (
-        String .new =sample "an example"
+        String .new sample "an example"
+        assert equal 'declare -- sample="an example"' "$(declare -p sample)"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "takes a literal initializer with assignment syntax"; (
+        String sample = "an example"
         assert equal 'declare -- sample="an example"' "$(declare -p sample)"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "generates an eval string from a literal initializer"; (
-        result=$(String .new ^sample "an example")
-        assert equal 'eval declare sample="an example"; String .new =sample "an example"' "$result"
+        result=$(String .declare sample "an example")
+        assert equal 'eval declare -- sample="an example"; String .new sample' "$result"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "generates an eval string from a literal initializer with assignment syntax"; (
+        result=$(String sample ^ "an example")
+        assert equal 'eval declare -- sample="an example"; String .new sample' "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
     end
@@ -350,14 +482,14 @@ end
 
 describe "an instance"
   it "is a function"; (
-    Object .new =sample
+    Object .new sample
     is_function sample
     assert equal 0 $?
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
   it "implicitly calls #to_s"; (
-    String .new =sample "an example"
+    String .new sample "an example"
     sample
     assert equal 'an example' "$__"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -367,16 +499,16 @@ end
 describe Array
   describe concat
     it "concatenates an array with this one"; (
-      Array .new =samples '( zero one   )'
-      Array .new =example '( two  three )'
+      Array .new samples '( zero one   )'
+      Array .new example '( two  three )'
       samples .concat example
       assert equal 'declare -a samples='\''([0]="zero" [1]="one" [2]="two" [3]="three")'\' "$(declare -p samples)"
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
 
     it "returns the concatenation"; (
-      Array .new =samples '( zero one   )'
-      Array .new =example '( two  three )'
+      Array .new samples '( zero one   )'
+      Array .new example '( two  three )'
       samples .concat example
       assert equal '([0]="zero" [1]="one" [2]="two" [3]="three")' "$__"
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -385,7 +517,7 @@ describe Array
 
   describe join
     it "joins array elements into a string"; (
-      Array .new =samples '( zero one )'
+      Array .new samples '( zero one )'
       samples .join -
       assert equal 'zero-one' "$__"
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -394,7 +526,7 @@ describe Array
 
   describe to_s
     it "returns the serialization of the array"; (
-      Array .new =samples '( zero one )'
+      Array .new samples '( zero one )'
       samples .to_s
       assert equal '([0]="zero" [1]="one")' "$__"
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -405,14 +537,16 @@ end
 describe Hash
   describe map
     it "returns an array of values mapped with a normal block"; (
-      Hash .new =sampleh '( [zero]=0 [one]=1 )'
+      declare -A sampleh
+      Hash .new sampleh '( [zero]=0 [one]=1 )'
       sampleh .map [ {k,v} '$k: $v' ]
       assert equal '([0]="one: 1" [1]="zero: 0")' "$__"
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
 
     it "returns an array of values mapped with a heredoc block"; (
-      Hash .new =sampleh '( [zero]=0 [one]=1 )'
+      declare -A sampleh
+      Hash .new sampleh '( [zero]=0 [one]=1 )'
       sampleh .map do {k,v} <<'      end'
         $k: $v
       end
@@ -423,7 +557,8 @@ describe Hash
 
   describe to_s
     it "renders an evalable string to __"; (
-      Hash .new =sampleh '( [zero]=0 [one]=1 )'
+      declare -A sampleh
+      Hash .new sampleh '( [zero]=0 [one]=1 )'
       sampleh .to_s
       assert equal '([one]="1" [zero]="0" )' "$__"
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -441,7 +576,7 @@ describe puts
   end
 
   it "outputs objects"; (
-    String .new =sample "an example"
+    String .new sample "an example"
     assert equal "an example" "$(puts sample)"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
