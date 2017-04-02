@@ -86,8 +86,7 @@ This is one of the few cases where the method is inferred from the
 syntax.
 
 Our File\#new does two things. First, it creates a bash string variable
-named myfile (surprise!). Second, it creates a bash function, also
-called myfile.
+named myfile. Second, it creates a bash function, also called myfile.
 
 The string variable stores the given filename, just like any other bash
 variable would. It can be used with all the usual bash functions and
