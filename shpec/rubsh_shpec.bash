@@ -370,10 +370,20 @@ describe Array
   end
 
   describe join
-    it "joins array elements into a string"
+    it "joins array elements into a string"; (
       Array .new =samples '( zero one )'
       samples .join -
       assert equal 'zero-one' "$__"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+  end
+
+  describe to_s
+    it "returns the serialization of the array"; (
+      Array .new =samples '( zero one )'
+      samples .to_s
+      assert equal '([0]="zero" [1]="one")' "$__"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
   end
 end
