@@ -178,7 +178,7 @@ class Hash; {
     local __retvals=()
     local __statement
 
-    __lambda=${__lambda#${__lambda%%[![:space:]]*}}
+    [[ $2 == 'do' ]] && __lambda=${__lambda#${__lambda%%[![:space:]]*}}
     printf -v __statement '__retvals+=( "$(puts "%s")" )' "$__lambda"
 
     for __key in "${!__valh[@]}"; do

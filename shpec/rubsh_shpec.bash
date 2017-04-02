@@ -414,4 +414,13 @@ describe Hash
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
   end
+
+  describe to_s
+    it "renders an evalable string to __"; (
+      Hash .new =sampleh '( [zero]=0 [one]=1 )'
+      sampleh .to_s
+      assert equal '([one]="1" [zero]="0" )' "$__"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+  end
 end
