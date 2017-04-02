@@ -432,7 +432,11 @@ describe Hash
 end
 
 describe puts
-  it "prints the given output"
+  it "prints the given argument"
     assert equal 'an example' "$(puts 'an example')"
+  end
+
+  it "ignores additional arguments"
+    assert equal 'an example' "$(puts 'an example' 'of two arguments')"
   end
 end

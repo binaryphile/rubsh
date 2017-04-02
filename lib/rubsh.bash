@@ -210,7 +210,7 @@ class Hash; {
 
 class String
 
-puts () { local IFS=''; printf '%s\n' "$*" ;}
+puts () { printf '%s\n' "$1" ;}
 
 class Path : String; {
   def expand_path <<'  end'
