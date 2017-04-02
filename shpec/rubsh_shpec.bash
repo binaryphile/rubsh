@@ -368,6 +368,14 @@ describe Array
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
   end
+
+  describe join
+    it "joins array elements into a string"
+      Array .new =samples '( zero one )'
+      samples .join -
+      assert equal 'zero-one' "$__"
+    end
+  end
 end
 
 # describe String

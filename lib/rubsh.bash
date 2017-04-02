@@ -153,7 +153,7 @@ class Array; {
 
   def join <<'  end'
     local -n __vals=$1
-    local IFS=${1- }
+    local IFS=${2- }
 
     __=${__vals[*]}
   end
