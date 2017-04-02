@@ -171,13 +171,14 @@ class Hash; {
     local -n __valh=$1
     local __keyparm=$3
     local __valparm=$4
-    local __lambda=$5
+    local __lambda=${5-$(</dev/stdin)}
     local "$__keyparm"
     local "$__valparm"
     local __key
     local __retvals=()
     local __statement
 
+    __lambda=${__lambda#${__lambda%%[![:space:]]*}}
     printf -v __statement '__retvals+=( "$(puts "%s")" )' "$__lambda"
 
     for __key in "${!__valh[@]}"; do

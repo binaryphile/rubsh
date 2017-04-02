@@ -398,9 +398,18 @@ end
 
 describe Hash
   describe map
-    it "returns an array of values mapped with a block"; (
+    it "returns an array of values mapped with a normal block"; (
       Hash .new =sampleh '( [zero]=0 [one]=1 )'
       sampleh .map [ {k,v} '$k: $v' ]
+      assert equal '([0]="one: 1" [1]="zero: 0")' "$__"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+
+    it "returns an array of values mapped with a heredoc block"; (
+      Hash .new =sampleh '( [zero]=0 [one]=1 )'
+      sampleh .map do {k,v} <<'      end'
+        $k: $v
+      end
       assert equal '([0]="one: 1" [1]="zero: 0")' "$__"
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
