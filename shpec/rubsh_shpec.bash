@@ -350,18 +350,18 @@ describe "an instance"
   end
 end
 
-# describe Array
-#   describe concat
-#     it "concatenates an array with this one"; (
-#       Array .new =samples '( zero one   )'
-#       Array .new =example '( two  three )'
-#       samples .concat example
-#       assert equal 'declare -a samples='\''([0]="zero" [1]="one" [2]="two" [3]="three")'\' "$(declare -p samples)"
-#       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-#     end
-#   end
-# end
-#
+describe Array
+  describe concat
+    it "concatenates an array with this one"; (
+      Array .new =samples '( zero one   )'
+      Array .new =example '( two  three )'
+      samples .concat example
+      assert equal 'declare -a samples='\''([0]="zero" [1]="one" [2]="two" [3]="three")'\' "$(declare -p samples)"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+  end
+end
+
 # describe String
 #   
 # end
