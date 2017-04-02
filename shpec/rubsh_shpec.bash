@@ -157,7 +157,7 @@ describe Object
   end
 
   describe to_s
-    it "puts the contents of the associated variable in __ in eval form"; (
+    it "returns a printable string from the associated variable"; (
       Class=sample
       Class .to_s
       assert equal 'sample' "$__"
