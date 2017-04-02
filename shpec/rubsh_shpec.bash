@@ -160,7 +160,7 @@ describe Object
     it "puts the contents of the associated variable in __ in eval form"; (
       Class=sample
       Class .to_s
-      assert equal '"sample"' "$__"
+      assert equal 'sample' "$__"
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
   end
@@ -359,7 +359,7 @@ describe "an instance"
   it "implicitly calls #to_s"; (
     String .new =sample "an example"
     sample
-    assert equal '"an example"' "$__"
+    assert equal 'an example' "$__"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 end
@@ -433,10 +433,16 @@ end
 
 describe puts
   it "prints the given argument"
-    assert equal 'an example' "$(puts 'an example')"
+    assert equal "an example" "$(puts "an example")"
   end
 
   it "ignores additional arguments"
-    assert equal 'an example' "$(puts 'an example' 'of two arguments')"
+    assert equal "an example" "$(puts "an example" "of two arguments")"
+  end
+
+  it "outputs objects"; (
+    String .new =sample "an example"
+    assert equal "an example" "$(puts sample)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 end

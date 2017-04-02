@@ -72,6 +72,7 @@ class Object : ''; {
   def to_s <<'  end'
     __=$(declare -p "$1" 2>/dev/null) || return
     __=${__#*=}
+    __=${__:1:-1}
   end
 }
 
@@ -210,7 +211,16 @@ class Hash; {
 
 class String
 
-puts () { printf '%s\n' "$1" ;}
+puts () {
+  local string=$1
+
+  { declare -f "$string" >/dev/null && [[ " ${!__classh[*]} " == *" $string "* ]] ;} && {
+    "$string" .to_s
+    printf '%s\n' "$__"
+    return
+  }
+  printf '%s\n' "$string"
+}
 
 class Path : String; {
   def expand_path <<'  end'
