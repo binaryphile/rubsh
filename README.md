@@ -31,16 +31,17 @@ How It Works
 
 Rubsh provides some basic classes:
 
--   String - self-explanatory
+-   **String** - self-explanatory
 
--   Array - some sorely-needed standard functions for manipulating lists
-    of strings
+-   **Array** - some sorely-needed standard functions for manipulating
+    lists of strings
 
--   Hash - associative array manipulation
+-   **Hash** - associative array manipulation
 
--   File, Dir - reading, writing and testing files and directories
+-   **File**, **Dir** - reading, writing and testing files and
+    directories
 
--   Path - working with directory and file names
+-   **Path** - working with directory and file names
 
 Rubsh doesn't change the underlying data types, so for example, hashes
 can still only store strings as values, but the methods available to
