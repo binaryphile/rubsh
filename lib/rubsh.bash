@@ -214,11 +214,11 @@ class String
 puts () {
   { declare -f "$1" >/dev/null && [[ " ${!__classh[*]} " == *" $1 "* ]] ;} && {
     "$@" || return
-    [[ $__ == '"'* ]] && __=${__:1:-1}
     printf '%s\n' "$__"
     return
   }
   printf '%s\n' "$@"
+  __="''"
 }
 
 class Path : String; {
