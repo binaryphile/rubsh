@@ -115,7 +115,7 @@ Otherwise the variable is created globally by default. This may be what
 you want, in which case the normal invocation is fine.
 
 Hash variables are the one exception to this, since bash requires
-explicit declaration for hashes. To create hash variable, you should
+explicit declaration for hashes. To create a hash variable, you should
 declare the variable yourself before instantiating the object. Here is
 how you declare a global hash variable:
 
