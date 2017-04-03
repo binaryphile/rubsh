@@ -509,10 +509,10 @@ describe Class
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
-      # it "allows literal objects"
-      #   String "an example" .class
-      #   assert equal String "$__"
-      # end
+      it "allows literal objects"
+        String "an example" .class
+        assert equal '"String"' "$__"
+      end
     end
   end
 

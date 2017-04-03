@@ -4,8 +4,9 @@
 
 set -f
 
-unset   -v  __classh __method_classesh __methodsh __method_bodyh __superh __ __class
-declare -Ag __classh __method_classesh __methodsh __method_bodyh __superh
+unset   -v  __classh __method_classesh __methodsh __method_bodyh __superh __ __class __s __h __o
+declare -Ag __classh __method_classesh __methodsh __method_bodyh __superh __h
+__s=()
 
 class () {
   __class=$1 # global
@@ -290,13 +291,25 @@ __dispatch () {
   local method=${1-.to_s}; shift ||:
   local receiver=${FUNCNAME[1]}
   local class=${__classh[$receiver]}
+  local anon
   local statement
 
   [[ $method != '.'* ]] && {
     case $1 in
       ':='  ) set -- "$method" "${@:2}"; method=.new     ;;
       '='   ) set -- "$method" "${@:2}"; method=.declare ;;
-      '.'*  ) return 1;;
+      '.'*  )
+        [[ $class == 'Class' ]] || return
+        case $receiver in
+          'Array' ) anon=__s  ;;
+          'Hash'  ) anon=__h  ;;
+          *       ) anon=__o  ;;
+        esac
+        set -- "$anon" "$@"
+        "$receiver" .new "$anon" "$method"
+        "$@"
+        return
+        ;;
       * ) return 1;;
     esac
   }
