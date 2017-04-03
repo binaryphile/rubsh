@@ -12,8 +12,8 @@ class () {
 
   [[ -z ${2-}  || $2 == ':' ]] || return
   [[ -n $super ]] && {
-    ! declare -f "$__class" >/dev/null || return
-      declare -f "$super"   >/dev/null || return
+    ! declare -f "$__class" >/dev/null 2>&1 || return
+      declare -f "$super"   >/dev/null 2>&1 || return
     __superh[$__class]=$super
   }
   printf -v statement 'function %s { __dispatch "$@" ;}' "$__class"
@@ -90,11 +90,11 @@ class Class; {
 
   def declare <<'  end'
     local class=$1
-    local self=$2
-    local value=${3-}
+    local self=$2; shift 2
+    local value=${1-}
     local format
 
-    ! declare -f "$self" >/dev/null || return
+    ! declare -f "$self" >/dev/null 2>&1 || return
     value=$(declare -p value)
     value=${value#*=}
     case $class in
@@ -125,25 +125,29 @@ class Class; {
 
   def new <<'  end'
     local class=$1
-    local self=$2
-    local value=${3-}
+    local self=$2; shift 2
+    local value=${1-}
     local format
     local stdout
     local statement
 
-    ! declare -f "$self" >/dev/null || return
+    ! declare -f "$self" >/dev/null 2>&1 || return
     printf -v statement 'function %s { __dispatch "$@" ;}' "$self"
     eval "$statement"
     [[ $class == 'Class' ]] && __superh[$self]=Object
     __classh[$self]=$class
-    [[ -n $value ]] && {
-      case $value in
-        '('* ) format='%s=%s';;
-           * ) format='%s=%q';;
-      esac
-      printf -v statement "$format" "$self" "$value"
-      eval "$statement"
+    __=''
+    [[ -z $value ]] && return
+    declare -f "$value" >/dev/null 2>&1 && {
+      "$@"
+      value=$__
     }
+    case $value in
+      '('* ) format='%s=%s';;
+         * ) format='%s=%q';;
+    esac
+    printf -v statement "$format" "$self" "$value"
+    eval "$statement"
     __=$value
   end
 
@@ -216,7 +220,7 @@ class Hash; {
 class String
 
 puts () {
-  { declare -f "$1" >/dev/null && [[ " ${!__classh[*]} " == *" $1 "* ]] ;} && {
+  { declare -f "$1" >/dev/null 2>&1 && [[ " ${!__classh[*]} " == *" $1 "* ]] ;} && {
     "$@" || return
     printf '%s\n' "$__"
     return

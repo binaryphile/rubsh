@@ -410,6 +410,20 @@ describe Class
         assert equal 'eval declare -a samples=( zero one ); Array .new samples' "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
+
+      it "allows evaluation of method calls as arguments"; (
+        Array .new samples '( zero one )'
+        Array .new results samples
+        assert equal 'declare -a results='\''([0]="zero" [1]="one")'\' "$(declare -p results)"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "allows evaluation of method calls as arguments with assignment syntax"; (
+        Array samples = '( zero one )'
+        Array results = samples
+        assert equal 'declare -a results='\''([0]="zero" [1]="one")'\' "$(declare -p results)"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
     end
 
     describe Hash
@@ -438,6 +452,22 @@ describe Class
         assert equal 'eval declare -A sampleh=( [zero]=0 [one]=1 ); Hash .new sampleh' "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
+
+      it "allows evaluation of method calls as arguments"; (
+        declare -A sampleh resulth
+        Hash .new sampleh '( [zero]=0 [one]=1 )'
+        Hash .new resulth sampleh
+        assert equal 'declare -A resulth='\''([one]="1" [zero]="0" )'\' "$(declare -p resulth)"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "allows evaluation of method calls as arguments with assignment syntax"; (
+        declare -A sampleh resulth
+        Hash sampleh = '( [zero]=0 [one]=1 )'
+        Hash resulth = sampleh
+        assert equal 'declare -A resulth='\''([one]="1" [zero]="0" )'\' "$(declare -p resulth)"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
     end
 
     describe String
@@ -462,6 +492,20 @@ describe Class
       it "generates an eval string from a literal initializer with assignment syntax"; (
         result=$(String sample =^ "an example")
         assert equal 'eval declare -- sample="an example"; String .new sample' "$result"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "allows evaluation of method calls as arguments"; (
+        String .new sample "an example"
+        String .new result sample
+        assert equal "an example" "$result"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
+
+      it "allows evaluation of method calls as arguments with assignment syntax"; (
+        String sample = "an example"
+        String result = sample
+        assert equal "an example" "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
     end
