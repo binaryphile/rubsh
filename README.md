@@ -74,7 +74,7 @@ variable:
 
     myfile = File.new "#{Dir.home}/sample.txt"
 
-You would then call methods such as \#readlines on the myfile object.
+You would then call a method such as \#readlines on the myfile object.
 
 rubsh needs File to be first on the command line, so it turns the syntax
 around a bit by necessity:
@@ -82,8 +82,8 @@ around a bit by necessity:
     File myfile = ~/sample.txt
 
 This is an unorthodox call to File\#new, but it is still a method call.
-This is one of the few cases where the method is inferred from the
-syntax.
+This is one of the few cases where rubsh does some magic to infer the
+method from the syntax.
 
 Our File\#new does two things. First, it creates a bash string variable
 named myfile. Second, it creates a bash function, also called myfile.
@@ -105,27 +105,27 @@ changes the filename targeted by the function.
 The scope of the myfile variable (local to the current function or
 global) depends on a couple things.
 
-If the variable myfile existed when #new was called, then its existing
-scope remains in effect.  This way you can directly control the scope
-with your own declaration prior to calling #new.
+If the variable myfile existed when \#new was called, then its existing
+scope remains in effect. This way you can directly control the scope
+with your own declaration prior to calling \#new.
 
 Otherwise the variable is created globally by default. This may be what
 you want, in which case the normal invocation is fine.
 
 Hash variables are the one exception to this, since they require
-explicit declaration.  You should either declare hash variables yourself
+explicit declaration. You should either declare hash variables yourself
 before instantiating their object, or use the following syntax instead.
 
 Global scoping may not always be what you want. If you are in the body
 of a function and want a local variable declaration, you can use an
 alternate syntax:
 
-    $(File myfile ^ ~/sample.txt)
+    $(File myfile =^ ~/sample.txt)
 
-The caret instead of equals sign tells the method to generate an eval
-statement on stdout. The statement both declares the variable local and
-also instantiates the object. The statement is captured and executed by
-the bash shell substitution `$()`.
+The equals-caret sign tells the method to generate an eval statement on
+stdout. The statement both declares the variable local and also
+instantiates the object. The statement is captured and executed by the
+bash shell substitution `$()`.
 
 The caret was chosen to be reminiscent of bash's redirection operators.
 

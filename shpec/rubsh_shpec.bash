@@ -226,7 +226,7 @@ describe Class
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
-      it "fails on other than = or ^"; (
+      it "fails on other than = or =^"; (
         stop_on_error off
         Class Myclass .
         assert unequal 0 $?
@@ -406,7 +406,7 @@ describe Class
       end
 
       it "generates an eval string from a literal initializer with assignment syntax"; (
-        result=$(Array samples ^ '( zero one )')
+        result=$(Array samples =^ '( zero one )')
         assert equal 'eval declare -a samples=( zero one ); Array .new samples' "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -434,7 +434,7 @@ describe Class
       end
 
       it "generates an eval string from a literal initializer with assignment syntax"; (
-        result=$(Hash sampleh ^ '( [zero]=0 [one]=1 )')
+        result=$(Hash sampleh =^ '( [zero]=0 [one]=1 )')
         assert equal 'eval declare -A sampleh=( [zero]=0 [one]=1 ); Hash .new sampleh' "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -460,7 +460,7 @@ describe Class
       end
 
       it "generates an eval string from a literal initializer with assignment syntax"; (
-        result=$(String sample ^ "an example")
+        result=$(String sample =^ "an example")
         assert equal 'eval declare -- sample="an example"; String .new sample' "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end

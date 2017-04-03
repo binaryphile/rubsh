@@ -292,7 +292,7 @@ __dispatch () {
         set -- "$method" "${@:2}"
         method=.new
         ;;
-      '^' )
+      '=^' )
         set -- "$method" "${@:2}"
         method=.declare
         ;;
