@@ -220,15 +220,15 @@ describe Class
       end
 
       it "creates a function with the assignment syntax"; (
-        Class Myclass =
+        Class Myclass :=
         is_function Myclass
         assert equal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
-      it "fails on other than = or =^"; (
+      it "fails on other than := or ="; (
         stop_on_error off
-        Class Myclass .
+        Class Myclass a
         assert unequal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -241,7 +241,7 @@ describe Class
       end
 
       it "is of the class of the receiver with assignment syntax"; (
-        Class Myclass =
+        Class Myclass :=
         Myclass .class
         assert equal '"Class"' "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -257,7 +257,7 @@ describe Class
       end
 
       it "has the instance methods of the class with assignment syntax"; (
-        Class Myclass =
+        Class Myclass :=
         Myclass .methods
         methods=$__
         Class .instance_methods
@@ -273,7 +273,7 @@ describe Class
       end
 
       it "has the superclass Object with assignment syntax"; (
-        Class Myclass =
+        Class Myclass :=
         Myclass .superclass
         assert equal Object "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -288,7 +288,7 @@ describe Class
 
       it "returns nothing with assignment syntax"; (
         unset -v __
-        Class Myclass =
+        Class Myclass :=
         assert equal '' "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -303,7 +303,7 @@ describe Class
       end
 
       it "is of the class of the receiver with assignment syntax"; (
-        Object sample =
+        Object sample :=
         sample .class
         assert equal '"Object"' "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -319,7 +319,7 @@ describe Class
       end
 
       it "has the instance methods of the class with assignment syntax"; (
-        Object sample =
+        Object sample :=
         sample .methods
         methods=$__
         Object .instance_methods
@@ -337,7 +337,7 @@ describe Class
       end
 
       it "creates a function with assignment syntax"; (
-        Array samples =
+        Array samples :=
         is_function samples
         assert equal 0 $?
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -351,7 +351,7 @@ describe Class
       end
 
       it "is of the class of the receiver with assignment syntax"; (
-        Array samples =
+        Array samples :=
         samples .class
         assert equal '"Array"' "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -367,7 +367,7 @@ describe Class
       end
 
       it "has the instance methods of the class with assignment syntax"; (
-        Array samples =
+        Array samples :=
         samples .methods
         methods=$__
         Array .instance_methods
@@ -382,7 +382,7 @@ describe Class
       end
 
       it "takes a literal initializer with assignment syntax"; (
-        Array samples = '( zero one )'
+        Array samples := '( zero one )'
         assert equal 'declare -a samples='\''([0]="zero" [1]="one")'\' "$(declare -p samples)"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -394,7 +394,7 @@ describe Class
       end
 
       it "returns an assigned value unchanged with assignment syntax"; (
-        Array samples = '( zero one )'
+        Array samples := '( zero one )'
         assert equal '( zero one )' "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -406,7 +406,7 @@ describe Class
       end
 
       it "generates an eval string from a literal initializer with assignment syntax"; (
-        result=$(Array samples =^ '( zero one )')
+        result=$(Array samples = '( zero one )')
         assert equal 'eval declare -a samples=( zero one ); Array .new samples' "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -419,8 +419,8 @@ describe Class
       end
 
       it "allows evaluation of method calls as arguments with assignment syntax"; (
-        Array samples = '( zero one )'
-        Array results = samples
+        Array samples := '( zero one )'
+        Array results := samples
         assert equal 'declare -a results='\''([0]="zero" [1]="one")'\' "$(declare -p results)"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -436,7 +436,7 @@ describe Class
 
       it "takes a literal initializer with assignment syntax"; (
         declare -A sampleh
-        Hash sampleh = '( [zero]=0 [one]=1 )'
+        Hash sampleh := '( [zero]=0 [one]=1 )'
         assert equal 'declare -A sampleh='\''([one]="1" [zero]="0" )'\' "$(declare -p sampleh)"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -448,7 +448,7 @@ describe Class
       end
 
       it "generates an eval string from a literal initializer with assignment syntax"; (
-        result=$(Hash sampleh =^ '( [zero]=0 [one]=1 )')
+        result=$(Hash sampleh = '( [zero]=0 [one]=1 )')
         assert equal 'eval declare -A sampleh=( [zero]=0 [one]=1 ); Hash .new sampleh' "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -463,8 +463,8 @@ describe Class
 
       it "allows evaluation of method calls as arguments with assignment syntax"; (
         declare -A sampleh resulth
-        Hash sampleh = '( [zero]=0 [one]=1 )'
-        Hash resulth = sampleh
+        Hash sampleh := '( [zero]=0 [one]=1 )'
+        Hash resulth := sampleh
         assert equal 'declare -A resulth='\''([one]="1" [zero]="0" )'\' "$(declare -p resulth)"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -478,7 +478,7 @@ describe Class
       end
 
       it "takes a literal initializer with assignment syntax"; (
-        String sample = "an example"
+        String sample := "an example"
         assert equal 'declare -- sample="an example"' "$(declare -p sample)"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -490,7 +490,7 @@ describe Class
       end
 
       it "generates an eval string from a literal initializer with assignment syntax"; (
-        result=$(String sample =^ "an example")
+        result=$(String sample = "an example")
         assert equal 'eval declare -- sample="an example"; String .new sample' "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
@@ -503,11 +503,16 @@ describe Class
       end
 
       it "allows evaluation of method calls as arguments with assignment syntax"; (
-        String sample = "an example"
-        String result = sample
+        String sample := "an example"
+        String result := sample
         assert equal "an example" "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
+
+      # it "allows literal objects"
+      #   String "an example" .class
+      #   assert equal String "$__"
+      # end
     end
   end
 

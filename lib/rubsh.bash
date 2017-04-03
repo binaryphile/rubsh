@@ -294,14 +294,9 @@ __dispatch () {
 
   [[ $method != '.'* ]] && {
     case $1 in
-      '=' )
-        set -- "$method" "${@:2}"
-        method=.new
-        ;;
-      '=^' )
-        set -- "$method" "${@:2}"
-        method=.declare
-        ;;
+      ':='  ) set -- "$method" "${@:2}"; method=.new     ;;
+      '='   ) set -- "$method" "${@:2}"; method=.declare ;;
+      '.'*  ) return 1;;
       * ) return 1;;
     esac
   }
