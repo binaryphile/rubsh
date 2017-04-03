@@ -15,9 +15,11 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Added
 
--   assignment syntax with =
+-   resolution of method as value argument with Class#new
 
--   eval declarations, with ^ as well
+-   Class#new assignment syntax with =
+
+-   Class#declare declarations, with =^ syntax as well
 
 -   basic Array, Hash, String, Path and File classes
 
