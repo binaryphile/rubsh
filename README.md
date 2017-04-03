@@ -18,13 +18,14 @@ While there are many ways bash could stand improvement, rubsh focuses on
 one: making it easier to work with bash's built-in data types.
 
 rubsh provides an object-model for those data types, including methods
-and inheritance. rubsh doesn't offer new types to the basic string,
-array and hash (a.k.a. associative array) types, but it does provide
-useful and intuitive methods for manipulating them.
+and inheritance. rubsh doesn't offer more data types than the basic
+string, array and hash (a.k.a. associative array) types, but it does
+provide useful and intuitive methods for manipulating them.
 
-It cribs some of its organization from ruby's core libraries, making it
-easier to absorb, especially if you have ruby experience, but it should
-also be fairly easy for anyone familiar with object-oriented concepts.
+It cribs as much of its organization from ruby's core libraries as
+possible, making it easier to absorb, especially if you have ruby
+experience. But it should also be fairly easy for anyone familiar with
+general object-oriented concepts.
 
 How It Works
 ------------
@@ -85,8 +86,9 @@ This is an unorthodox call to File\#new, but it is still a method call.
 This is one of the few cases where rubsh does some magic to infer the
 method from the syntax.
 
-Our File\#new does two things. First, it creates a bash string variable
-named myfile. Second, it creates a bash function, also called myfile.
+rubsh's File\#new does two things. First, it creates a bash string
+variable named myfile. Second, it creates a bash function, also called
+myfile.
 
 The string variable stores the given filename, just like any other bash
 variable would. It can be used with all the usual bash functions and
@@ -99,8 +101,8 @@ object instance of the File class. It's what responds to File methods:
 
 myfile, the function, knows how to respond to File's methods. When it
 needs to determine the filename on which it should operate, it uses
-myfile, the variable. Unsurprisingly, changing the variable contents
-changes the filename targeted by the function.
+myfile, the variable. Unsurprisingly, changing the myfile variable's
+contents changes the filename targeted by the function.
 
 The scope of the myfile variable (local to the current function or
 global) depends on a couple things.
@@ -112,25 +114,40 @@ with your own declaration prior to calling \#new.
 Otherwise the variable is created globally by default. This may be what
 you want, in which case the normal invocation is fine.
 
-Hash variables are the one exception to this, since they require
-explicit declaration. You should either declare hash variables yourself
-before instantiating their object, or use the following syntax instead.
+Hash variables are the one exception to this, since bash requires
+explicit declaration for hashes. To create hash variable, you should
+declare the variable yourself before instantiating the object. Here is
+how you declare a global hash variable:
 
-Global scoping may not always be what you want. If you are in the body
-of a function and want a local variable declaration, you can use an
-alternate syntax:
+    declare -Ag myhash
+    Hash myhash = '( [zero]=0 )'
+
+Global scoping may not always be what you want, however. You may declare
+the variable local yourself, similar to the above example:
+
+    local myfile
+    File myfile = ~/sample.txt
+
+However there is another, more compact alternative for local declaration
+instead:
 
     $(File myfile =^ ~/sample.txt)
 
-The equals-caret sign tells the method to generate an eval statement on
-stdout. The statement both declares the variable local and also
+The equals-caret sign calls File\#declare, which generates a statement
+on stdout. The statement declares the variable as local, and also
 instantiates the object. The statement is captured and executed by the
 bash shell substitution `$()`.
 
 The caret was chosen to be reminiscent of bash's redirection operators.
 
 This method works for hash variables as well, so they do not require a
-separate declaration of your own.
+separate declaration statement:
+
+    $(Hash myhash =^ '( [zero]=0 )')
+
+There are a number of other useful features which make rubsh quite
+pleasurable to work with over standard bash. I invite you to read the
+test suite and documentation to learn more.
 
 Features
 --------
@@ -140,10 +157,10 @@ Features
 -   the ability to return arrays and hashes from methods
 
 -   automatic chaining of the result of one method call to the input of
-    another method, including arrays and hashes (this is not piping
-    of stdout)
+    another method, including arrays and hashes
 
--   ruby block syntax for functional-style methods (.each, .map)
+-   ruby-inspired block syntax for functional-style methods
+    (.each, .map)
 
 -   control over variable scope
 
@@ -153,7 +170,7 @@ Features
 
 -   economic use of bash's variable and function namespaces
 
--   intermixability with regular bash syntax
+-   interoperability with standard bash syntax
 
 Installation
 ------------
