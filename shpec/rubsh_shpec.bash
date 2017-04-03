@@ -508,11 +508,6 @@ describe Class
         assert equal "an example" "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
-
-      it "allows literal objects"
-        String "an example" .class
-        assert equal '"String"' "$__"
-      end
     end
   end
 
@@ -629,4 +624,21 @@ describe puts
     assert equal "an example" "$(puts sample)"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+end
+
+describe dispatch
+    it "allows a literal String object"
+      String "an example" .class
+      assert equal '"String"' "$__"
+    end
+
+    it "allows a literal Array object"
+      Array '( zero one )' .class
+      assert equal '"Array"' "$__"
+    end
+
+    it "allows a literal Hash object"
+      Hash '( [zero]=0 [one]=1 )' .class
+      assert equal '"Hash"' "$__"
+    end
 end

@@ -4,9 +4,9 @@
 
 set -f
 
-unset   -v  __classh __method_classesh __methodsh __method_bodyh __superh __ __class __s __h __o
+unset   -v  __classh __method_classesh __methodsh __method_bodyh __superh __ __class __a __h __s
 declare -Ag __classh __method_classesh __methodsh __method_bodyh __superh __h
-__s=()
+__a=()
 
 class () {
   __class=$1 # global
@@ -301,9 +301,9 @@ __dispatch () {
       '.'*  )
         [[ $class == 'Class' ]] || return
         case $receiver in
-          'Array' ) anon=__s  ;;
+          'Array' ) anon=__a  ;;
           'Hash'  ) anon=__h  ;;
-          *       ) anon=__o  ;;
+          *       ) anon=__s  ;;
         esac
         set -- "$anon" "$@"
         "$receiver" .new "$anon" "$method"
