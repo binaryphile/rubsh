@@ -2,6 +2,8 @@
 [[ -n ${reload-}                  ]] && { unset -v reload && echo reloaded || return ;}
 [[ -z ${_rubsh-}                  ]] && readonly _rubsh=loaded
 
+set -f
+
 unset   -v  __classh __method_classesh __methodsh __method_bodyh __superh __ __class
 declare -Ag __classh __method_classesh __methodsh __method_bodyh __superh
 
