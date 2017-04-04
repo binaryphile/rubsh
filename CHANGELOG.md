@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Changed
 
+-   renamed \_\_to\_str to \_\_inspect
+
 -   made String the default super
 
 -   eliminated all existing work and started from scratch

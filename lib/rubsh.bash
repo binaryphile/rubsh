@@ -66,7 +66,7 @@ class Object : ''; {
         ;;
       * ) return 1;;
     esac
-    __to_str methods
+    __inspect methods
   end
 
   def set <<'  end'
@@ -93,7 +93,7 @@ class Class : Object; {
       class=${__superh[$class]}
       ancestors+=( "$class" )
     done
-    __to_str ancestors
+    __inspect ancestors
   end
 
   def declare <<'  end'
@@ -128,7 +128,7 @@ class Class : Object; {
         ;;
       * ) return 1;;
     esac
-    __to_str instance_methods
+    __inspect instance_methods
   end
 
   def new <<'  end'
@@ -175,9 +175,9 @@ class Array : Object; {
     "$@"
     eval __results="$__"
     __vals+=( "${__results[@]}" )
-    __to_str __vals
+    __inspect __vals
     __=${__:1:-1}
-    __to_str "$__"
+    __inspect "$__"
   end
 
   def inspect <<'  end'
@@ -227,7 +227,7 @@ class Hash : Object; {
       eval "$__statement"
     done
 
-    __to_str __retvals
+    __inspect __retvals
   end
 
   def to_s <<'  end'
@@ -237,7 +237,7 @@ class Hash : Object; {
   end
 }
 
-class String
+class String : Object
 
 puts () {
   { declare -f "$1" >/dev/null 2>&1 && [[ " ${!__classh[*]} " == *" $1 "* ]] ;} && {
@@ -282,7 +282,7 @@ class File : Path; {
     local __lines=()
 
     IFS=$'\n' read -rd '' -a __lines <"$__filename"
-    __to_str __lines
+    __inspect __lines
   end
 
   def write <<'  end'
@@ -296,12 +296,6 @@ class File : Path; {
     esac
     puts "$__string" >"$__filename"
   end
-}
-
-__to_str () {
-  __=$(declare -p "$1" 2>/dev/null) || return
-  __=${__#*=}
-  if [[ $__ == \'* ]]; then __=${__:1:-1}; fi
 }
 
 __dispatch () {
@@ -339,3 +333,10 @@ __dispatch () {
   printf -v statement 'function __ { %s ;}; __ "$receiver" "$@"' "${__method_bodyh[$class.$method]}"
   eval "$statement"
 }
+
+__inspect () {
+  __=$(declare -p "$1" 2>/dev/null) || return
+  __=${__#*=}
+  if [[ $__ == \'* ]]; then __=${__:1:-1}; fi
+}
+

@@ -162,15 +162,6 @@ describe Object
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
   end
-
-  describe to_s
-    it "returns a printable string from the associated variable"; (
-      Class=sample
-      Class .to_s
-      assert equal 'sample' "$__"
-      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-    end
-  end
 end
 
 describe Class
@@ -576,7 +567,7 @@ describe Array
   end
 
   describe to_s
-    it "returns the serialization of the array"; (
+    it "returns a string interpretation of an array"; (
       Array .new samples '( zero one )'
       samples .to_s
       assert equal '([0]="zero" [1]="one")' "$__"
@@ -607,11 +598,22 @@ describe Hash
   end
 
   describe to_s
-    it "renders an evalable string to __"; (
+    it "returns a string interpretation of a hash"; (
       declare -A sampleh
       Hash .new sampleh '( [zero]=0 [one]=1 )'
       sampleh .to_s
       assert equal '([one]="1" [zero]="0" )' "$__"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+  end
+end
+
+describe String
+  describe to_s
+    it "returns a printable string from the associated variable"; (
+      String .new sample "an example"
+      sample .to_s
+      assert equal "an example" "$__"
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
   end
