@@ -10,7 +10,7 @@ __a=()
 
 class () {
   __class=$1 # global
-  local super=${3-Object}
+  local super=${3-String}
   local statement
 
   [[ -z ${2-}  || $2 == ':' ]] || return
@@ -84,7 +84,7 @@ class Object : ''; {
   end
 }
 
-class Class; {
+class Class : Object; {
   def ancestors <<'  end'
     local class=$1
     local ancestors=( $class )
@@ -166,7 +166,7 @@ class Class; {
   end
 }
 
-class Array; {
+class Array : Object; {
   def concat <<'  end'
     local -n __vals=$1; shift
     local __results=()
@@ -200,7 +200,7 @@ class Array; {
   end
 }
 
-class Hash; {
+class Hash : Object; {
   def inspect <<'  end'
     __=$(declare -p "$1" 2>/dev/null) || return
     __=${__#*=}
@@ -249,7 +249,7 @@ puts () {
   __='""'
 }
 
-class Path : String; {
+class Path; {
   def expand_path <<'  end'
     local __pathname=${!1}
     local __filename

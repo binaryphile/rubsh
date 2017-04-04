@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Changed
 
+-   made String the default super
+
 -   eliminated all existing work and started from scratch
 
 -   made methods start with .
