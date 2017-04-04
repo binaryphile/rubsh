@@ -307,8 +307,8 @@ __dispatch () {
 
   [[ $method != '.'* ]] && {
     case $1 in
-      ':='  ) set -- "$method" "${@:2}"; method=.new     ;;
-      '='   ) set -- "$method" "${@:2}"; method=.declare ;;
+      '='   ) set -- "$method" "${@:2}"; method=.new     ;;
+      ':='  ) set -- "$method" "${@:2}"; method=.declare ;;
       '.'*  )
         [[ $class == 'Class' ]] || return
         case $receiver in
