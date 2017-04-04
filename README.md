@@ -114,16 +114,8 @@ with your own declaration prior to calling \#new.
 Otherwise the variable is created globally by default. This may be what
 you want, in which case the normal invocation is fine.
 
-Hash variables are the one exception to this, since bash requires
-explicit declaration for hashes. To create a hash variable, you should
-declare the variable yourself before instantiating the object. Here is
-how you declare a global hash variable:
-
-    declare -Ag myhash
-    Hash myhash = '( [zero]=0 )'
-
 Global scoping may not always be what you want, however. You may declare
-the variable local yourself, similar to the above example:
+the variable local yourself:
 
     local myfile
     File myfile = ~/sample.txt
@@ -138,10 +130,25 @@ on stdout. The statement declares the variable as local, and also
 instantiates the object. The statement is captured and executed by the
 bash shell substitution `$()`.
 
-This method works for hash variables as well, so they do not require a
-separate declaration statement:
+Hash variables are somewhat exceptional with regard to scope, since bash
+requires explicit declaration for hashes.
+
+To create a hash variable, you should declare the variable yourself
+before instantiating the object.  Here is how you declare a global hash
+variable:
+
+    declare -Ag myhash
+    Hash myhash = '( [zero]=0 )'
+
+Drop the -g and you have a local scope for myhash (you can use the
+`local` builtin, but `declare` works too).
+
+If you want a local hash, however, the #declare method is best:
 
     $(Hash myhash := '( [zero]=0 )')
+
+This way the hash doesn't need a separate declaration at all. Bear in
+mind that it will only generate a locally scoped hash, though.
 
 There are a number of other useful features which make rubsh quite
 pleasurable to work with over standard bash. I invite you to read the
