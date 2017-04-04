@@ -17,23 +17,23 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 -   made methods start with .
 
--   default method changed from #to_s to #inspect
+-   default method changed from \#to\_s to \#inspect
 
--   puts calls to_s on an object
+-   puts calls to\_s on an object
 
 ### Added
 
--   Hash#inspect method
+-   Hash\#inspect method
 
--   Array#inspect method
+-   Array\#inspect method
 
--   Object#inspect method
+-   Object\#inspect method
 
--   resolution of method as value argument with Class#new
+-   resolution of method as value argument with Class\#new
 
--   Class#new assignment syntax with =
+-   Class\#new assignment syntax with =
 
--   Class#declare declarations, with =^ syntax as well
+-   Class\#declare declarations, with =^ syntax as well
 
 -   basic Array, Hash, String, Path and File classes
 
