@@ -13,7 +13,15 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 -   made methods start with .
 
+-   default method changed from #to_s to #inspect
+
+-   puts calls to_s on an object
+
 ### Added
+
+-   Hash#inspect method
+
+-   Array#inspect method
 
 -   Object#inspect method
 
