@@ -126,10 +126,17 @@ describe Object
     end
   end
 
+  describe inspect
+    it "returns an eval'able right-hand side string representation of the contents of the object"
+      Object=object
+      Object .inspect
+      assert equal '"object"' "$__"
+    end
+  end
   describe methods
     it "lists an array string of Object methods"
       Object .methods
-      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="methods" [7]="set" [8]="to_s")' "$__"
+      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="inspect" [7]="methods" [8]="set" [9]="to_s")' "$__"
     end
 
     it "only lists Object methods defined on it when given false"
@@ -139,7 +146,7 @@ describe Object
 
     it "lists an array string of Class methods"
       Class .methods
-      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="methods" [7]="set" [8]="to_s")' "$__"
+      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="inspect" [7]="methods" [8]="set" [9]="to_s")' "$__"
     end
 
     it "only lists Class methods defined on it when given false"
@@ -191,7 +198,7 @@ describe Class
   describe instance_methods
     it "lists an array string of Class instance methods"
       Class .instance_methods
-      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="methods" [7]="set" [8]="to_s")' "$__"
+      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="inspect" [7]="methods" [8]="set" [9]="to_s")' "$__"
     end
 
     it "only lists Class methods defined on it when given false"
@@ -201,12 +208,12 @@ describe Class
 
     it "lists an array string of Object instance methods"
       Object .instance_methods
-      assert equal '([0]="class" [1]="methods" [2]="set" [3]="to_s")' "$__"
+      assert equal '([0]="class" [1]="inspect" [2]="methods" [3]="set" [4]="to_s")' "$__"
     end
 
     it "only lists Object methods defined on it when given false"
       Object .instance_methods false
-      assert equal '([0]="class" [1]="methods" [2]="set" [3]="to_s")' "$__"
+      assert equal '([0]="class" [1]="inspect" [2]="methods" [3]="set" [4]="to_s")' "$__"
     end
   end
 

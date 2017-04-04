@@ -44,6 +44,11 @@ class Object : ''; {
     __=${__#*=}
   end
 
+  def inspect <<'  end'
+    __=$(declare -p "$1" 2>/dev/null) || return
+    __=${__#*=}
+  end
+
   def methods <<'  end'
     local self=$1
     local inherited=${2-true}

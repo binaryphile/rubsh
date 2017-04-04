@@ -15,6 +15,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Added
 
+-   Object#inspect method
+
 -   resolution of method as value argument with Class#new
 
 -   Class#new assignment syntax with =
