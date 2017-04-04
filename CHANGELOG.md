@@ -53,6 +53,14 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 -   revisited readme
 
+### Todo
+
+-   \#method_missing
+
+-   method chaining
+
+-   parameters with braces
+
   [Keep a Changelog]: http://keepachangelog.com/
   [Semantic Versioning]: http://semver.org/
   [Unreleased]: https://github.com/binaryphile/rubsh/compare/v0.6.3...v10.10

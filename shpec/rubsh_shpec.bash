@@ -12,7 +12,7 @@ stop_on_error
 
 source "$(shpec_cwd)"/../lib/rubsh.bash
 
-is_function () { declare -f "$1" >/dev/null ;}
+is_function () { declare -f "$1" >/dev/null 2>&1 ;}
 
 describe class
   it "sets __class"; (
@@ -91,6 +91,15 @@ describe def
     class Sample
     def sample 'example'
     assert equal example "${__method_bodyh[Sample.sample]}"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "records the method body given as a heredoc"; (
+    class Sample
+    def sample <<'    end'
+      example
+    end
+    assert equal '      example' "${__method_bodyh[Sample.sample]}"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
