@@ -80,7 +80,7 @@ You would then call a method such as \#readlines on the myfile object.
 rubsh needs File to be first on the command line, so it turns the syntax
 around a bit by necessity:
 
-    File myfile = ~/sample.txt
+    File myfile := ~/sample.txt
 
 This is an unorthodox call to File\#new, but it is still a method call.
 This is one of the few cases where rubsh does some magic to infer the
@@ -97,7 +97,7 @@ expansions for strings.
 The function is rubsh's contribution. The myfile function represents the
 object instance of the File class. It's what responds to File methods:
 
-    Array lines = myfile .readlines
+    Array lines := myfile .readlines
 
 myfile, the function, knows how to respond to File's methods. When it
 needs to determine the filename on which it should operate, it uses
@@ -120,18 +120,18 @@ declare the variable yourself before instantiating the object. Here is
 how you declare a global hash variable:
 
     declare -Ag myhash
-    Hash myhash = '( [zero]=0 )'
+    Hash myhash := '( [zero]=0 )'
 
 Global scoping may not always be what you want, however. You may declare
 the variable local yourself, similar to the above example:
 
     local myfile
-    File myfile = ~/sample.txt
+    File myfile := ~/sample.txt
 
 However there is another, more compact alternative for local declaration
 instead:
 
-    $(File myfile =^ ~/sample.txt)
+    $(File myfile = ~/sample.txt)
 
 The equals-caret sign calls File\#declare, which generates a statement
 on stdout. The statement declares the variable as local, and also
@@ -143,7 +143,7 @@ The caret was chosen to be reminiscent of bash's redirection operators.
 This method works for hash variables as well, so they do not require a
 separate declaration statement:
 
-    $(Hash myhash =^ '( [zero]=0 )')
+    $(Hash myhash = '( [zero]=0 )')
 
 There are a number of other useful features which make rubsh quite
 pleasurable to work with over standard bash. I invite you to read the
