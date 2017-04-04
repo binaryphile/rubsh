@@ -505,14 +505,14 @@ describe Class
       it "allows evaluation of method calls as arguments"; (
         String .new sample "an example"
         String .new result sample
-        assert equal "an example" "$result"
+        assert equal '"an example"' "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "allows evaluation of method calls as arguments with assignment syntax"; (
         String sample := "an example"
         String result := sample
-        assert equal "an example" "$result"
+        assert equal '"an example"' "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
     end
@@ -539,10 +539,10 @@ describe "an instance"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
-  it "implicitly calls #to_s"; (
+  it "implicitly calls #inspect"; (
     String .new sample "an example"
     sample
-    assert equal 'an example' "$__"
+    assert equal '"an example"' "$__"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 end
@@ -626,7 +626,7 @@ describe puts
     assert equal $'an example\nof two arguments' "$(puts "an example" "of two arguments")"
   end
 
-  it "outputs objects"; (
+  it "calls to_s on an object"; (
     String .new sample "an example"
     assert equal "an example" "$(puts sample)"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:

@@ -180,6 +180,12 @@ class Array; {
     __to_str "$__"
   end
 
+  def inspect <<'  end'
+    __=$(declare -p "$1" 2>/dev/null) || return
+    __=${__#*=}
+    __=${__:1:-1}
+  end
+
   def join <<'  end'
     local -n __vals=$1
     local IFS=${2- }
@@ -195,6 +201,12 @@ class Array; {
 }
 
 class Hash; {
+  def inspect <<'  end'
+    __=$(declare -p "$1" 2>/dev/null) || return
+    __=${__#*=}
+    __=${__:1:-1}
+  end
+
   def map <<'  end'
     local -n __valh=$1
     local __keyparm=$3
@@ -229,12 +241,12 @@ class String
 
 puts () {
   { declare -f "$1" >/dev/null 2>&1 && [[ " ${!__classh[*]} " == *" $1 "* ]] ;} && {
-    "$@" || return
+    "$1" .to_s
     printf '%s\n' "$__"
     return
   }
   printf '%s\n' "$@"
-  __="''"
+  __='""'
 }
 
 class Path : String; {
@@ -293,7 +305,7 @@ __to_str () {
 }
 
 __dispatch () {
-  local method=${1-.to_s}; shift ||:
+  local method=${1-.inspect}; shift ||:
   local receiver=${FUNCNAME[1]}
   local class=${__classh[$receiver]}
   local anon
