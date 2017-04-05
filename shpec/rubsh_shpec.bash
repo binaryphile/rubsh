@@ -558,6 +558,24 @@ describe Array
 end
 
 describe Hash
+  describe =
+    it "sets the associated variable with a literal string"; (
+      declare -A sampleh
+      Hash .new sampleh '( [zero]=0 )'
+      sampleh .= '( [one]=1 )'
+      assert equal 'declare -A sampleh='\''([one]="1" )'\' "$(declare -p sampleh)"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+
+    it "sets the associated variable with the output left in __ by the last command"; (
+      declare -A sampleh resulth
+      Hash .new sampleh '( [zero]=0 )'
+      Hash .new resulth '( [one]=1 )'
+      sampleh .= resulth
+      assert equal 'declare -A sampleh='\''([one]="1" )'\' "$(declare -p sampleh)"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+  end
   describe map
     it "returns an array of values mapped with a normal block"; (
       declare -A sampleh

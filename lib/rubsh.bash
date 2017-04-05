@@ -182,6 +182,19 @@ class Array : Object; {
 }
 
 class Hash : Object; {
+  def = <<'  end'
+    local -n __self=$1; shift
+    local statement
+
+    { declare -f "$1" >/dev/null 2>&1 && [[ " ${!__classh[*]} " == *" $1 "* ]] ;} && {
+      "$@"
+      eval __self="$__"
+      return
+    }
+    eval __self="$1"
+    __=$1
+  end
+
   def inspect <<'  end'
     __=$(declare -p "$1" 2>/dev/null) || return
     __=${__#*=}
