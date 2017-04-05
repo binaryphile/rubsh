@@ -23,6 +23,7 @@ class () {
   eval "$statement"
   __classh[$__class]=Class
   __methodsh[$__class]=' '
+  __classh[__]=String
   __='""'
 }
 
@@ -34,6 +35,7 @@ def () {
   [[ -z ${__method_classesh[$method]-} ]] && __method_classesh[$method]=' '
   __method_classesh[$method]+="$__class "
   __method_bodyh[$__class.$method]=$body
+  __classh[__]=String
   __='""'
 }
 
@@ -42,6 +44,7 @@ class Object : ''; {
     __=${__classh[$1]}
     __=$(declare -p __)
     __=${__#*=}
+    __classh[__]=String
   end
 
   def methods <<'  end'
@@ -62,6 +65,7 @@ class Object : ''; {
       * ) return 1;;
     esac
     __inspect methods
+    __classh[__]=Array
   end
 }
 
@@ -75,6 +79,7 @@ class Class : Object; {
       ancestors+=( "$class" )
     done
     __inspect ancestors
+    __classh[__]=Array
   end
 
   def declare <<'  end'
@@ -92,6 +97,7 @@ class Class : Object; {
       *       ) printf 'eval declare -- %s=%s; %s .new %s\n' "$self" "$value"        "$class" "$self" ;;
     esac
     __=$value
+    __classh[__]=String
   end
 
   def instance_methods <<'  end'
@@ -110,6 +116,7 @@ class Class : Object; {
       * ) return 1;;
     esac
     __inspect instance_methods
+    __classh[__]=Array
   end
 
   def new <<'  end'
@@ -137,12 +144,14 @@ class Class : Object; {
     printf -v statement "$format" "$self" "$value"
     eval "$statement"
     __=$value
+    __classh[__]=String
   end
 
   def superclass <<'  end'
     local class=$1
 
     __=${__superh[$class]-}
+    __classh[__]=String
   end
 }
 
@@ -158,26 +167,29 @@ class Array : Object; {
     __inspect __vals
     __=${__:1:-1}
     __inspect "$__"
+    __classh[__]=Array
   end
 
   def inspect <<'  end'
     __=$(declare -p "$1" 2>/dev/null) || return
     __=${__#*=}
     __=${__:1:-1}
+    __classh[__]=Array
   end
 
   def join <<'  end'
     local -n __vals=$1
     local IFS=${2- }
 
-    __classh[__]=String
     __=${__vals[*]}
+    __classh[__]=String
   end
 
   def to_s <<'  end'
     __=$(declare -p "$1" 2>/dev/null) || return
     __=${__#*=}
     __=${__:1:-1}
+    __classh[__]=String
   end
 }
 
@@ -193,12 +205,14 @@ class Hash : Object; {
     }
     eval __self="$1"
     __=$1
+    __classh[__]=String
   end
 
   def inspect <<'  end'
     __=$(declare -p "$1" 2>/dev/null) || return
     __=${__#*=}
     __=${__:1:-1}
+    __classh[__]=Hash
   end
 
   def map <<'  end'
@@ -222,12 +236,14 @@ class Hash : Object; {
     done
 
     __inspect __retvals
+    __classh[__]=Array
   end
 
   def to_s <<'  end'
     __=$(declare -p "$1" 2>/dev/null) || return
     __=${__#*=}
     __=${__:1:-1}
+    __classh[__]=String
   end
 }
 
@@ -243,17 +259,20 @@ class String : Object; {
     }
     __self=$1
     __=$1
+    __classh[__]=String
   end
 
   def inspect <<'  end'
     __=$(declare -p "$1" 2>/dev/null) || return
     __=${__#*=}
+    __classh[__]=String
   end
 
   def to_s <<'  end'
     __=$(declare -p "$1" 2>/dev/null) || return
     __=${__#*=}
     __=${__:1:-1}
+    __classh[__]=String
   end
 }
 
@@ -265,6 +284,7 @@ puts () {
   }
   printf '%s\n' "$@"
   __='""'
+  __classh[__]=String
 }
 
 class Path; {
@@ -280,6 +300,7 @@ class Path; {
     [[ -d $__pathname ]] || return
     __pathname=$(cd "$__pathname"; pwd)
     __=$__pathname${__filename:+/}${__filename-}
+    __classh[__]=Path
   end
 }
 
@@ -301,6 +322,7 @@ class File : Path; {
 
     IFS=$'\n' read -rd '' -a __lines <"$__filename"
     __inspect __lines
+    __classh[__]=Array
   end
 
   def write <<'  end'
@@ -313,6 +335,8 @@ class File : Path; {
       *   ) "$@"; __string=$__  ;;
     esac
     puts "$__string" >"$__filename"
+    __='""'
+    __classh[__]=String
   end
 }
 

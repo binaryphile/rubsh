@@ -27,6 +27,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Added
 
+-   return types on everything but File\#each
+
 -   basic method chaining
 
 -   basic parameters with braces
