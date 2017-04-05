@@ -28,6 +28,8 @@ semver parlance.
 
 ### Added
 
+-   String#upcase and String#upcase!
+
 -   return types on everything but File\#each
 
 -   basic method chaining

@@ -4,6 +4,135 @@ Rubsh
 Enhanced data types for bash, inspired by Ruby - lovingly pronounced
 "rubbish"
 
+Features
+--------
+
+    source rubsh.bash
+
+### Output
+
+    puts "hello, world!"
+
+    > hello, world!
+
+### String creation
+
+    String sample = "an example"
+    puts sample
+
+    > an example
+
+### Array creation
+
+    Array samples = '( zero one )'
+    puts samples
+
+    > ([0]="zero" [1]="one")
+
+### Hash creation
+
+    declare -A sampleh
+    Hash sampleh = '( [zero]=0 [one]=1 )'
+    puts sampleh
+
+    > ([zero]="0" [one]="1" )
+
+### Reassignment
+
+    String sample = "an example"
+    sample = "a new hope"
+    puts sample
+
+    > a new hope
+
+### Calling Methods
+
+    Array samples = '( zero one )'
+    puts samples .join -
+
+    > zero-one
+
+### Introspection
+
+    puts Array .class
+
+    > "Class"
+
+    puts Class .class
+
+    > "Class"
+
+    puts Object .class
+
+    > "Class"
+
+    puts Object .superclass
+
+    > ""
+
+    puts Class .superclass
+
+    > "Object"
+
+    puts Array .superclass
+
+    > "Object"
+
+    puts Class .methods
+
+    > ([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="methods")
+
+    puts Class .instance_methods false
+
+    > ([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass")
+
+    puts Class .ancestors
+
+    > ([0]="Class" [1]="Object")
+
+### Paths
+
+    Path samplep = ~/../sample.txt
+    puts samplep .expand_path
+
+    > /home/sample.txt
+
+### Files
+
+    File samplef = ~/sample.txt
+    Array lines = samplef .readlines
+    puts lines
+
+    > ([0]="hello, world!")
+
+### Method calls on literal objects
+
+    puts File ~/sample.txt .readlines
+
+    > ([0]="hello, world!")
+
+    puts Array '( zero one )' .join -
+
+    > zero-one
+
+### Method chaining (bracing of parameters required)
+
+    Array samples = '( zero one )'
+    puts samples .join { - } .to_upper
+
+    > ZERO-ONE
+
+### Blocks
+
+    declare -A sampleh
+    Hash sampleh = '( [zero]=0 [one]=1 )'
+    puts sampleh .map [ {k,v} '$k: $v' ]
+
+    > ([0]="one: 1" [1]="zero: 0")
+
+Overview
+--------
+
 Bash, while powerful, has a frequently frustrating programming model.
 Among other things, its combination of dynamic scoping, limited data
 types and expansion-based command processing can make it tricky to learn
