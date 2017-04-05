@@ -120,7 +120,6 @@ class Class : Object; {
     local stdout
     local statement
 
-    ! declare -f "$self" >/dev/null 2>&1 || return
     printf -v statement 'function %s { __dispatch "$@" ;}' "$self"
     eval "$statement"
     [[ $class == 'Class' ]] && __superh[$self]=Object
@@ -327,10 +326,10 @@ __dispatch () {
     case $method in
       '=' ) method=.=;;
       *   )
-        case $1 in
+        case ${1-} in
           '='   ) set -- "$method" "${@:2}"; method=.new     ;;
           ':='  ) set -- "$method" "${@:2}"; method=.declare ;;
-          '.'*  )
+          * )
             [[ $class == 'Class' ]] || return
             case $receiver in
               'Array' ) anon=__a  ;;

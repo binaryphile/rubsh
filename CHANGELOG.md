@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Changed
 
+-   allow reassignment of an existing object variable
+
 -   String\#set changed to String\#=, allow bare =
 
 -   renamed \_\_to\_str to \_\_inspect

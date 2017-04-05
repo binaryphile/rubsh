@@ -500,6 +500,13 @@ describe Class
         assert equal '"an example"' "$result"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
+
+      it "allows reassigning an existing object variable"; (
+        String .new sample "an example"
+        String .new sample "another example"
+        assert equal 'another example' "$sample"
+        return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+      end
     end
   end
 
@@ -664,6 +671,11 @@ describe __dispatch
   it "allows a literal String object"
     String "an example" .class
     assert equal '"String"' "$__"
+  end
+
+  it "calls #inspect on a bare object literal"
+    String "an example"
+    assert equal '"an example"' "$__"
   end
 
   it "allows a literal Array object"
