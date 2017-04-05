@@ -44,11 +44,6 @@ class Object : ''; {
     __=${__#*=}
   end
 
-  def inspect <<'  end'
-    __=$(declare -p "$1" 2>/dev/null) || return
-    __=${__#*=}
-  end
-
   def methods <<'  end'
     local self=$1
     local inherited=${2-true}
@@ -67,20 +62,6 @@ class Object : ''; {
       * ) return 1;;
     esac
     __inspect methods
-  end
-
-  def set <<'  end'
-    local -n __self=$1; shift
-
-    unset -v __
-    "$@"
-    eval __self="$__"
-  end
-
-  def to_s <<'  end'
-    __=$(declare -p "$1" 2>/dev/null) || return
-    __=${__#*=}
-    __=${__:1:-1}
   end
 }
 
@@ -237,7 +218,31 @@ class Hash : Object; {
   end
 }
 
-class String : Object
+class String : Object; {
+  def = <<'  end'
+    local -n __self=$1; shift
+
+    unset -v __
+    { declare -f "$1" >/dev/null 2>&1 && [[ " ${!__classh[*]} " == *" $1 "* ]] ;} && {
+      "$@"
+      eval __self="$__"
+      return
+    }
+    __self=$1
+    __=$1
+  end
+
+  def inspect <<'  end'
+    __=$(declare -p "$1" 2>/dev/null) || return
+    __=${__#*=}
+  end
+
+  def to_s <<'  end'
+    __=$(declare -p "$1" 2>/dev/null) || return
+    __=${__#*=}
+    __=${__:1:-1}
+  end
+}
 
 puts () {
   { declare -f "$1" >/dev/null 2>&1 && [[ " ${!__classh[*]} " == *" $1 "* ]] ;} && {

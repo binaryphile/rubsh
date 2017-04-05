@@ -135,17 +135,10 @@ describe Object
     end
   end
 
-  describe inspect
-    it "returns an eval'able right-hand side string representation of the contents of the object"
-      Object=object
-      Object .inspect
-      assert equal '"object"' "$__"
-    end
-  end
   describe methods
     it "lists an array string of Object methods"
       Object .methods
-      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="inspect" [7]="methods" [8]="set" [9]="to_s")' "$__"
+      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="methods")' "$__"
     end
 
     it "only lists Object methods defined on it when given false"
@@ -155,20 +148,12 @@ describe Object
 
     it "lists an array string of Class methods"
       Class .methods
-      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="inspect" [7]="methods" [8]="set" [9]="to_s")' "$__"
+      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="methods")' "$__"
     end
 
     it "only lists Class methods defined on it when given false"
       Class .methods false
       assert equal '()' "$__"
-    end
-  end
-
-  describe set
-    it "sets the associated variable with the output left in __ by the following command"; (
-      Class .set printf -v __ sample
-      assert equal sample "$Class"
-      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
   end
 end
@@ -198,7 +183,7 @@ describe Class
   describe instance_methods
     it "lists an array string of Class instance methods"
       Class .instance_methods
-      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="inspect" [7]="methods" [8]="set" [9]="to_s")' "$__"
+      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="methods")' "$__"
     end
 
     it "only lists Class methods defined on it when given false"
@@ -208,12 +193,12 @@ describe Class
 
     it "lists an array string of Object instance methods"
       Object .instance_methods
-      assert equal '([0]="class" [1]="inspect" [2]="methods" [3]="set" [4]="to_s")' "$__"
+      assert equal '([0]="class" [1]="methods")' "$__"
     end
 
     it "only lists Object methods defined on it when given false"
       Object .instance_methods false
-      assert equal '([0]="class" [1]="inspect" [2]="methods" [3]="set" [4]="to_s")' "$__"
+      assert equal '([0]="class" [1]="methods")' "$__"
     end
   end
 
@@ -532,19 +517,6 @@ describe Class
 end
 
 describe "an instance"
-  it "is a function"; (
-    Object .new sample
-    is_function sample
-    assert equal 0 $?
-    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  end
-
-  it "implicitly calls #inspect"; (
-    String .new sample "an example"
-    sample
-    assert equal '"an example"' "$__"
-    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  end
 end
 
 describe Array
@@ -618,6 +590,32 @@ describe Hash
 end
 
 describe String
+  describe inspect
+    it "returns an eval'able right-hand side string representation of the contents of the object"; (
+      String .new sample "an example"
+      sample .inspect
+      assert equal '"an example"' "$__"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+  end
+
+  describe =
+    it "sets the associated variable with a literal string"; (
+      String .new sample "an example"
+      sample .= "a result"
+      assert equal "a result" "$sample"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+
+    it "sets the associated variable with the output left in __ by the last command"; (
+      String .new sample "an example"
+      String .new result "a result"
+      sample .= result
+      assert equal "a result" "$sample"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+  end
+
   describe to_s
     it "returns a printable string from the associated variable"; (
       String .new sample "an example"
@@ -644,19 +642,26 @@ describe puts
   end
 end
 
-describe dispatch
-    it "allows a literal String object"
-      String "an example" .class
-      assert equal '"String"' "$__"
-    end
+describe __dispatch
+  it "allows a literal String object"
+    String "an example" .class
+    assert equal '"String"' "$__"
+  end
 
-    it "allows a literal Array object"
-      Array '( zero one )' .class
-      assert equal '"Array"' "$__"
-    end
+  it "allows a literal Array object"
+    Array '( zero one )' .class
+    assert equal '"Array"' "$__"
+  end
 
-    it "allows a literal Hash object"
-      Hash '( [zero]=0 [one]=1 )' .class
-      assert equal '"Hash"' "$__"
-    end
+  it "allows a literal Hash object"
+    Hash '( [zero]=0 [one]=1 )' .class
+    assert equal '"Hash"' "$__"
+  end
+
+  it "implicitly calls #inspect"; (
+    String .new sample "an example"
+    sample
+    assert equal '"an example"' "$__"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end
