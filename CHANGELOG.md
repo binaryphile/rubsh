@@ -27,6 +27,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Added
 
+-   basic parameters with braces
+
 -   Hash\#inspect method
 
 -   Array\#inspect method
@@ -62,8 +64,6 @@ The format is based on [Keep a Changelog] and this project adheres to
 -   \#method\_missing
 
 -   method chaining
-
--   parameters with braces
 
   [Keep a Changelog]: http://keepachangelog.com/
   [Semantic Versioning]: http://semver.org/

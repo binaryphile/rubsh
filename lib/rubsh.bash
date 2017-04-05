@@ -352,6 +352,12 @@ __dispatch () {
     class=${__superh[$class]}
   done
   [[ -n ${__method_bodyh[$class.$method]-} ]] || return
+  [[ ${1-} == '{' ]] && {
+    for (( i = 1; i <= $#; i++ )); do
+      [[ ${!i} == '}' ]] && break;
+    done
+    [[ ${!i} == '}' ]] && set -- "${@:2:i-2}" || set -- "${@:2}"
+  }
   printf -v statement 'function __ { %s ;}; __ "$receiver" "$@"' "${__method_bodyh[$class.$method]}"
   eval "$statement"
 }

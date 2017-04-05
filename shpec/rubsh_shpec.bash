@@ -705,4 +705,13 @@ describe __dispatch
     assert equal "a result" "$sample"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+
+  it "allows braces on method calls"; (
+    unset -v sample
+    unset -f sample
+    String .new { sample "an example" }
+    is_function sample
+    assert equal 0 $?
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end
