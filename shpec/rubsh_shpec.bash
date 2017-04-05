@@ -668,24 +668,28 @@ describe puts
 end
 
 describe __dispatch
-  it "allows a literal String object"
+  it "allows a literal String object"; (
     String "an example" .class
     assert equal '"String"' "$__"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
-  it "calls #inspect on a bare object literal"
+  it "calls #inspect on a bare object literal"; (
     String "an example"
     assert equal '"an example"' "$__"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
-  it "allows a literal Array object"
+  it "allows a literal Array object"; (
     Array '( zero one )' .class
     assert equal '"Array"' "$__"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
-  it "allows a literal Hash object"
+  it "allows a literal Hash object"; (
     Hash '( [zero]=0 [one]=1 )' .class
     assert equal '"Hash"' "$__"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
 
   it "implicitly calls #inspect"; (
