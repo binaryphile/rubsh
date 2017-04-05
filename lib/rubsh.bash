@@ -170,6 +170,7 @@ class Array : Object; {
     local -n __vals=$1
     local IFS=${2- }
 
+    __classh[__]=String
     __=${__vals[*]}
   end
 
@@ -321,6 +322,7 @@ __dispatch () {
   local class=${__classh[$receiver]}
   local anon
   local i
+  local rest=()
   local statement
 
   [[ $method != '.'* ]] && {
@@ -358,10 +360,13 @@ __dispatch () {
       [[ ${!i} == '}' ]] && break;
     done
     [[ ${!i} == '}' ]] || return
+    rest=( "${@:i+1}" )
     set -- "${@:2:i-2}"
   }
   printf -v statement 'function __ { %s ;}; __ "$receiver" "$@"' "${__method_bodyh[$class.$method]}"
   eval "$statement"
+  ! (( ${#rest[@]} )) && return
+  "${__classh[__]-}" "$__" "${rest[@]}"
 }
 
 __inspect () {

@@ -714,4 +714,11 @@ describe __dispatch
     assert equal 0 $?
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+
+  it "does basic method chaining with braces"; (
+    Array .new samples '( one two )'
+    samples .join { - } .class
+    assert equal '"String"' "$__"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end

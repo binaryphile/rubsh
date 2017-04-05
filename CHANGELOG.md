@@ -27,6 +27,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Added
 
+-   basic method chaining
+
 -   basic parameters with braces
 
 -   Hash\#inspect method
