@@ -35,7 +35,7 @@ Features
     Hash sampleh = '( [zero]=0 [one]=1 )'
     puts sampleh
 
-    > ([zero]="0" [one]="1" )
+    > ([one]="1" [zero]="0" )
 
 ### Reassignment
 
@@ -90,35 +90,10 @@ Features
 
     > ([0]="Class" [1]="Object")
 
-### Paths
-
-    Path samplep = ~/../sample.txt
-    puts samplep .expand_path
-
-    > /home/sample.txt
-
-### Files
-
-    File samplef = ~/sample.txt
-    Array lines = samplef .readlines
-    puts lines
-
-    > ([0]="hello, world!")
-
-### Method calls on literal objects
-
-    puts File ~/sample.txt .readlines
-
-    > ([0]="hello, world!")
-
-    puts Array '( zero one )' .join -
-
-    > zero-one
-
 ### Method chaining (bracing of parameters required)
 
     Array samples = '( zero one )'
-    puts samples .join { - } .to_upper
+    puts samples .join { - } .upcase
 
     > ZERO-ONE
 
