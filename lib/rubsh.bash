@@ -150,7 +150,7 @@ class Class : Object; {
   def superclass <<'  end'
     local class=$1
 
-    __=${__superh[$class]-}
+    __=\"${__superh[$class]-}\"
     __classh[__]=String
   end
 }
@@ -292,7 +292,8 @@ class String : Object; {
 
 puts () {
   { declare -f "$1" >/dev/null 2>&1 && [[ " ${!__classh[*]} " == *" $1 "* ]] ;} && {
-    "$1" .to_s
+    (( $# == 1 )) && { "$1" .to_s; printf '%s\n' "$__"; return ;}
+    "$@"
     printf '%s\n' "$__"
     return
   }

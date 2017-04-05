@@ -260,14 +260,14 @@ describe Class
       it "has the superclass Object"; (
         Class .new Myclass
         Myclass .superclass
-        assert equal Object "$__"
+        assert equal '"Object"' "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
       it "has the superclass Object with assignment syntax"; (
         Class Myclass =
         Myclass .superclass
-        assert equal Object "$__"
+        assert equal '"Object"' "$__"
         return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
       end
 
@@ -513,17 +513,14 @@ describe Class
   describe superclass
     it "gives the superclass of Class as Object"
       Class .superclass
-      assert equal Object "$__"
+      assert equal '"Object"' "$__"
     end
 
     it "gives the superclass of Object as empty string"
       Object .superclass
-      assert equal '' "$__"
+      assert equal '""' "$__"
     end
   end
-end
-
-describe "an instance"
 end
 
 describe Array
@@ -684,6 +681,12 @@ describe puts
     assert equal "an example" "$(puts sample)"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+
+  it "calls to_s on the output of a method"; (
+    Array .new samples '( zero one )'
+    assert equal "zero-one" "$(puts samples .join -)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end
 
 describe __dispatch
@@ -740,4 +743,107 @@ describe __dispatch
     assert equal '"String"' "$__"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+end
+
+describe README
+  it "Output"; (
+    assert equal "hello, world!" "$(puts "hello, world!")"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "String creation"; (
+    String sample = "an example"
+    assert equal "an example" "$(puts sample)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "Array creation"; (
+    Array samples = '( zero one )'
+    assert equal '([0]="zero" [1]="one")' "$(puts samples)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "Hash creation"; (
+    declare -A sampleh
+    Hash sampleh = '( [zero]=0 [one]=1 )'
+    assert equal '([one]="1" [zero]="0" )' "$(puts sampleh)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "Reassignment"; (
+    String sample = "an example"
+    sample = "a new hope"
+    assert equal "a new hope" "$(puts sample)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "Calling methods"; (
+    Array samples = '( zero one )'
+    assert equal "zero-one" "$(puts samples .join -)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "Introspection 1"; (
+    assert equal '"Class"' "$(puts Array .class)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "Introspection 2"; (
+    assert equal '"Class"' "$(puts Class .class)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "Introspection 3"; (
+    assert equal '"Class"' "$(puts Object .class)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "Introspection 4"; (
+    assert equal '""' "$(puts Object .superclass)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "Introspection 5"; (
+    assert equal '"Object"' "$(puts Class .superclass)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "Introspection 6"; (
+    assert equal '"Object"' "$(puts Array .superclass)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "Introspection 7"; (
+    assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="methods")' "$(puts Class .methods)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "Introspection 8"; (
+    assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass")' "$(puts Class .instance_methods false)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "Introspection 9"; (
+    assert equal '([0]="Class" [1]="Object")' "$(puts Class .ancestors)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "Method chaining"; (
+    Array samples = '( zero one )'
+    assert equal ZERO-ONE "$(puts samples .join { - } .upcase)"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  it "Blocks"; (
+    declare -A sampleh
+    Hash sampleh = '( [zero]=0 [one]=1 )'
+    assert equal '([0]="one: 1" [1]="zero: 0")' "$(puts sampleh .map [ {k,v} '$k: $v' ])"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+
+  # it "Paths"; (
+  #   Path samplep = ~/../sample.txt
+  #   assert equal /home/sample.txt "$(puts samplep .expand_path)"
+  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  # end
 end
