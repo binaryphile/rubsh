@@ -2,9 +2,10 @@ Change Log
 ==========
 
 The format is based on [Keep a Changelog] and this project adheres to
-[Semantic Versioning].
+[Semantic Versioning], with the exception that v10 is version 0 in
+semver parlance.
 
-[Unreleased]
+[v10.10.10] - 2017-04-05
 ------------
 
 ### Changed
@@ -55,6 +56,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Removed
 
+-   untested methods/classes
+
 -   globbing
 
 ### Documented
@@ -67,8 +70,6 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 -   \#method\_missing
 
--   method chaining
-
   [Keep a Changelog]: http://keepachangelog.com/
   [Semantic Versioning]: http://semver.org/
-  [Unreleased]: https://github.com/binaryphile/rubsh/compare/v0.6.3...v10.10
+  [v10.10.10]: https://github.com/binaryphile/rubsh/compare/v0.6.3...v10.10.10

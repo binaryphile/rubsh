@@ -583,6 +583,7 @@ describe Hash
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
   end
+
   describe map
     it "returns an array of values mapped with a normal block"; (
       declare -A sampleh
