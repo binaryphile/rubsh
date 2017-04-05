@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Changed
 
+-   String\#set changed to String\#=, allow bare =
+
 -   renamed \_\_to\_str to \_\_inspect
 
 -   made String the default super
@@ -55,7 +57,7 @@ The format is based on [Keep a Changelog] and this project adheres to
 
 ### Todo
 
--   \#method_missing
+-   \#method\_missing
 
 -   method chaining
 

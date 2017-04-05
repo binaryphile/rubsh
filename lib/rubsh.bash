@@ -311,22 +311,27 @@ __dispatch () {
   local statement
 
   [[ $method != '.'* ]] && {
-    case $1 in
-      '='   ) set -- "$method" "${@:2}"; method=.new     ;;
-      ':='  ) set -- "$method" "${@:2}"; method=.declare ;;
-      '.'*  )
-        [[ $class == 'Class' ]] || return
-        case $receiver in
-          'Array' ) anon=__a  ;;
-          'Hash'  ) anon=__h  ;;
-          *       ) anon=__s  ;;
+    case $method in
+      '=' ) method=.=;;
+      *   )
+        case $1 in
+          '='   ) set -- "$method" "${@:2}"; method=.new     ;;
+          ':='  ) set -- "$method" "${@:2}"; method=.declare ;;
+          '.'*  )
+            [[ $class == 'Class' ]] || return
+            case $receiver in
+              'Array' ) anon=__a  ;;
+              'Hash'  ) anon=__h  ;;
+              *       ) anon=__s  ;;
+            esac
+            set -- "$anon" "$@"
+            "$receiver" .new "$anon" "$method"
+            "$@"
+            return
+            ;;
+          * ) return 1;;
         esac
-        set -- "$anon" "$@"
-        "$receiver" .new "$anon" "$method"
-        "$@"
-        return
         ;;
-      * ) return 1;;
     esac
   }
   method=${method#.}

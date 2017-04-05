@@ -664,4 +664,11 @@ describe __dispatch
     assert equal '"an example"' "$__"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+
+  it "allows a bare = on .= calls"; (
+    String .new sample "an example"
+    sample = "a result"
+    assert equal "a result" "$sample"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end
