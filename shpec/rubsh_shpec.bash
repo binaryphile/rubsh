@@ -650,6 +650,24 @@ describe String
       return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
     end
   end
+
+  describe upcase
+    it "returns an upper-cased version of the string"; (
+      String .new sample "an example"
+      sample .upcase
+      assert equal "AN EXAMPLE" "$__"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+  end
+
+  describe upcase!
+    it "changes the string to upper-case"; (
+      String .new sample "an example"
+      sample .upcase!
+      assert equal "AN EXAMPLE" "$sample"
+      return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+    end
+  end
 end
 
 describe puts

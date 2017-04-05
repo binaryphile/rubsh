@@ -275,6 +275,19 @@ class String : Object; {
     __=${__:1:-1}
     __classh[__]=String
   end
+
+  def upcase <<'  end'
+    __=${!1^^}
+    __classh[__]=String
+  end
+
+  def upcase! <<'  end'
+    local -n __self=$1
+
+    __self=${__self^^}
+    __=$__self
+    __classh[__]=String
+  end
 }
 
 puts () {
