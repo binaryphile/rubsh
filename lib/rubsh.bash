@@ -255,6 +255,7 @@ class String : Object; {
     { declare -f "$1" >/dev/null 2>&1 && [[ " ${!__classh[*]} " == *" $1 "* ]] ;} && {
       "$@"
       eval __self="$__"
+      __classh[__]=String
       return
     }
     __self=$1
@@ -285,59 +286,6 @@ puts () {
   printf '%s\n' "$@"
   __='""'
   __classh[__]=String
-}
-
-class Path; {
-  def expand_path <<'  end'
-    local __pathname=${!1}
-    local __filename
-
-    unset -v CDPATH
-    [[ -e $__pathname ]] && {
-      __filename=$(basename "$__pathname")
-      __pathname=$(dirname "$__pathname")
-    }
-    [[ -d $__pathname ]] || return
-    __pathname=$(cd "$__pathname"; pwd)
-    __=$__pathname${__filename:+/}${__filename-}
-    __classh[__]=Path
-  end
-}
-
-class File : Path; {
-  def each <<'  end'
-    local __filename=${!1}
-    local __lineparm=$3
-    local __lambda=${4-$(</dev/stdin)}
-    local "$__lineparm"
-
-    while read -r "$__lineparm"; do
-      eval "$__lambda"
-    done <"$__filename" ||:
-  end
-
-  def readlines <<'  end'
-    local __filename=${!1}; shift
-    local __lines=()
-
-    IFS=$'\n' read -rd '' -a __lines <"$__filename"
-    __inspect __lines
-    __classh[__]=Array
-  end
-
-  def write <<'  end'
-    local __filename=${!1}; shift
-    local __string
-
-    case $# in
-      '0' ) return              ;;
-      '1' ) __string=${!1}      ;;
-      *   ) "$@"; __string=$__  ;;
-    esac
-    puts "$__string" >"$__filename"
-    __='""'
-    __classh[__]=String
-  end
 }
 
 __dispatch () {
@@ -398,4 +346,3 @@ __inspect () {
   __=${__#*=}
   if [[ $__ == \'* ]]; then __=${__:1:-1}; fi
 }
-
