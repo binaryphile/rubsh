@@ -320,6 +320,7 @@ __dispatch () {
   local receiver=${FUNCNAME[1]}
   local class=${__classh[$receiver]}
   local anon
+  local i
   local statement
 
   [[ $method != '.'* ]] && {
