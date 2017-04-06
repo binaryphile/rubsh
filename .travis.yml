@@ -1,5 +1,7 @@
-sudo:     false
-install:  git clone git://github.com/rylnd/shpec --branch 0.2.2 --depth 1 ~/shpec
-script:   ./all-shpecs
+sudo: false
+install:
+  - git clone git://github.com/rylnd/shpec --branch 0.2.2 --depth 1 ~/shpec
+  - export PATH=~/shpec/bin:$PATH
+script: ./all-shpecs
 git:
-  depth:  1
+  depth: 1
