@@ -21,7 +21,7 @@ Features
 
 -   a near-complete lack of dollar signs and quotation marks
 
--   a ruby-like DSL for creating classes using an actual object-model
+-   a ruby-like DSL for creating classes using an actual object model
     with inheritance
 
 -   economic use of bash's variable and function namespaces
@@ -82,7 +82,7 @@ that were a thing.
     > a new hope
 
 Requires that the object has been instantiated at least once so the bash
-function "sample" exists.
+function (in this case, "sample") exists.
 
 ### Calling Methods
 
@@ -101,8 +101,8 @@ the object name.
 
     > ZERO-ONE
 
-Parameters must be braced for rubsh to know where the prior method call
-ends.  Braces require surrounding spaces.
+Method parameters must be braced for rubsh to know where the prior
+method call ends.  Braces require surrounding spaces.
 
 ### Blocks
 
@@ -306,7 +306,8 @@ object instance of the File class. It's what responds to File methods:
 myfile, the function, knows how to respond to File's methods. When it
 needs to determine the filename on which it should operate, it uses
 $myfile, the variable. Unsurprisingly, changing the $myfile variable's
-contents changes the filename targeted by the function.
+contents (say, by normal bash assignment) changes the filename targeted
+by the function.
 
 Scoping
 -------
@@ -356,7 +357,7 @@ method is the least verbose:
     $(Hash myhash := '( [zero]=0 )')
 
 This way the hash doesn't need a separate declaration at all. Bear in
-mind that it will only generate a locally scoped hash, though.
+mind that this method only works for local declarations though.
 
 Conclusion
 ----------
