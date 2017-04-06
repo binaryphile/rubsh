@@ -343,7 +343,7 @@ __dispatch () {
   printf -v statement 'function __ { %s ;}; __ "$receiver" "$@"' "${__method_bodyh[$class.$method]}"
   eval "$statement"
   ! (( ${#rest[@]} )) && return
-  "${__classh[__]-}" "$__" "${rest[@]}"
+  "${__classh[__]}" "$__" "${rest[@]}"
 }
 
 __inspect () {
