@@ -344,7 +344,7 @@ variable:
     declare -Ag myhash
     Hash myhash = '( [zero]=0 )'
 
-Drop the -g and you have a locally scoped $myhash (you can use the
+Drop the -g and you have a locally scoped myhash (you can use the
 `local` builtin, but `declare` works too).
 
 If you want a local hash, however, the (syntactically sugared) #declare

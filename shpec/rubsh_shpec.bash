@@ -840,10 +840,4 @@ describe README
     assert equal '([0]="one: 1" [1]="zero: 0")' "$(puts sampleh .map [ {k,v} '$k: $v' ])"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
-
-  # it "Paths"; (
-  #   Path samplep = ~/../sample.txt
-  #   assert equal /home/sample.txt "$(puts samplep .expand_path)"
-  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  # end
 end
