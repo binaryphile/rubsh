@@ -21,7 +21,7 @@ Features
 
 -   a near-complete lack of dollar signs and quotation marks
 
--   a ruby-like DSL for creating classes using an actual object-model
+-   a ruby-like DSL for creating classes using an actual object model
     with inheritance
 
 -   economic use of bash's variable and function namespaces
@@ -82,7 +82,7 @@ that were a thing.
     > a new hope
 
 Requires that the object has been instantiated at least once so the bash
-function "sample" exists.
+function (in this case, "sample") exists.
 
 ### Calling Methods
 
@@ -101,8 +101,8 @@ the object name.
 
     > ZERO-ONE
 
-Parameters must be braced for rubsh to know where the prior method call
-ends.  Braces require surrounding spaces.
+Method parameters must be braced for rubsh to know where the prior
+method call ends.  Braces require surrounding spaces.
 
 ### Blocks
 
@@ -228,8 +228,9 @@ names, rubsh turns off bash globbing!  If you are using rubsh objects,
 most of the time you won't miss it because rubsh selectively turns it on
 an off as needed.  However, commands like `echo *` will only echo "*",
 not the current directory contents as you would normally expect.  If you
-need to enable globbing, do so with `set +f`.  Do not leave it on,
-however, or rubsh will not work correctly!
+need to enable globbing, do so with `set +f` (and turn it back off with
+`set -f`).  Do not leave it on, however, or rubsh will not work
+correctly!
 
 How It Works
 ------------
@@ -242,11 +243,6 @@ Rubsh provides some basic classes:
     lists of strings
 
 -   **Hash** - associative array manipulation
-
--   **File**, **Dir** - reading, writing and testing files and
-    directories
-
--   **Path** - working with directory and file names
 
 Rubsh doesn't change the underlying data types, so for example, hashes
 can still only store strings as values, but the methods available to
@@ -263,12 +259,12 @@ The first argument to an object (i.e. function) is usually the name of a
 method. While method names are just normal string arguments, for the
 sake of similarity to ruby syntax, they are supplied with a leading dot:
 
-    File .new <arguments>
+    Array .new <arguments>
 
-Because File is a function, the method name is separated by a space so
+Because Array is a function, the method name is separated by a space so
 that it is the first argument to the function. In this case, the \#new
-method creates a new object instance of the File class. This roughly
-corresponds to ruby's `File.new`
+method creates a new object instance of the Array class. This roughly
+corresponds to ruby's `Array.new`
 
 Naturally, in order for rubsh to work, its functions need to be the
 first word in the command line. This dictates some differences from
@@ -277,44 +273,45 @@ ruby's syntax.
 For example, ruby would normally assign the result of \#new to a
 variable:
 
-    myfile = File.new "#{Dir.home}/sample.txt"
+    myarray = Array.new
 
-You would then call a method such as \#readlines on the myfile object.
+You would then call a method such as \#join on the myarray object.
 
-rubsh needs File to be first on the command line, so it turns the syntax
+rubsh needs Array to be first on the command line, so it turns the syntax
 around a bit by necessity:
 
-    File myfile = ~/sample.txt
+    Array myarray = <initializer>
 
-This is an unorthodox call to File\#new, but it is still a method call.
+This is an unorthodox call to Array\#new, but it is still a method call.
 This is one of the cases where rubsh does some magic to infer the method
 from the syntax.
 
-rubsh's File\#new does two things. First, it creates a bash string
-variable named myfile. Second, it creates a bash function, also called
-myfile.
+rubsh's Array\#new does two things. First, it creates a bash array
+variable named myarray. Second, it creates a bash function, also called
+myarray.
 
-The string variable stores the given filename, just like any other bash
+The array variable stores the given array, just like any other bash
 variable would. It can be used with all the usual bash functions and
-expansions for strings.
+expansions for arrays.
 
-The function is rubsh's contribution. The myfile function represents the
-object instance of the File class. It's what responds to File methods:
+The function is rubsh's contribution. The myarray function represents the
+object instance of the Array class. It's what responds to Array methods:
 
-    puts myfile .readlines
+    puts myarray .join -
 
-myfile, the function, knows how to respond to File's methods. When it
-needs to determine the filename on which it should operate, it uses
-$myfile, the variable. Unsurprisingly, changing the $myfile variable's
-contents changes the filename targeted by the function.
+myarray, the function, knows how to respond to Array's methods. When it
+needs to determine the array on which it should operate, it uses
+myarray, the variable. Unsurprisingly, changing the myarray variable's
+contents (say, by normal bash assignment) changes the values used by the
+function.
 
 Scoping
 -------
 
-The scope of the $myfile variable (local to the current function or
+The scope of the myarray variable (local to the current function or
 global) depends on a couple things.
 
-If the variable $myfile existed when \#new was called, then its existing
+If the variable myarray existed when \#new was called, then its existing
 scope remains in effect. This way you can directly control the scope
 with your own declaration prior to calling \#new.
 
@@ -324,18 +321,18 @@ you want, in which case the normal invocation is fine.
 Global scoping may not always be what you want, however. You may declare
 the variable local yourself:
 
-    local myfile
-    File myfile = ~/sample.txt
+    local myarray
+    Array myarray = '( zero one )'
 
 However there is another, more compact alternative for local declaration
 instead:
 
-    $(File myfile := ~/sample.txt)
+    $(Array myarray := '( zero one )')
 
-The colon-equals sign calls File\#declare, which generates a statement
-on stdout. The statement declares the variable as local, and also
-instantiates the object. The statement is captured and executed by the
-bash shell substitution `$()`.
+The colon-equals sign calls Array\#declare, which generates a compound
+statement on stdout. The statement declares the variable as local, and
+also instantiates the object. The statement is captured and executed by
+the bash shell substitution `$()`.
 
 Of course, bash throws one special case at us.  bash requires explicit
 declaration for hashes.
@@ -356,11 +353,11 @@ method is the least verbose:
     $(Hash myhash := '( [zero]=0 )')
 
 This way the hash doesn't need a separate declaration at all. Bear in
-mind that it will only generate a locally scoped hash, though.
+mind that this method only works for local declarations though.
 
 Conclusion
 ----------
 
 There are a number of other useful features which make rubsh quite
 pleasurable to work with over standard bash. I invite you to read the
-test suite and documentation to learn more.
+test suite to learn more.
