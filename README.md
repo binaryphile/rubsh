@@ -7,7 +7,35 @@ Enhanced data types for bash, inspired by Ruby - lovingly pronounced
 Features
 --------
 
-    source rubsh.bash
+-   ruby-inspired apis for common objects
+
+-   the ability to return objects, including arrays and hashes, from
+    methods
+
+-   chained method calls
+
+-   ruby-inspired block syntax for functional-style methods (.each,
+    .map)
+
+-   control over variable scope
+
+-   a near-complete lack of dollar signs and quotation marks
+
+-   a ruby-like DSL for creating classes using an actual object-model
+    with inheritance
+
+-   economic use of bash's variable and function namespaces
+
+-   interoperability with standard bash syntax
+
+Installation
+------------
+
+Clone and put `lib` in your path, then use `source rubsh.bash` in your
+scripts.
+
+Usage
+-----
 
 ### Output
 
@@ -15,21 +43,21 @@ Features
 
     > hello, world!
 
-### String creation
+### String Creation
 
     String sample = "an example"
     puts sample
 
     > an example
 
-### Array creation
+### Array Creation
 
     Array samples = '( zero one )'
     puts samples
 
     > ([0]="zero" [1]="one")
 
-### Hash creation
+### Hash Creation
 
     declare -A sampleh
     Hash sampleh = '( [zero]=0 [one]=1 )'
@@ -37,13 +65,15 @@ Features
 
     > ([one]="1" [zero]="0" )
 
-### Reassignment
+### Assignment
 
     String sample = "an example"
     sample = "a new hope"
     puts sample
 
     > a new hope
+
+Requires that the object has been instantiated at least once.
 
 ### Calling Methods
 
@@ -52,31 +82,96 @@ Features
 
     > zero-one
 
+### Method Chaining
+
+    Array samples = '( zero one )'
+    puts samples .join { - } .upcase
+
+    > ZERO-ONE
+
+Parameters must be braced for rubsh to know where the prior method call
+ends.  Braces require surrounding spaces.
+
+### Blocks
+
+    declare -A sampleh
+    Hash sampleh = '( [zero]=0 )'
+    puts sampleh .map [ {k,v} '$k: $v' ]
+
+    > ([0]="zero: 0")
+
+Blocks use either one-line bracket syntax (shown here) or multiline
+do/end syntax.  Parameter names are given between curly braces instead
+of pipes.  The shown spacing is significant for both the brackets and
+braces.
+
+For #map, the block body is an expression is evaluated to a string,
+using single quotes to prevent variable expansion until execution.
+
+### Object Literals
+
+    puts String "hello, world!" .upcase
+
+    > HELLO, WORLD!
+
+Object literals instantiate an object from a literal so methods can
+immediately be called on them, much like ruby allows literals of basic
+types to have methods called on them directly (e.g. "hello,
+world!".upcase).
+
+### Class Creation
+
+    class Fruit; {
+      def is_tasty <<'  end'
+        puts "Heck yeah!"
+      end
+
+      def is_fresh <<'  end'
+        puts "You bet."
+      end
+    }
+
+    Fruit .new myfruit
+    myfruit .is_fresh
+
+    > You bet.
+
+Note the class statement ends with a semicolon before the opening brace.
+Technically, the braces aren't required but provide familiar visual
+cues.
+
+### Inheritance
+
+    class Banana : Fruit; {
+      def is_fresh <<'  end'
+        puts "Not so much."
+      end
+    }
+
+    Banana .new mybanana
+    mybanana .is_fresh
+
+    > Not so much.
+
+    mybanana .is_tasty
+
+    > Heck yeah!
+
+Inheritance uses : rather than ruby's < to indicate the parent class.
+
 ### Introspection
 
     puts Array .class
 
     > "Class"
 
-    puts Class .class
-
-    > "Class"
-
-    puts Object .class
-
-    > "Class"
-
-    puts Object .superclass
-
-    > ""
-
-    puts Class .superclass
-
-    > "Object"
-
     puts Array .superclass
 
     > "Object"
+
+    puts Array .ancestors
+
+    > ([0]="Array" [1]="Object")
 
     puts Class .methods
 
@@ -85,25 +180,6 @@ Features
     puts Class .instance_methods false
 
     > ([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass")
-
-    puts Class .ancestors
-
-    > ([0]="Class" [1]="Object")
-
-### Method chaining (bracing of parameters required)
-
-    Array samples = '( zero one )'
-    puts samples .join { - } .upcase
-
-    > ZERO-ONE
-
-### Blocks
-
-    declare -A sampleh
-    Hash sampleh = '( [zero]=0 [one]=1 )'
-    puts sampleh .map [ {k,v} '$k: $v' ]
-
-    > ([0]="one: 1" [1]="zero: 0")
 
 Overview
 --------
@@ -187,8 +263,8 @@ around a bit by necessity:
     File myfile = ~/sample.txt
 
 This is an unorthodox call to File\#new, but it is still a method call.
-This is one of the few cases where rubsh does some magic to infer the
-method from the syntax.
+This is one of the cases where rubsh does some magic to infer the method
+from the syntax.
 
 rubsh's File\#new does two things. First, it creates a bash string
 variable named myfile. Second, it creates a bash function, also called
@@ -201,17 +277,20 @@ expansions for strings.
 The function is rubsh's contribution. The myfile function represents the
 object instance of the File class. It's what responds to File methods:
 
-    Array lines = myfile .readlines
+    puts myfile .readlines
 
 myfile, the function, knows how to respond to File's methods. When it
 needs to determine the filename on which it should operate, it uses
-myfile, the variable. Unsurprisingly, changing the myfile variable's
+$myfile, the variable. Unsurprisingly, changing the $myfile variable's
 contents changes the filename targeted by the function.
 
-The scope of the myfile variable (local to the current function or
+Scoping
+-------
+
+The scope of the $myfile variable (local to the current function or
 global) depends on a couple things.
 
-If the variable myfile existed when \#new was called, then its existing
+If the variable $myfile existed when \#new was called, then its existing
 scope remains in effect. This way you can directly control the scope
 with your own declaration prior to calling \#new.
 
@@ -234,8 +313,8 @@ on stdout. The statement declares the variable as local, and also
 instantiates the object. The statement is captured and executed by the
 bash shell substitution `$()`.
 
-Hash variables are somewhat exceptional with regard to scope, since bash
-requires explicit declaration for hashes.
+Of course, bash throws one special case at us.  bash requires explicit
+declaration for hashes.
 
 To create a hash variable, you should declare the variable yourself
 before instantiating the object.  Here is how you declare a global hash
@@ -244,54 +323,20 @@ variable:
     declare -Ag myhash
     Hash myhash = '( [zero]=0 )'
 
-Drop the -g and you have a local scope for myhash (you can use the
+Drop the -g and you have a locally scoped $myhash (you can use the
 `local` builtin, but `declare` works too).
 
-If you want a local hash, however, the #declare method is best:
+If you want a local hash, however, the (syntactically sugared) #declare
+method is the least verbose:
 
     $(Hash myhash := '( [zero]=0 )')
 
 This way the hash doesn't need a separate declaration at all. Bear in
 mind that it will only generate a locally scoped hash, though.
 
+Conclusion
+----------
+
 There are a number of other useful features which make rubsh quite
 pleasurable to work with over standard bash. I invite you to read the
 test suite and documentation to learn more.
-
-Features
---------
-
--   ruby-inspired apis for common objects
-
--   the ability to return arrays and hashes from methods
-
--   automatic chaining of the result of one method call to the input of
-    another method, including arrays and hashes
-
--   ruby-inspired block syntax for functional-style methods
-    (.each, .map)
-
--   control over variable scope
-
--   a near-complete lack of dollar signs and quotation marks
-
--   a ruby-like DSL for creating classes using an actual object-model
-
--   economic use of bash's variable and function namespaces
-
--   interoperability with standard bash syntax
-
-Installation
-------------
-
-Clone and put `lib` in your path, then use `source rubsh.bash` in your
-scripts.
-
-Usage
------
-
-    #!/usr/bin/env bash
-
-    source rubsh.bash
-
-    [...do rubbishy stuff...]
