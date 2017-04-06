@@ -1,8 +1,8 @@
 sudo: false
 install:
   - git clone git://github.com/rylnd/shpec        --branch 0.2.2      --depth 1 ~/shpec
-  - git clone git://github.com/binaryphile/kaizen --branch v11.10.10  --depth 1 ~/sorta
-  - git clone git://github.com/binaryphile/sorta  --branch v10.11.10  --depth 1 ~/kaizen
+  - git clone git://github.com/binaryphile/kaizen --branch v10.11.10  --depth 1 ~/kaizen
+  - git clone git://github.com/binaryphile/sorta  --branch v11.10.10  --depth 1 ~/sorta
   - export PATH=~/shpec/bin:~/kaizen/lib:~/sorta/lib:$PATH
 script: ./all-shpecs
 git:
