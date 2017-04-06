@@ -28,6 +28,11 @@ Features
 
 -   interoperability with standard bash syntax
 
+Requirements
+------------
+
+Bash 4.3+
+
 Installation
 ------------
 
@@ -49,6 +54,9 @@ Usage
     puts sample
 
     > an example
+
+Would be equivalent to `sample = String.new "an example"` in ruby, if
+that were a thing.
 
 ### Array Creation
 
@@ -73,7 +81,8 @@ Usage
 
     > a new hope
 
-Requires that the object has been instantiated at least once.
+Requires that the object has been instantiated at least once so the bash
+function "sample" exists.
 
 ### Calling Methods
 
@@ -81,6 +90,9 @@ Requires that the object has been instantiated at least once.
     puts samples .join -
 
     > zero-one
+
+Method names are arguments and require a space between themselves and
+the object name.
 
 ### Method Chaining
 
@@ -101,12 +113,14 @@ ends.  Braces require surrounding spaces.
     > ([0]="zero: 0")
 
 Blocks use either one-line bracket syntax (shown here) or multiline
-do/end syntax.  Parameter names are given between curly braces instead
-of pipes.  The shown spacing is significant for both the brackets and
-braces.
+do/end syntax.  Parameter names are given between braces instead of
+pipes.
 
-For #map, the block body is an expression is evaluated to a string,
-using single quotes to prevent variable expansion until execution.
+The shown spacing is significant for both the brackets and braces.
+
+For #map, the block body is an expression which is evaluated to a
+string.  It uses single quotes to prevent variable expansion until
+execution.
 
 ### Object Literals
 
@@ -119,41 +133,43 @@ immediately be called on them, much like ruby allows literals of basic
 types to have methods called on them directly (e.g. "hello,
 world!".upcase).
 
+They create anonymous, single-use objects.
+
 ### Class Creation
 
     class Fruit; {
-      def is_tasty <<'  end'
+      def tasty? <<'  end'
         puts "Heck yeah!"
       end
 
-      def is_fresh <<'  end'
+      def fresh? <<'  end'
         puts "You bet."
       end
     }
 
     Fruit .new myfruit
-    myfruit .is_fresh
+    myfruit .fresh?
 
     > You bet.
 
 Note the class statement ends with a semicolon before the opening brace.
-Technically, the braces aren't required but provide familiar visual
-cues.
+Technically, the braces aren't required but provide a familiar visual
+context.
 
 ### Inheritance
 
     class Banana : Fruit; {
-      def is_fresh <<'  end'
+      def fresh? <<'  end'
         puts "Not so much."
       end
     }
 
     Banana .new mybanana
-    mybanana .is_fresh
+    mybanana .fresh?
 
     > Not so much.
 
-    mybanana .is_tasty
+    mybanana .tasty?
 
     > Heck yeah!
 
@@ -206,6 +222,14 @@ It cribs as much of its organization from ruby's core libraries as
 possible, making it easier to absorb, especially if you have ruby
 experience. But it should also be fairly easy for anyone familiar with
 general object-oriented concepts.
+
+**NOTE**: So that it can use glob characters such as "?" in method
+names, rubsh turns off bash globbing!  If you are using rubsh objects,
+most of the time you won't miss it because rubsh selectively turns it on
+an off as needed.  However, commands like `echo *` will only echo "*",
+not the current directory contents as you would normally expect.  If you
+need to enable globbing, do so with `set +f`.  Do not leave it on,
+however, or rubsh will not work correctly!
 
 How It Works
 ------------
