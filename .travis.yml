@@ -3,7 +3,8 @@ install:
   - git clone git://github.com/rylnd/shpec        --branch 0.2.2      --depth 1 ~/shpec
   - git clone git://github.com/binaryphile/kaizen --branch v10.11.10  --depth 1 ~/kaizen
   - git clone git://github.com/binaryphile/sorta  --branch v11.10.10  --depth 1 ~/sorta
-  - export PATH=~/shpec/bin:~/kaizen/lib:~/sorta/lib:$PATH
+  - git clone git://github.com/binaryphile/nano   --branch v10.11.10  --depth 1 ~/nano
+  - export PATH=~/shpec/bin:~/kaizen/lib:~/sorta/lib:~/nano/lib:$PATH
 script: ./all-shpecs
 git:
   depth: 1
