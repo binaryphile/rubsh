@@ -1,8 +1,4 @@
 sudo: true
-addons:
-  apt:
-    packages:
-      - bash
 install:
   - git clone git://github.com/rylnd/shpec        --branch 0.2.2      --depth 1 ~/shpec
   - git clone git://github.com/binaryphile/kaizen --branch v10.11.10  --depth 1 ~/kaizen
