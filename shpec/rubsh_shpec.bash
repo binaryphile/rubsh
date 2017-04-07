@@ -1,4 +1,4 @@
-echo "$(set -- $(ps hp $$); echo "$5")"
+set -x
 source import.bash
 
 shpec_helper_imports=(
