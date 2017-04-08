@@ -1,4 +1,3 @@
-set -x
 source import.bash
 
 shpec_helper_imports=(

@@ -5,8 +5,12 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning], with the exception that v10 is version 0 in
 semver parlance.
 
-[v10.10.11] - 2017-04-06
+[v10.10.11] - 2017-04-07
 ------------------------
+
+### Added
+
+-   Travis CI compatibility
 
 ### Refactored
 

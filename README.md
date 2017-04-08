@@ -1,10 +1,8 @@
-Rubsh
+Rubsh [![Build Status](https://travis-ci.org/binaryphile/rubsh.svg?branch=master)](https://travis-ci.org/binaryphile/rubsh)
 =====
 
 Enhanced data types for bash, inspired by Ruby - lovingly pronounced
 "rubbish"
-
-[![Build Status](https://travis-ci.org/binaryphile/rubsh.svg?branch=master)](https://travis-ci.org/binaryphile/rubsh)
 
 Features
 --------
