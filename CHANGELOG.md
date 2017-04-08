@@ -5,8 +5,20 @@ The format is based on [Keep a Changelog] and this project adheres to
 [Semantic Versioning], with the exception that v10 is version 0 in
 semver parlance.
 
+[v10.10.11] - 2017-04-07
+------------------------
+
+### Added
+
+-   Travis CI compatibility
+
+### Refactored
+
+-   cleaned up \_\_dispatch - removed anonymous variable detection, made
+    independent of class.
+
 [v10.10.10] - 2017-04-05
-------------
+------------------------
 
 ### Changed
 
@@ -28,7 +40,7 @@ semver parlance.
 
 ### Added
 
--   String#upcase and String#upcase!
+-   String\#upcase and String\#upcase!
 
 -   return types on everything but File\#each
 
@@ -74,4 +86,5 @@ semver parlance.
 
   [Keep a Changelog]: http://keepachangelog.com/
   [Semantic Versioning]: http://semver.org/
+  [v10.10.11]: https://github.com/binaryphile/rubsh/compare/v10.10.10...v10.10.11
   [v10.10.10]: https://github.com/binaryphile/rubsh/compare/v0.6.3...v10.10.10

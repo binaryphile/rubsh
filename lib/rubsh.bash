@@ -4,9 +4,8 @@
 
 set -f
 
-unset   -v  __classh __method_classesh __methodsh __method_bodyh __superh __ __class __a __h __s
-declare -Ag __classh __method_classesh __methodsh __method_bodyh __superh __h
-__a=()
+unset   -v  __classh __method_classesh __methodsh __method_bodyh __superh __ __class
+declare -Ag __classh __method_classesh __methodsh __method_bodyh __superh
 
 class () {
   __class=$1 # global
@@ -23,8 +22,8 @@ class () {
   eval "$statement"
   __classh[$__class]=Class
   __methodsh[$__class]=' '
-  __classh[__]=String
   __='""'
+  __classh[__]=String
 }
 
 def () {
@@ -35,8 +34,8 @@ def () {
   [[ -z ${__method_classesh[$method]-} ]] && __method_classesh[$method]=' '
   __method_classesh[$method]+="$__class "
   __method_bodyh[$__class.$method]=$body
-  __classh[__]=String
   __='""'
+  __classh[__]=String
 }
 
 class Object : ''; {
@@ -88,7 +87,6 @@ class Class : Object; {
     local value=${1-}
     local format
 
-    ! declare -f "$self" >/dev/null 2>&1 || return
     value=$(declare -p value)
     value=${value#*=}
     case $class in
@@ -306,7 +304,6 @@ __dispatch () {
   local method=${1-.inspect}; shift ||:
   local receiver=${FUNCNAME[1]}
   local class=${__classh[$receiver]}
-  local anon
   local i
   local rest=()
   local statement
@@ -320,14 +317,8 @@ __dispatch () {
           ':='  ) set -- "$method" "${@:2}"; method=.declare ;;
           * )
             [[ $class == 'Class' ]] || return
-            case $receiver in
-              'Array' ) anon=__a  ;;
-              'Hash'  ) anon=__h  ;;
-              *       ) anon=__s  ;;
-            esac
-            set -- "$anon" "$@"
-            "$receiver" .new "$anon" "$method"
-            "$@"
+            $("$receiver" .declare anon "$method")
+            anon "$@"
             return
             ;;
           * ) return 1;;
@@ -352,7 +343,7 @@ __dispatch () {
   printf -v statement 'function __ { %s ;}; __ "$receiver" "$@"' "${__method_bodyh[$class.$method]}"
   eval "$statement"
   ! (( ${#rest[@]} )) && return
-  "${__classh[__]-}" "$__" "${rest[@]}"
+  "${__classh[__]}" "$__" "${rest[@]}"
 }
 
 __inspect () {
