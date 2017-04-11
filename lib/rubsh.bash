@@ -4,7 +4,7 @@
 
 set -f
 
-unset   -v  __classh __method_classesh __methodsh __method_bodyh __superh __ __class
+unset   -v  __classh __method_classesh __methodsh __method_bodyh __superh __ __class __requires
 declare -Ag __classh __method_classesh __methodsh __method_bodyh __superh
 
 class () {
@@ -298,6 +298,23 @@ puts () {
   printf '%s\n' "$@"
   __='""'
   __classh[__]=String
+}
+
+require () {
+  local feature_name=$1
+  local path
+
+  [[ " ${__requires[*]-} " == *" $feature_name "* ]] && return
+  path=$PATH
+  PATH=${RUBSH_PATH-}${RUBSH_PATH:+:}.
+  source "$feature_name"          2>/dev/null ||
+    source "$feature_name".rubsh  2>/dev/null ||
+    source "$feature_name".bash   2>/dev/null ||
+    source "$feature_name".sh     2>/dev/null
+  feature_name=${feature_name##*/}
+  feature_name=${feature_name%.*}
+  __requires+=( $feature_name )
+  PATH=$path
 }
 
 __dispatch () {
