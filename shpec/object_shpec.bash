@@ -24,38 +24,38 @@ describe Object
     [[ -z ${__superh[Object]-} ]]
     assert equal 0 $?
   end
+end
 
-  describe class
-    it "Object is class Class"
-      Object .class
-      assert equal '"Class"' "$__"
-    end
-
-    it "Class is class Class"
-      Class .class
-      assert equal '"Class"' "$__"
-    end
+describe class
+  it "Object is class Class"
+    Object .class
+    assert equal '"Class"' "$__"
   end
 
-  describe methods
-    it "lists an array string of Object methods"
-      Object .methods
-      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="methods")' "$__"
-    end
+  it "Class is class Class"
+    Class .class
+    assert equal '"Class"' "$__"
+  end
+end
 
-    it "only lists Object methods defined on it when given false"
-      Object .methods false
-      assert equal '()' "$__"
-    end
+describe methods
+  it "lists an array string of Object methods"
+    Object .methods
+    assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="methods")' "$__"
+  end
 
-    it "lists an array string of Class methods"
-      Class .methods
-      assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="methods")' "$__"
-    end
+  it "only lists Object methods defined on it when given false"
+    Object .methods false
+    assert equal '()' "$__"
+  end
 
-    it "only lists Class methods defined on it when given false"
-      Class .methods false
-      assert equal '()' "$__"
-    end
+  it "lists an array string of Class methods"
+    Class .methods
+    assert equal '([0]="ancestors" [1]="declare" [2]="instance_methods" [3]="new" [4]="superclass" [5]="class" [6]="methods")' "$__"
+  end
+
+  it "only lists Class methods defined on it when given false"
+    Class .methods false
+    assert equal '()' "$__"
   end
 end
