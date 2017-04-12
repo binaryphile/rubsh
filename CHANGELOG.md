@@ -12,6 +12,14 @@ semver parlance.
 
 -   `require`, with RUBSH_PATH
 
+-   `require_relative`
+
+-    `Pathname` class
+
+### Refactored
+
+-   Organization into main rubsh file, util and class files
+
 [v10.10.11] - 2017-04-07
 ------------------------
 

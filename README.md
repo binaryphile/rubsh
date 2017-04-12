@@ -355,6 +355,33 @@ method is the least verbose:
 This way the hash doesn't need a separate declaration at all. Bear in
 mind that this method only works for local declarations though.
 
+Keywords
+--------
+
+-   **`require`** *`<feature_name>`* - load rubsh features
+
+    Much like ruby's keyword, `require` can load files with or without
+    extension and with or without specific paths.  Paths are relative to
+    the current working directory of the script.
+
+    Features not specified by path are searched for on the environment
+    variable `RUBSH_PATH`, which is initialized to rubsh's own
+    directory, as well as the `.` current directory.
+
+    Features not specified by extension are searched for with the
+    following extensions, in order:
+
+    -   no extension
+    -   `.rubsh`
+    -   `.bash`
+    -   `.sh`
+
+-   **`require_relative`** *`<feature_name>`* - load rubsh features
+    relative to the current source file
+
+    Works the same as `require`, but relative to the file from which it
+    is called.
+
 Conclusion
 ----------
 

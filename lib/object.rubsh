@@ -1,0 +1,31 @@
+class Object : ''; {
+  def class << '  end'
+    __=${__classh[$1]}
+    __=$(declare -p __)
+    __=${__#*=}
+    __classh[__]=String
+  end
+
+  def methods <<'  end'
+    local self=$1
+    local inherited=${2-true}
+    local class=${__classh[$self]}
+    local methods=()
+
+    case $inherited in
+      'false' ) ;;
+      'true'  )
+        methods=( ${__methodsh[$class]} )
+        while [[ -n ${__superh[$class]-} ]]; do
+          class=${__superh[$class]}
+          methods+=( ${__methodsh[$class]} )
+        done
+        ;;
+      * ) return 1;;
+    esac
+    __inspect methods
+    __classh[__]=Array
+  end
+}
+
+# vim: ft=sh

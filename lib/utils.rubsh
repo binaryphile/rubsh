@@ -17,13 +17,13 @@ class () {
   __classh[__]=String
 }
 
-__clear_vars () {
+clear_vars () {
   local -n __vars=$1
 
   unset -v "${__vars[@]}"
 }
 
-__declare_hashes () {
+declare_hashes () {
   local -n __vars=$1
   local __var
 
@@ -90,7 +90,7 @@ __dispatch () {
   "${__classh[__]}" "$__" "${rest[@]}"
 }
 
-__glob () {
+glob () {
   case $1 in
     'on'  ) set +f;;
     'off' ) set -f;;
@@ -99,8 +99,10 @@ __glob () {
 }
 
 initialize_rubsh () {
-  export RUBSH_PATH+=${RUBSH_PATH:+:}$(unset -v CDPATH; cd "$(dirname $BASH_SOURCE)"; pwd)
-  __glob off
+  local vars
+
+  export RUBSH_PATH+=${RUBSH_PATH:+:}$(unset -v CDPATH; cd "$(command dirname $BASH_SOURCE)"; pwd):.
+  glob off
 
   vars=(
     __
@@ -112,8 +114,8 @@ initialize_rubsh () {
     __methodsh
     __superh
   )
-  __clear_vars      vars
-  __declare_hashes  vars
+  clear_vars      vars
+  declare_hashes  vars
 }
 
 __inspect () {
@@ -146,7 +148,7 @@ puts () {
   }
   printf '%s\n' "$@"
   __='""'
-  __classh[__]=String
+  __classh['__']=String
 }
 
 require () {
@@ -155,13 +157,29 @@ require () {
 
   [[ " ${__features[*]-} " == *" $feature_name "* ]] && return
   path=$PATH
-  PATH=${RUBSH_PATH-}${RUBSH_PATH:+:}.
+  PATH=${RUBSH_PATH-}
   source "$feature_name"          2>/dev/null ||
     source "$feature_name".rubsh  2>/dev/null ||
     source "$feature_name".bash   2>/dev/null ||
-    source "$feature_name".sh     2>/dev/null
+    source "$feature_name".sh     2>/dev/null ||
+    { PATH=$path; return 1 ;}
+  PATH=$path
   feature_name=${feature_name##*/}
   feature_name=${feature_name%.*}
   __features+=( $feature_name )
-  PATH=$path
 }
+
+rubsh_cleanup () {
+  local functions=(
+    clear_vars
+    declare_hashes
+    initialize_rubsh
+    package
+    rubsh_cleanup
+    rubsh_main
+  )
+
+  unset -f "${functions[@]}"
+}
+
+# vim: ft=sh
