@@ -76,6 +76,18 @@ __inspect () {
 
 return_if_sourced () { echo 'eval return 0 2>/dev/null ||:' ;}
 
+rubsh_cleanup () {
+  local functions=(
+    clear_vars
+    declare_hashes
+    rubsh_cleanup
+    rubsh_initialize
+    rubsh_lib
+  )
+
+  unset -f "${functions[@]}"
+}
+
 rubsh_initialize () {
   local vars
 

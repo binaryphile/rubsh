@@ -1,43 +1,24 @@
-rubsh_bootstrap () {
-  local source_dir=$(unset -v CDPATH; cd "$(dirname "$BASH_SOURCE")" && pwd -P)
+#!/usr/bin/env bash
 
-  export RUBSH_PATH+=${RUBSH_PATH:+:}$source_dir:.
-  source "$source_dir"/keywords.rubsh
-  require utils
-  rubsh_initialize
-}
+rubsh_lib () { (
+  unset -v CDPATH
+  cd "$(dirname "$(readlink "$BASH_SOURCE" || echo "$BASH_SOURCE")")" && pwd -P
+) }
 
-rubsh_cleanup () {
-  local functions=(
-    clear_vars
-    declare_hashes
-    rubsh_bootstrap
-    rubsh_cleanup
-    rubsh_initialize
-    rubsh_oo
-  )
+export RUBSH_LIB=$(rubsh_lib)
+export RUBSH_PATH+=${RUBSH_PATH:+:}$RUBSH_LIB:.
+source "$RUBSH_LIB"/keywords.rubsh
 
-  unset -f "${functions[@]}"
-}
+require utils
+rubsh_initialize
 
-rubsh_oo () {
-  local class
-  local classes=(
-    object
-    class
-    string
-    array
-    hash
-    file
-  )
+require object
+require class
+require string
+require array
+require hash
+require file
 
-  for class in "${classes[@]}"; do
-    require "$class"
-  done
-}
-
-rubsh_bootstrap
-rubsh_oo
 rubsh_cleanup
 
 $(return_if_sourced)
