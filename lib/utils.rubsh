@@ -101,7 +101,6 @@ glob () {
 initialize_rubsh () {
   local vars
 
-  export RUBSH_PATH+=${RUBSH_PATH:+:}$(unset -v CDPATH; cd "$(command dirname $BASH_SOURCE)"; pwd):.
   glob off
 
   vars=(

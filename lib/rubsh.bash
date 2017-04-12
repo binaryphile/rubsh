@@ -1,5 +1,7 @@
-source "$(dirname $BASH_SOURCE)"/utils.rubsh
-$(package rubsh)
+export RUBSH_PATH+=${RUBSH_PATH:+:}$(unset -v CDPATH; cd "$(dirname $BASH_SOURCE)" && pwd):.
+source "$(dirname $BASH_SOURCE)"/keywords.rubsh
+require utils
+
 initialize_rubsh
 
 rubsh_main () {
