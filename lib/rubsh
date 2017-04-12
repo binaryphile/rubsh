@@ -1,0 +1,45 @@
+rubsh_bootstrap () {
+  local source_dir=$(unset -v CDPATH; cd "$(dirname "$BASH_SOURCE")" && pwd -P)
+
+  export RUBSH_PATH+=${RUBSH_PATH:+:}$source_dir:.
+  source "$source_dir"/keywords.rubsh
+  require utils
+  rubsh_initialize
+}
+
+rubsh_cleanup () {
+  local functions=(
+    clear_vars
+    declare_hashes
+    rubsh_bootstrap
+    rubsh_cleanup
+    rubsh_initialize
+    rubsh_oo
+  )
+
+  unset -f "${functions[@]}"
+}
+
+rubsh_oo () {
+  local class
+  local classes=(
+    object
+    class
+    string
+    array
+    hash
+    file
+  )
+
+  for class in "${classes[@]}"; do
+    require "$class"
+  done
+}
+
+rubsh_bootstrap
+rubsh_oo
+rubsh_cleanup
+
+$(return_if_sourced)
+
+bash --norc

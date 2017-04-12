@@ -13,6 +13,7 @@ class () {
   eval "$statement"
   __classh[$__class]=Class
   __methodsh[$__class]=' '
+  self=$__class
   __='""'
   __classh[__]=String
 }

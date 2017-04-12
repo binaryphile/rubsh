@@ -41,4 +41,6 @@ class String : Object; {
   end
 }
 
+String .new self
+
 # vim: ft=sh

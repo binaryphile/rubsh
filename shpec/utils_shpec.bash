@@ -77,4 +77,17 @@ describe __dispatch
     assert equal '"String"' "$__"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+
+  it "sets self"; (
+    _shpec_failures=0
+    class Sample; {
+      def self <<'      end'
+        __=\"$self\"
+      end
+    }
+    Sample .new sample
+    sample .self
+    assert equal '"sample"' "$__"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end

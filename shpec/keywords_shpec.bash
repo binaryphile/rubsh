@@ -79,6 +79,14 @@ describe class
     assert equal '""' "$__"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
   end
+
+  it "sets self"; (
+    _shpec_failures=0
+    class Sample
+    self
+    assert equal '"Sample"' "$__"
+    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
 end
 
 describe def
@@ -147,5 +155,17 @@ describe puts
     Array .new samples '( zero one )'
     assert equal "zero-one" "$(puts samples .join -)"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  end
+end
+
+describe self
+  it "is a String"
+    self .class
+    assert equal '"String"' "$__"
+  end
+
+  it "is 'main' in the main context"
+    self
+    assert equal '"main"' "$__"
   end
 end
