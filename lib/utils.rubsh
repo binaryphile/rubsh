@@ -82,7 +82,6 @@ rubsh_cleanup () {
     declare_hashes
     rubsh_cleanup
     rubsh_initialize
-    rubsh_lib
   )
 
   unset -f "${functions[@]}"
