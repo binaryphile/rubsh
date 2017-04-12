@@ -1,0 +1,70 @@
+class () {
+  __class=$1 # not local
+  local super=${3-String}
+  local statement
+
+  [[ -z ${2-}  || $2 == ':' ]] || return
+  [[ -n $super ]] && {
+    ! declare -f "$__class" >/dev/null 2>&1 || return
+      declare -f "$super"   >/dev/null 2>&1 || return
+    __superh[$__class]=$super
+  }
+  printf -v statement 'function %s { __dispatch "$@" ;}' "$__class"
+  eval "$statement"
+  __classh[$__class]=Class
+  __methodsh[$__class]=' '
+  __='""'
+  __classh[__]=String
+}
+
+def () {
+  local method=$1
+  local body=${2-$(</dev/stdin)}
+
+  __methodsh[$__class]+="$method "
+  [[ -z ${__method_classesh[$method]-} ]] && __method_classesh[$method]=' '
+  __method_classesh[$method]+="$__class "
+  __method_bodyh[$__class.$method]=$body
+  __='""'
+  __classh[__]=String
+}
+
+glob () {
+  case $1 in
+    'on'  ) set +f;;
+    'off' ) set -f;;
+    *     ) return 1;;
+  esac
+}
+
+puts () {
+  { declare -f "$1" >/dev/null 2>&1 && [[ " ${!__classh[*]} " == *" $1 "* ]] ;} && {
+    (( $# == 1 )) && { "$1" .to_s; printf '%s\n' "$__"; return ;}
+    "$@"
+    printf '%s\n' "$__"
+    return
+  }
+  printf '%s\n' "$@"
+  __='""'
+  __classh['__']=String
+}
+
+require () {
+  local feature_name=$1
+  local path
+
+  [[ " ${__features[*]-} " == *" $feature_name "* ]] && return
+  path=$PATH
+  PATH=${RUBSH_PATH-}
+  source "$feature_name"          2>/dev/null ||
+    source "$feature_name".rubsh  2>/dev/null ||
+    source "$feature_name".bash   2>/dev/null ||
+    source "$feature_name".sh     2>/dev/null ||
+    { PATH=$path; return 1 ;}
+  PATH=$path
+  feature_name=${feature_name##*/}
+  feature_name=${feature_name%.*}
+  __features+=( $feature_name )
+}
+
+# vim: ft=sh
