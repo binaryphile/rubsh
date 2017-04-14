@@ -11,6 +11,11 @@ __inspect () {
   __=${__%\'}
 }
 
+__next_id () {
+  : "${__last_id:=0}"
+  __=$(( __last_id++ ))
+}
+
 return_if_sourced () { echo 'eval return 0 2>/dev/null ||:' ;}
 
 rubsh_cleanup () {
@@ -30,6 +35,7 @@ rubsh_initialize () {
 
   vars=(
     __
+    __last_id
   )
   clear_vars      vars
 }
