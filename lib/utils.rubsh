@@ -1,9 +1,7 @@
-glob () {
-  case $1 in
-    'on'  ) set +f;;
-    'off' ) set -f;;
-    *     ) return 1;;
-  esac
+clear_vars () {
+  local -n __vars=$1
+
+  unset -v "${__vars[@]}"
 }
 
 __inspect () {
@@ -17,6 +15,7 @@ return_if_sourced () { echo 'eval return 0 2>/dev/null ||:' ;}
 
 rubsh_cleanup () {
   local functions=(
+    clear_vars
     rubsh_cleanup
     rubsh_initialize
   )
@@ -33,7 +32,6 @@ rubsh_initialize () {
     __
   )
   clear_vars      vars
-  declare_hashes  vars
 }
 
 # vim: ft=sh
