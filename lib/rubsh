@@ -8,13 +8,6 @@ unset -v RUBSH_LIB
 require utils
 rubsh_initialize
 
-require object
-require class
-require string
-require array
-require hash
-require file
-
 rubsh_cleanup
 
 $(return_if_sourced)

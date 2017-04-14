@@ -8,17 +8,9 @@ semver parlance.
 [Unreleased]
 ------------
 
-### Added
+### Changed
 
--   `require`, with RUBSH_PATH
-
--   `require_relative`
-
--    `Pathname` class
-
-### Refactored
-
--   Organization into main rubsh file, util and class files
+-   restarted object model from scratch
 
 [v10.10.11] - 2017-04-07
 ------------------------
@@ -95,12 +87,8 @@ semver parlance.
 
 -   revisited readme
 
-### Todo
-
--   \#method\_missing
-
   [Keep a Changelog]: http://keepachangelog.com/
   [Semantic Versioning]: http://semver.org/
-  [Unreleased]: https://github.com/binaryphile/rubsh/compare/v10.10.11...v10.11
+  [Unreleased]: https://github.com/binaryphile/rubsh/compare/v10.10.11...v11.10
   [v10.10.11]: https://github.com/binaryphile/rubsh/compare/v10.10.10...v10.10.11
   [v10.10.10]: https://github.com/binaryphile/rubsh/compare/v0.6.3...v10.10.10
