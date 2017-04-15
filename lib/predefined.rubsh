@@ -1,8 +1,3 @@
-self () {
-  case ${1:-} in
-    '.class'  ) __='"Object"' ;;
-    * )__='"main"'            ;;
-  esac
-}
+Object () { :;}
 
 # vim: ft=sh

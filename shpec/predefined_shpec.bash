@@ -15,13 +15,15 @@ source "$(shpec_cwd)"/../lib/rubsh
 is_function () { declare -f "$1" >/dev/null 2>&1 ;}
 
 describe self
-  it "returns 'main' in the main context"
-    self
-    assert equal '"main"' "$__"
-  end
+  describe main
+    it "returns 'main'"
+      self
+      assert equal '"main"' "$__"
+    end
 
-  it "is of class Object"
-    self .class
-    assert equal '"Object"' "$__"
+    it "is of class Object"
+      self .class
+      assert equal '"Object"' "$__"
+    end
   end
 end

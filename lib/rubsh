@@ -9,6 +9,7 @@ require utils
 rubsh_initialize
 
 require predefined
+require object
 
 rubsh_cleanup
 
