@@ -1,7 +1,7 @@
-self () {
-  case ${1:-} in
-    '.class'  ) __='"Object"' ;;
-    * )__='"main"'            ;;
+Object () {
+  case $1 in
+    '.object_id'  ) __=0          ;;
+    '.class'      ) __='"Class"'  ;;
   esac
 }
 

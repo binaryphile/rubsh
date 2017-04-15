@@ -19,4 +19,15 @@ describe Object
     is_function Object
     assert equal 0 $?
   end
+
+  it "has class Class"
+    Object .class
+    assert equal '"Class"' "$__"
+  end
+
+  it "has a numeric object id"
+    Object .object_id
+    (( __ + 1 ))
+    assert equal 0 $?
+  end
 end
