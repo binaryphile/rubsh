@@ -8,6 +8,8 @@ unset -v RUBSH_LIB
 require utils
 rubsh_initialize
 
+require predefined
+
 rubsh_cleanup
 
 $(return_if_sourced)
