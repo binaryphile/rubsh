@@ -1,7 +1,17 @@
 Object () {
   case $1 in
-    '.object_id'  ) __=0          ;;
-    '.class'      ) __='"Class"'  ;;
+    '.object_id'  )
+      __0=0
+      __=__0
+      ;;
+    '.class'      )
+      __1=Class
+      __=__1
+      ;;
+    '.superclass' )
+      __2=nil
+      __=__2
+      ;;
   esac
 }
 

@@ -22,12 +22,17 @@ describe Object
 
   it "has class Class"
     Object .class
-    assert equal '"Class"' "$__"
+    assert equal 'Class' "${!__}"
   end
 
   it "has a numeric object id"
     Object .object_id
-    (( __ + 1 ))
+    (( ${!__} + 1 ))
     assert equal 0 $?
+  end
+
+  it "has no superclass"
+    Object .superclass
+    assert equal 'nil' "${!__}"
   end
 end
