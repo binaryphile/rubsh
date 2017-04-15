@@ -1,0 +1,3 @@
+declare -Ag __ruby_scopeh=()
+
+# vim: ft=sh
