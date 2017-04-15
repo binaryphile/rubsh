@@ -19,4 +19,9 @@ describe self
     self
     assert equal '"main"' "$__"
   end
+
+  it "is of class Object"
+    self .class
+    assert equal '"Object"' "$__"
+  end
 end
