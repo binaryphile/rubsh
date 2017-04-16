@@ -10,13 +10,23 @@ initialize_shpec_helper
 stop_on_error=true
 stop_on_error
 
+set -x
 source "$(shpec_cwd)"/../lib/rubsh
 
-describe __ruby_scopeh
-  it "is a hash"; (
+describe __ruby_scopes
+  it "is an array"; (
     _shpec_failures=0
-    [[ $(declare -p __ruby_scopeh) == 'declare -A'* ]]
+    [[ $(declare -p __ruby_scopes) == 'declare -a'* ]]
     assert equal 0 $?
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
+end
+
+describe get_scope
+  it "returns a hash"; (
+    _shpec_failures=0
+    declare -p __ruby_values
+    get_scope 0
+    assert equal __h "$__"
+    return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
 end

@@ -37,7 +37,7 @@ describe require
     unset -v sample
     dir=$($mktempd) || return
     echo 'sample=example' >"$dir"/sample.rubsh
-    require "$dir"/sample
+    $(require "$dir"/sample)
     assert equal example "$sample"
     shpec_cleanup "$dir"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -48,7 +48,7 @@ describe require
     unset -v sample
     dir=$($mktempd) || return
     echo 'sample=example' >"$dir"/sample.rubsh
-    require "$dir"/sample.rubsh
+    $(require "$dir"/sample.rubsh)
     assert equal example "$sample"
     shpec_cleanup "$dir"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -59,7 +59,7 @@ describe require
     unset -v sample
     dir=$($mktempd) || return
     echo 'sample=example' >"$dir"/sample.bash
-    require "$dir"/sample
+    $(require "$dir"/sample)
     assert equal example "$sample"
     shpec_cleanup "$dir"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -70,7 +70,7 @@ describe require
     unset -v sample
     dir=$($mktempd) || return
     echo 'sample=example' >"$dir"/sample.bash
-    require "$dir"/sample.bash
+    $(require "$dir"/sample.bash)
     assert equal example "$sample"
     shpec_cleanup "$dir"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -81,7 +81,7 @@ describe require
     unset -v sample
     dir=$($mktempd) || return
     echo 'sample=example' >"$dir"/sample.sh
-    require "$dir"/sample
+    $(require "$dir"/sample)
     assert equal example "$sample"
     shpec_cleanup "$dir"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -92,7 +92,7 @@ describe require
     unset -v sample
     dir=$($mktempd) || return
     echo 'sample=example' >"$dir"/sample.sh
-    require "$dir"/sample.sh
+    $(require "$dir"/sample.sh)
     assert equal example "$sample"
     shpec_cleanup "$dir"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -104,7 +104,7 @@ describe require
     dir=$($mktempd) || return
     export RUBSH_PATH=$dir
     echo 'sample=example' >"$dir"/sample.rubsh
-    require sample.rubsh
+    $(require sample.rubsh)
     assert equal example "$sample"
     shpec_cleanup "$dir"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -116,7 +116,7 @@ describe require
     dir=$($mktempd) || return
     export RUBSH_PATH=$dir
     echo 'sample=example' >"$dir"/sample.rubsh
-    require sample.rubsh
+    $(require sample.rubsh)
     assert equal example "$sample"
     shpec_cleanup "$dir"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -128,7 +128,7 @@ describe require
     dir=$($mktempd) || return
     export RUBSH_PATH=$dir
     echo 'sample=example' >"$dir"/sample.bash
-    require sample
+    $(require sample)
     assert equal example "$sample"
     shpec_cleanup "$dir"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -140,7 +140,7 @@ describe require
     dir=$($mktempd) || return
     export RUBSH_PATH=$dir
     echo 'sample=example' >"$dir"/sample.bash
-    require sample.bash
+    $(require sample.bash)
     assert equal example "$sample"
     shpec_cleanup "$dir"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -152,7 +152,7 @@ describe require
     dir=$($mktempd) || return
     export RUBSH_PATH=$dir
     echo 'sample=example' >"$dir"/sample.sh
-    require sample
+    $(require sample)
     assert equal example "$sample"
     shpec_cleanup "$dir"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -164,7 +164,7 @@ describe require
     dir=$($mktempd) || return
     export RUBSH_PATH=$dir
     echo 'sample=example' >"$dir"/sample.sh
-    require sample.sh
+    $(require sample.sh)
     assert equal example "$sample"
     shpec_cleanup "$dir"
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -174,7 +174,7 @@ describe require
     _shpec_failures=0
     unset -v sample
     echo 'sample=example' >sample.rubsh
-    require sample
+    $(require sample)
     assert equal example "$sample"
     $rm sample.rubsh
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -184,7 +184,7 @@ describe require
     _shpec_failures=0
     unset -v sample
     echo 'sample=example' >sample.rubsh
-    require sample.rubsh
+    $(require sample.rubsh)
     assert equal example "$sample"
     $rm sample.rubsh
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -194,7 +194,7 @@ describe require
     _shpec_failures=0
     unset -v sample
     echo 'sample=example' >sample.bash
-    require sample
+    $(require sample)
     assert equal example "$sample"
     $rm sample.bash
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -204,7 +204,7 @@ describe require
     _shpec_failures=0
     unset -v sample
     echo 'sample=example' >sample.bash
-    require sample.bash
+    $(require sample.bash)
     assert equal example "$sample"
     $rm sample.bash
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -214,7 +214,7 @@ describe require
     _shpec_failures=0
     unset -v sample
     echo 'sample=example' >sample.sh
-    require sample
+    $(require sample)
     assert equal example "$sample"
     $rm sample.sh
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -224,7 +224,7 @@ describe require
     _shpec_failures=0
     unset -v sample
     echo 'sample=example' >sample.sh
-    require sample.sh
+    $(require sample.sh)
     assert equal example "$sample"
     $rm sample.sh
     return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
@@ -233,7 +233,7 @@ describe require
   it "doesn't reload a loaded file"; (
     _shpec_failures=0
     echo 'sample=example' >sample.rubsh
-    require sample
+    $(require sample)
     unset -v sample
     require sample
     assert unequal example "${sample-}"

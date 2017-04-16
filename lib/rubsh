@@ -1,16 +1,17 @@
 #!/usr/bin/env bash
 
-RUBSH_LIB=$(unset -v CDPATH; cd "$(dirname "$(readlink "$BASH_SOURCE" || echo "$BASH_SOURCE")")" && pwd -P)
+RUBSH_LIB=$(dirname "$(readlink -f "$BASH_SOURCE")")
 export RUBSH_PATH+=${RUBSH_PATH:+:}$RUBSH_LIB:.
 source "$RUBSH_LIB"/keywords.rubsh
 unset -v RUBSH_LIB
 
-require utils
+$(require utils)
 rubsh_initialize
 
-require predefined
-require scope
-require object
+$(require scope)
+$(require values)
+$(require predefined)
+$(require object)
 
 rubsh_cleanup
 

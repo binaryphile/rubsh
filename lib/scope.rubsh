@@ -1,3 +1,11 @@
-declare -Ag __ruby_scopeh=()
+__ruby_scopes=( '${__ruby_values[0]}' )
+declare -A __h
+
+get_scope () {
+  local index=$1
+
+  __=__h
+  eval __h="${__ruby_values[$index]}"
+}
 
 # vim: ft=sh
