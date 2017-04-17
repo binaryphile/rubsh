@@ -1,0 +1,95 @@
+boot_defclass () {
+  local name=$1
+  local super=$2
+  local obj
+
+  rb_class_boot "$super"
+  obj=$__
+  __rb_class_tbl[$name]=$obj
+}
+
+Init_heap () {
+  declare -Ag __heaps=()
+}
+
+Init_stack () {
+  :
+}
+
+Init_var_tables () {
+  declare -Ag __rb_global_tbl=()
+  declare -Ag __rb_class_tbl=()
+}
+
+__inspect () {
+  __=$(declare -p "$1" 2>/dev/null) || return
+  __=${__#*=}
+  __=${__#\'}
+  __=${__%\'}
+}
+
+__next_id () {
+  : "${__last_id:=0}"
+  __=$(( __last_id++ ))
+}
+
+rb_call_inits () {
+  Init_var_tables
+}
+
+rb_class_boot () {
+  local super=$1
+  local -A class=()
+  local id
+
+  class[super]=$super
+  __next_id
+  id=$__
+  __inspect class
+  __valueh[$id]=$__
+  __=$id
+}
+
+ruby_init () {
+  local vars
+
+  unset -f ruby_init
+
+  set -f
+
+  vars=(
+    __
+    __block
+    __features
+    __heaps
+    __last_id
+    __rb_class_tbl
+    __rb_global_tbl
+    __ruby_class
+    __ruby_frame
+    __ruby_scope
+    __top_frame
+    __top_scope
+    __top_self
+    self
+  )
+
+  unset -v "${vars[@]}"
+
+  __next_id
+  __top_frame=$__
+  __frame=$__
+  Init_stack
+  Init_heap
+  __next_id
+  __top_scope=$__
+  __scope=$__
+
+  rb_call_inits
+  __ruby_class=$rb_cObject
+  __ruby_frame[self]=$__ruby_top_self
+  ruby_prog_init
+  __ruby_scope=$__ruby_top_scope
+}
+
+# vim: ft=sh
