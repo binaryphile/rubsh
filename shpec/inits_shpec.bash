@@ -3,7 +3,6 @@ source import.bash
 shpec_helper_imports=(
   initialize_shpec_helper
   shpec_cwd
-  shpec_cleanup
   stop_on_error
 )
 eval "$(importa shpec-helper shpec_helper_imports)"
@@ -14,23 +13,6 @@ stop_on_error
 source "$(shpec_cwd)"/../lib/utils.rubsh
 
 is_function () { declare -f "$1" >/dev/null 2>&1 ;}
-
-describe clear_vars
-  it "unsets the variables passed to it in an array name"; (
-    _shpec_failures=0
-    sample1=
-    sample2=
-    samples=(
-      sample1
-      sample2
-    )
-    clear_vars samples
-    stop_on_error off
-    declare -p sample1 2>/dev/null || declare -p sample2 2>/dev/null
-    assert unequal 0 $?
-    return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  end
-end
 
 describe __inspect
   it "returns a string's eval'able value"; (

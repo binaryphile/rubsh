@@ -1,3 +1,6 @@
+unset -v __features
+__features=()
+
 require () {
   local feature=$1
   local feature_spec=$1
@@ -11,10 +14,10 @@ require () {
   feature=${feature%.*}
   [[ " ${__features[*]:-} " == *" $feature "* ]] && return
   extensions=(
-    ''
     .rubsh
     .bash
     .sh
+    ''
   )
   if [[ $feature_spec == */* ]]; then
     for extension in "${extensions[@]}"; do
@@ -32,6 +35,21 @@ require () {
   fi
   [[ -e $file ]] || return
   printf 'eval source %s; __features+=( %s )\n' "$(readlink -f "$file")" "$feature"
+}
+
+__strict_mode () {
+  case $1 in
+    on  )
+      set -o errexit
+      set -o nounset
+      set -o pipefail
+      ;;
+    off )
+      set +o errexit
+      set +o nounset
+      set +o pipefail
+      ;;
+  esac
 }
 
 # vim: ft=sh

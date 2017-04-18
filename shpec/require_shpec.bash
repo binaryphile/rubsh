@@ -15,22 +15,6 @@ source "$(shpec_cwd)"/../lib/rubsh
 
 is_function () { declare -f "$1" >/dev/null 2>&1 ;}
 
-describe class
-end
-
-describe def
-end
-
-describe puts
-  it "prints the given argument"
-    assert equal "an example" "$(puts "an example")"
-  end
-
-  it "prints additional arguments on successive lines"
-    assert equal $'an example\nof two arguments' "$(puts "an example" "of two arguments")"
-  end
-end
-
 describe require
   it "loads a rubsh file from a specified path without an extension"; (
     _shpec_failures=0

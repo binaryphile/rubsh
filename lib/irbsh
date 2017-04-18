@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+IFS=$'\n' read -rd '' statements <<'EOS' ||:
+  PROMPT_COMMAND='RETVAL=$?; [[ " ${!__heap[*]} " != *" $__ "* ]] && IRBSH="" || IRBSH="[$RETVAL]=> ${__heap[$__]}"'
+  PS1="\$IRBSH\${IRBSH:+\\n}irbsh-11.10> "
+  source %s/rubsh
+  __strict_mode off
+  __=''
+EOS
+printf -v statements "$statements" "$(dirname $(readlink -f $BASH_SOURCE))"
+
+exec bash --rcfile <(echo "$statements")

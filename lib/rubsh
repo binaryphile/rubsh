@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
 
 RUBSH_LIB=$(dirname "$(readlink -f "$BASH_SOURCE")")
-export RUBSH_PATH+=${RUBSH_PATH:+:}$RUBSH_LIB:.
+export RUBSH_PATH=$RUBSH_LIB${RUBSH_PATH:+:}${RUBSH_PATH:-}:.
 source "$RUBSH_LIB"/require.rubsh
-unset -v RUBSH_LIB
+__strict_mode on
 
 $(require inits)
-rubsh_init
+ruby_init
 
-$(require utils)
-
-$(return_if_sourced)
-
-bash --norc
+! (( $# )) || source "$@"
