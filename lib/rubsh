@@ -8,4 +8,8 @@ __strict_mode on
 $(require inits)
 ruby_init
 
-! (( $# )) || source "$@"
+$(require utils)
+$(__return_if_sourced)
+
+(( $# )) || __die "$usage"
+source "$@"

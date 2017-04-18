@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 IFS=$'\n' read -rd '' statements <<'EOS' ||:
-  PROMPT_COMMAND='RETVAL=$?; [[ " ${!__heap[*]} " != *" $__ "* ]] && IRBSH="" || IRBSH="[$RETVAL]=> ${__heap[$__]}"'
+  PROMPT_COMMAND='RETVAL=$?; [[ -z $__ || -z ${__heap[$__]} ]] && IRBSH="" || IRBSH="[$RETVAL]=> ${__heap[$__]}"'
   PS1="\$IRBSH\${IRBSH:+\\n}irbsh-11.10> "
   source %s/rubsh
   __strict_mode off
