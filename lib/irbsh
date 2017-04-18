@@ -5,7 +5,6 @@ IFS=$'\n' read -rd '' statements <<'EOS' ||:
   PS1="\$IRBSH\${IRBSH:+\\n}irbsh-11.10> "
   source %s/rubsh
   __strict_mode off
-  __=''
 EOS
 printf -v statements "$statements" "$(dirname $(readlink -f $BASH_SOURCE))"
 

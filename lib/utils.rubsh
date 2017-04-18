@@ -1,3 +1,4 @@
-return_if_sourced () { echo 'eval return 0 2>/dev/null ||:' ;}
+__die               () { echo "$1" >&2; exit "${2:-1}"        ;}
+__return_if_sourced () { echo 'eval return 0 2>/dev/null ||:' ;}
 
 # vim: ft=sh

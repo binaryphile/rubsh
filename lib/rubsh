@@ -7,6 +7,7 @@ __strict_mode on
 
 $(require inits)
 ruby_init
+__=''
 
 $(require utils)
 $(__return_if_sourced)
