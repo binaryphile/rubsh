@@ -37,19 +37,4 @@ require () {
   printf 'eval source %s; __features+=( %s )\n' "$(readlink -f "$file")" "$feature"
 }
 
-__strict_mode () {
-  case $1 in
-    on  )
-      set -o errexit
-      set -o nounset
-      set -o pipefail
-      ;;
-    off )
-      set +o errexit
-      set +o nounset
-      set +o pipefail
-      ;;
-  esac
-}
-
 # vim: ft=sh

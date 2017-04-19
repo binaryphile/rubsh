@@ -1,0 +1,9 @@
+Init_heap () {
+  declare -Ag __heap=()
+}
+
+Init_stack () {
+  :
+}
+
+# vim: ft=sh

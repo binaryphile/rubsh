@@ -1,0 +1,15 @@
+__rb_class_boot () {
+  local super=$1
+  local -A class=()
+  local id
+
+  class[super]=$super
+  class[type]=RClass
+  __next_id
+  id=$__
+  __inspect class
+  __heap[$id]=$__
+  __=$id
+}
+
+# vim: ft=sh

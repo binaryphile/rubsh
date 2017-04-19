@@ -3,13 +3,13 @@
 RUBSH_LIB=$(dirname "$(readlink -f "$BASH_SOURCE")")
 export RUBSH_PATH=$RUBSH_LIB${RUBSH_PATH:+:}${RUBSH_PATH:-}:.
 source "$RUBSH_LIB"/require.rubsh
+
+$(require utils)
 __strict_mode on
 
 $(require inits)
 ruby_init
-__=''
 
-$(require utils)
 $(__return_if_sourced)
 
 (( $# )) || __die "$usage"

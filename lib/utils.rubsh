@@ -1,4 +1,32 @@
-__die               () { echo "$1" >&2; exit "${2:-1}"        ;}
+__die () { echo "$1" >&2; exit "${2:-1}"        ;}
+
+__inspect () {
+  __=$(declare -p "$1" 2>/dev/null) || return
+  __=${__#*=}
+  __=${__#\'}
+  __=${__%\'}
+}
+
+__next_id () {
+  : "${__last_id:=0}"
+  __=$(( __last_id++ ))
+}
+
 __return_if_sourced () { echo 'eval return 0 2>/dev/null ||:' ;}
+
+__strict_mode () {
+  case $1 in
+    on  )
+      set -o errexit
+      set -o nounset
+      set -o pipefail
+      ;;
+    off )
+      set +o errexit
+      set +o nounset
+      set +o pipefail
+      ;;
+  esac
+}
 
 # vim: ft=sh
