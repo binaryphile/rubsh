@@ -34,7 +34,7 @@ require () {
     file=$path/$feature_spec$extension
   fi
   [[ -e $file ]] || return
-  printf 'eval source %s; __features+=( %s )\n' "$(readlink -f "$file")" "$feature"
+  printf 'eval source %s && __features+=( %s )\n' "$(readlink -f "$file")" "$feature"
 }
 
 # vim: ft=sh
