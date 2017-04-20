@@ -5,7 +5,7 @@ export RUBSH_PATH=$RUBSH_LIB${RUBSH_PATH:+:}${RUBSH_PATH:-}:.
 source "$RUBSH_LIB"/require.rubsh
 
 $(require util  )
-$(require inits )
+$(require eval  )
 
 __strict_mode on
 __glob off

@@ -1,0 +1,58 @@
+$(require gc    )
+$(require inits )
+$(require util  )
+
+ruby_init () {
+  local -A frame
+  local funcs
+  local vars
+
+  funcs=(
+    Init_Object
+    Init_heap
+    Init_stack
+    Init_var_tables
+    rb_call_inits
+    ruby_init
+  )
+
+  vars=(
+    RUBSH_LIB
+    __
+    __heap
+    __last_id
+    __rb_class_tbl
+    __rb_global_tbl
+    __rb_cObject
+    __rb_cClass
+    __ruby_class
+    __ruby_frame
+    __ruby_scope
+    __top_frame
+    __top_scope
+    __ruby_top_self
+    self
+  )
+  unset -v "${vars[@]}"
+
+  __next_id
+  __top_frame=$__
+  __ruby_frame=$__
+  # Init_stack
+  Init_heap
+  __next_id
+  __ruby_scope=$__
+  __top_scope=$__
+
+  rb_call_inits
+  __ruby_class=$__rb_cObject
+  frame[self]=$__ruby_top_self
+  __inspect frame
+  __heap[$__ruby_frame]=$__
+  __ruby_scope=$__top_scope
+
+  unset -f "${funcs[@]}"
+  __=''
+}
+
+# vim: ft=sh
