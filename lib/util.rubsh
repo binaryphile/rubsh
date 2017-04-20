@@ -1,5 +1,11 @@
 __die () { echo "$1" >&2; exit "${2:-1}"        ;}
 
+__get_object () {
+  local id=$1
+
+  eval __h="${__heap[$id]}"
+}
+
 __glob () {
   case $1 in
     on  ) set +f    ;;
@@ -18,6 +24,14 @@ __inspect () {
 __next_id () {
   : "${__last_id:=0}"
   __=$(( __last_id++ ))
+}
+
+__put_object () {
+  local ___id=$1
+  local ___name=$2
+
+  __inspect "$___name"
+  __heap[$___id]=$__
 }
 
 __return_if_sourced () { echo 'eval return 0 2>/dev/null ||:' ;}

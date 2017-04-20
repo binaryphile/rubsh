@@ -10,10 +10,15 @@ __boot_defclass () {
 }
 
 Init_Object () {
+  local metaclass
+
   __boot_defclass Object ''
   __rb_cObject=$__
   __boot_defclass Class "$__rb_cObject"
   __rb_cClass=$__
+  __rb_make_metaclass "$__rb_cObject" "$__rb_cClass"
+  metaclass=$__
+  __rb_make_metaclass "$__rb_cClass" "$metaclass"
   __rb_obj_alloc "$__rb_cObject"
   __ruby_top_self=$__
 
