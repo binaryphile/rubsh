@@ -4,7 +4,7 @@ __rb_class_boot () {
   local id
 
   class[super]=$super
-  class[type]=RClass
+  class[type]=T_CLASS
   __next_id
   id=$__
   __inspect class
@@ -30,7 +30,7 @@ __rb_make_metaclass () {
   __put_object "$obj" object
   __rb_singleton_class_attached "$klass" "$obj"
   __get_object "$obj" object
-  if [[ ${object[type]} == 'RClass' ]]; then
+  if [[ ${object[type]} == 'T_CLASS' ]]; then
     __get_object "$klass" class
     class[class]=$klass
     if [[ ${object[status]} == 'Singleton' ]]; then
@@ -46,11 +46,11 @@ __rb_make_metaclass () {
 __rb_singleton_class_attached () {
   local klass=$1
   local obj=$2
-  local -A class
-  local -A iv_tbl
+  local -A class=()
+  local -A iv_tbl=()
 
   __get_object "$klass" class
-  [[ ${class[type]} != 'Singleton' ]] && return
+  [[ ${class[status]} != 'Singleton' ]] && return
   [[ -z ${class[iv_tbl]} ]] && {
     __next_id
     class[iv_tbl]=$__

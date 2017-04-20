@@ -188,13 +188,25 @@ __rb_class_allocate_instance () {
   local -A object=()
   local id
 
-  object[type]=RObject
+  object[type]=T_OBJECT
   object[class]=$class
   __next_id
   id=$__
   __inspect object
   __heap[$id]=$__
   __=$id
+}
+
+__rb_class_real () {
+  local cl
+  local -A class=()
+
+  __get_object "$cl" class
+  while [[ ${class[status]} == 'Singleton' || ${class[type]} == 'T_ICLASS' ]]; do
+    cl=${class[super]}
+    __get_object "$cl" class
+  done
+  __=$cl
 }
 
 __rb_obj_alloc () { __rb_class_allocate_instance "$@" ;}
