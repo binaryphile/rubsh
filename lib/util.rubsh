@@ -1,9 +1,10 @@
 __die () { echo "$1" >&2; exit "${2:-1}"        ;}
 
 __get_object () {
-  local id=$1
+  local ___id=$1
+  local ___name=$2
 
-  eval __h="${__heap[$id]}"
+  eval "$___name=${__heap[$___id]}"
 }
 
 __glob () {

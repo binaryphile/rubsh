@@ -22,26 +22,23 @@ __rb_make_metaclass () {
 
   __rb_class_boot "$super"
   klass=$__
-  eval class="${__heap[$klass]}"
+  __get_object "$klass" class
   class[status]=Singleton
-  __inspect class
-  __heap[$klass]=$__
-  eval object="${__heap[$obj]}"
+  __put_object "$klass" class
+  __get_object "$obj" object
   object[class]=$klass
-  __inspect object
-  __heap[$obj]=$__
+  __put_object "$obj" object
   __rb_singleton_class_attached "$klass" "$obj"
-  eval object="${__heap[$obj]}"
+  __get_object "$obj" object
   if [[ ${object[type]} == 'RClass' ]]; then
-    eval class="${__heap[$klass]}"
+    __get_object "$klass" class
     class[class]=$klass
     if [[ ${object[status]} == 'Singleton' ]]; then
       __rb_class_real "${object[super]}"
-      eval tmp="${__heap[$__]}"
+      __get_object "$__" tmp
       class[super]=${tmp[class]}
     fi
-    __inspect class
-    __heap[$klass]=$__
+    __put_object "$klass" class
   fi
   __=$klass
 }
