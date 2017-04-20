@@ -1,6 +1,7 @@
 $(require gc        )
 $(require variable  )
 $(require object    )
+$(require utils     )
 
 rb_call_inits () {
   Init_var_tables
@@ -64,10 +65,7 @@ ruby_init () {
     __ruby_top_self
     self
   )
-
   unset -v "${vars[@]}"
-
-  set -f
 
   __next_id
   __top_frame=$__

@@ -5,9 +5,11 @@ export RUBSH_PATH=$RUBSH_LIB${RUBSH_PATH:+:}${RUBSH_PATH:-}:.
 source "$RUBSH_LIB"/require.rubsh
 
 $(require utils)
-__strict_mode on
-
 $(require inits)
+
+__strict_mode on
+__glob off
+
 ruby_init
 
 $(__return_if_sourced)

@@ -1,5 +1,13 @@
 __die () { echo "$1" >&2; exit "${2:-1}"        ;}
 
+__glob () {
+  case $1 in
+    on  ) set +f    ;;
+    off ) set -f    ;;
+    *   ) return 1  ;;
+  esac
+}
+
 __inspect () {
   __=$(declare -p "$1" 2>/dev/null) || return
   __=${__#*=}
