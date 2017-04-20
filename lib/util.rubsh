@@ -4,7 +4,7 @@ __get_object () {
   local ___id=$1
   local ___name=$2
 
-  eval "$___name=${__heap[$___id]}"
+  eval "$___name=${__heap[$___id]:-}"
 }
 
 __glob () {

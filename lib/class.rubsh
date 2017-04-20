@@ -33,7 +33,7 @@ __rb_make_metaclass () {
   if [[ ${object[type]} == 'T_CLASS' ]]; then
     __get_object "$klass" class
     class[class]=$klass
-    if [[ ${object[status]} == 'Singleton' ]]; then
+    if [[ ${object[status]:-} == 'Singleton' ]]; then
       __rb_class_real "${object[super]}"
       __get_object "$__" tmp
       class[super]=${tmp[class]}
@@ -48,17 +48,20 @@ __rb_singleton_class_attached () {
   local obj=$2
   local -A class=()
   local -A iv_tbl=()
+  local id
 
   __get_object "$klass" class
   [[ ${class[status]} != 'Singleton' ]] && return
-  [[ -z ${class[iv_tbl]} ]] && {
+  [[ -z ${class[iv_tbl]:-} ]] && {
     __next_id
-    class[iv_tbl]=$__
+    id=$__
+    class[iv_tbl]=$id
+    __heap[$id]='()'
     __put_object "$klass" class
   }
-  __get_object "$__" iv_tbl
+  __get_object "$id" iv_tbl
   iv_tbl[__attached__]=$obj
-  __put_object "$__" iv_tbl
+  __put_object "$id" iv_tbl
 }
 
 # vim: ft=sh

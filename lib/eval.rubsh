@@ -47,9 +47,7 @@ ruby_init () {
   rb_call_inits
   __ruby_class=$__rb_cObject
   frame[self]=$__ruby_top_self
-  __inspect frame
-  __heap[$__ruby_frame]=$__
-  __ruby_scope=$__top_scope
+  __put_object "$__ruby_frame" frame
 
   unset -f "${funcs[@]}"
   __=''
