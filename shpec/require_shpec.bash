@@ -11,9 +11,8 @@ initialize_shpec_helper
 stop_on_error=true
 stop_on_error
 
-source "$(shpec_cwd)"/../lib/rubsh
-
-is_function () { declare -f "$1" >/dev/null 2>&1 ;}
+source "$(shpec_cwd)"/../lib/require.rubsh
+export RUBSH_PATH=.
 
 describe require
   it "loads a rubsh file from a specified path without an extension"; (

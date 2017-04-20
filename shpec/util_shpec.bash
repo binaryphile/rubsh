@@ -10,7 +10,7 @@ initialize_shpec_helper
 stop_on_error=true
 stop_on_error
 
-source "$(shpec_cwd)"/../lib/utils.rubsh
+source "$(shpec_cwd)"/../lib/util.rubsh
 
 is_function () { declare -f "$1" >/dev/null 2>&1 ;}
 

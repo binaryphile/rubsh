@@ -4,7 +4,7 @@ RUBSH_LIB=$(dirname "$(readlink -f "$BASH_SOURCE")")
 export RUBSH_PATH=$RUBSH_LIB${RUBSH_PATH:+:}${RUBSH_PATH:-}:.
 source "$RUBSH_LIB"/require.rubsh
 
-$(require utils)
+$(require util )
 $(require inits)
 
 __strict_mode on

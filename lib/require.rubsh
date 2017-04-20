@@ -25,6 +25,7 @@ require () {
     done
     file=$feature_spec$extension
   else
+    [[ -n ${RUBSH_PATH:-} ]] || return
     IFS=:
     for path in $RUBSH_PATH; do
       for extension in "${extensions[@]}"; do
