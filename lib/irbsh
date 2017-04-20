@@ -3,7 +3,7 @@
 read -rd '' block <<'EOS' ||:
   IFS=$'\n' read -rd '' -a statements <<'  EOS' ||:
     RETVAL=$?
-    [[ -z $__ || -z ${__heap[$__]} ]] && IRBSH="" || IRBSH="[$RETVAL]=> ${__heap[$__]}"
+    [[ -z $__ || -z ${__heap[$__]} ]] && IRBSH='' || IRBSH="[$RETVAL]=> ${__heap[$__]}"
     __=''
   EOS
   PROMPT_COMMAND=$(IFS=';'; echo "${statements[*]}")
