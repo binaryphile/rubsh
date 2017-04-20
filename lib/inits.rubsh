@@ -1,7 +1,7 @@
 $(require gc        )
-$(require variable  )
 $(require object    )
 $(require util      )
+$(require variable  )
 
 rb_call_inits () {
   Init_var_tables

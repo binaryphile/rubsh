@@ -1,11 +1,17 @@
 #!/usr/bin/env bash
 
-IFS=$'\n' read -rd '' statements <<'EOS' ||:
-  PROMPT_COMMAND='RETVAL=$?; [[ -z $__ || -z ${__heap[$__]} ]] && IRBSH="" || IRBSH="[$RETVAL]=> ${__heap[$__]}"; __=""'
+read -rd '' block <<'EOS' ||:
+  IFS=$'\n' read -rd '' -a statements <<'  EOS' ||:
+    RETVAL=$?
+    [[ -z $__ || -z ${__heap[$__]} ]] && IRBSH="" || IRBSH="[$RETVAL]=> ${__heap[$__]}"
+    __=""
+  EOS
+  PROMPT_COMMAND=$(IFS=';'; echo "${statements[*]}")
+  unset -v statements
   PS1="\$IRBSH\${IRBSH:+\\n}irbsh-11.10> "
   source %s/rubsh
   __strict_mode off
 EOS
-printf -v statements "$statements" "$(dirname $(readlink -f $BASH_SOURCE))"
+printf -v block "$block" "$(dirname $(readlink -f $BASH_SOURCE))"
 
-exec bash --rcfile <(echo "$statements")
+exec bash --rcfile <(echo "$block")
