@@ -3,7 +3,7 @@ $(require inits )
 $(require util  )
 
 ruby_init () {
-  local -A frame
+  local -A frame=()
   local funcs
   local vars
 
@@ -25,6 +25,7 @@ ruby_init () {
     __rb_global_tbl
     __rb_cObject
     __rb_cClass
+    __rb_cNilClass
     __ruby_class
     __ruby_frame
     __ruby_scope

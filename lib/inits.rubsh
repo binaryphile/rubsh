@@ -1,5 +1,5 @@
-$(require object    )
-$(require variable  )
+$(require object  )
+$(require variable)
 
 rb_call_inits () {
   Init_var_tables

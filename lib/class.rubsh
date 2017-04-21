@@ -1,3 +1,6 @@
+$(require st      )
+$(require variable)
+
 __rb_class_boot () {
   local super=$1
   local -A class=()
@@ -10,6 +13,50 @@ __rb_class_boot () {
   __inspect class
   __heap[$id]=$__
   __=$id
+}
+
+__rb_class_inherited () {
+  local super=$1
+  local klass=$2
+
+  [[ -z $super ]] && super=$__rb_cObject
+  __rb_funcall "$super" inherited 1 "$klass"
+}
+
+__rb_class_new () {
+  local super=$1
+
+  __rb_class_boot "$super"
+}
+
+__rb_define_class () {
+  local name=$1
+  local super=$2
+  local klass
+
+  __rb_const_defined "$__rb_cObject" "$name" && {
+    __rb_const_get "$__rb_cObject" "$name"
+    return
+  }
+  __rb_define_class_id "$name" "$super"
+  klass=$__
+  __rb_class_inherited "$super" "$klass"
+  __rb_class_tbl[$name]=$klass
+  __=$klass
+}
+
+__rb_define_class_id () {
+  local id=$1
+  local super=$2
+  local klass
+  local -A tmp=()
+
+  [[ -z $super ]] && super=$__rb_cObject
+  __rb_class_new "$super"
+  klass=$__
+  __rb_name_class "$klass" "$id"
+  __get_object "$super" tmp
+  __rb_make_metaclass "$klass" "${tmp[class]}"
 }
 
 __rb_make_metaclass () {
@@ -53,10 +100,9 @@ __rb_singleton_class_attached () {
   __get_object "$klass" class
   [[ ${class[status]} != 'Singleton' ]] && return
   [[ -z ${class[iv_tbl]:-} ]] && {
-    __next_id
+    __st_init_numtable
     id=$__
     class[iv_tbl]=$id
-    __heap[$id]='()'
     __put_object "$klass" class
   }
   __get_object "$id" iv_tbl

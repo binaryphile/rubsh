@@ -1,0 +1,6 @@
+__st_init_numtable () {
+    __next_id
+    __heap[$__]='()'
+}
+
+# vim: ft=sh

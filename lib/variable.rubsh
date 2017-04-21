@@ -1,6 +1,46 @@
+$(require st)
+
 Init_var_tables () {
   declare -Ag __rb_global_tbl=()
   declare -Ag __rb_class_tbl=()
+}
+
+__rb_iv_set () {
+  local obj=$1
+  local name=$2
+  local val=$3
+
+  __rb_ivar_set "$obj" "$name" "$val"
+}
+
+__rb_ivar_set () {
+  local obj=$1
+  local id=$2
+  local val=$3
+  local -A object=()
+  local -A iv_tbl=()
+
+  __get_object "$obj" object
+  case ${object[type]} in
+    'T_OBJECT' | 'T_CLASS' )
+      [[ -z ${object[iv_tbl]:-} ]] && {
+        __st_init_numtable
+        object[iv_tbl]=$__
+      }
+      __get_object "$__" iv_tbl
+      iv_tbl[$id]=$val
+      __put_object "$__" iv_tbl
+      ;;
+    * ) __generic_ivar_set "$obj" "$id" "$val";;
+  esac
+  __=$val
+}
+
+__rb_name_class () {
+  local klass=$1
+  local id=$2
+
+  __rb_iv_set "$klass" __classid__ "$id"
 }
 
 # vim: ft=sh

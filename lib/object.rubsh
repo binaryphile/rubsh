@@ -21,6 +21,8 @@ Init_Object () {
   __rb_make_metaclass "$__rb_cClass" "$metaclass"
   __rb_obj_alloc "$__rb_cObject"
   __ruby_top_self=$__
+  __rb_define_class NilClass "$__rb_cObject"
+  __rb_cNilClass=$__
 
   # rb_define_private_method(rb_cObject, "initialize", rb_obj_dummy, 0);
   # rb_define_private_method(rb_cClass, "inherited", rb_obj_dummy, 1);
