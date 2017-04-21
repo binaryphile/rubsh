@@ -1,34 +1,5 @@
 $(require st)
 
-__generic_ivar_set () {
-  local obj=$1
-  local id=$2
-  local val=$3
-  local object
-  local tbl
-  local -A generic_table=()
-  local -A table=()
-
-  [[ -z ${__generic_iv_tbl:-} ]] && {
-    __st_init_numtable
-    __generic_iv_tbl=$__ # not local
-  }
-  ! __st_lookup "$__generic_iv_table" "$obj" tbl && { #
-    __get_object "$obj" object
-    object[exivar]=1
-    __put_object "$obj" object
-    __st_init_numtable
-    tbl=$__
-    __get_object "$__generic_iv_table" generic_table
-    generic_table[$obj]=$tbl
-    __put_object "$__generic_iv_table" generic_table
-  }
-  __get_object "$tbl" table
-  table[$id]=$val
-  __put_object "$tbl" table
-  __=''
-}
-
 Init_var_tables () {
   declare -Ag __rb_global_tbl=()
   declare -Ag __rb_class_tbl=()
@@ -50,18 +21,13 @@ __rb_ivar_set () {
   local -A iv_tbl=()
 
   __get_object "$obj" object
-  case ${object[type]} in
-    'T_OBJECT' | 'T_CLASS' )
-      [[ -z ${object[iv_tbl]:-} ]] && {
-        __st_init_numtable
-        object[iv_tbl]=$__
-      }
-      __get_object "$__" iv_tbl
-      iv_tbl[$id]=$val
-      __put_object "$__" iv_tbl
-      ;;
-    * ) __generic_ivar_set "$obj" "$id" "$val";;
-  esac
+  [[ -z ${object[iv_tbl]:-} ]] && {
+    __st_init_numtable
+    object[iv_tbl]=$__
+  }
+  __get_object "$__" iv_tbl
+  iv_tbl[$id]=$val
+  __put_object "$__" iv_tbl
   __=$val
 }
 
