@@ -10,8 +10,7 @@ __rb_class_boot () {
   class[type]=T_CLASS
   __next_id
   id=$__
-  __inspect class
-  __heap[$id]=$__
+  __put_object "$id" class
   __=$id
 }
 
@@ -20,7 +19,7 @@ __rb_class_inherited () {
   local klass=$2
 
   [[ -z $super ]] && super=$__rb_cObject
-  __rb_funcall "$super" inherited 1 "$klass"
+  __rb_funcall "$super" inherited 1 "$klass" #
 }
 
 __rb_class_new () {
@@ -34,8 +33,8 @@ __rb_define_class () {
   local super=$2
   local klass
 
-  __rb_const_defined "$__rb_cObject" "$name" && {
-    __rb_const_get "$__rb_cObject" "$name"
+  __rb_const_defined "$__rb_cObject" "$name" && { #
+    __rb_const_get "$__rb_cObject" "$name" #
     return
   }
   __rb_define_class_id "$name" "$super"
