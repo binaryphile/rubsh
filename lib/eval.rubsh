@@ -2,6 +2,18 @@ $(require gc    )
 $(require inits )
 $(require util  )
 
+__rb_funcall () {
+  local recv=$1
+  local mid=$2
+  local n=$3
+  local va_alist=$4; shift 4
+  local ar
+  local argv
+  local i
+
+  __rb_call 
+}
+
 ruby_init () {
   local -A frame=()
   local funcs

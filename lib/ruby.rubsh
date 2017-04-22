@@ -1,0 +1,13 @@
+rb_class_of () {
+  local obj=$1
+
+  if (FIXNUM_P(obj)) return rb_cFixnum;
+  if (obj == Qnil) return rb_cNilClass;
+  if (obj == Qfalse) return rb_cFalseClass;
+  if (obj == Qtrue) return rb_cTrueClass;
+  if (SYMBOL_P(obj)) return rb_cSymbol;
+
+  return RBASIC(obj)->klass;
+}
+
+# vim: ft=sh

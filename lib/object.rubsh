@@ -43,7 +43,7 @@ __rb_class_real () {
   local -A class=()
 
   __get_object "$cl" class
-  while [[ ${class[status]} == 'Singleton' || ${class[type]} == 'T_ICLASS' ]]; do
+  while [[ ${class[status]} == 'Singleton' ]]; do
     cl=${class[super]}
     __get_object "$cl" class
   done
