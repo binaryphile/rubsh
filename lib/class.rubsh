@@ -1,5 +1,6 @@
-$(require st      )
-$(require variable)
+$(require eval      )
+$(require st        )
+$(require variable  )
 
 __rb_class_boot () {
   local super=$1
@@ -19,7 +20,7 @@ __rb_class_inherited () {
   local klass=$2
 
   [[ -z $super ]] && super=$__rb_cObject
-  __rb_funcall "$super" inherited 1 "$klass" #
+  __rb_funcall "$super" inherited 1 "$klass"
 }
 
 __rb_class_new () {

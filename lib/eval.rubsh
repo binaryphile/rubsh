@@ -1,17 +1,17 @@
 $(require gc    )
 $(require inits )
+$(require ruby  )
 $(require util  )
 
 __rb_funcall () {
   local recv=$1
   local mid=$2
   local n=$3
-  local va_alist=$4; shift 4
-  local ar
-  local argv
-  local i
+  local va_alist=$4
+  local class
 
-  __rb_call 
+  __rb_class_of "$recv"
+  __rb_call "$__" "$recv" "$mid" "$n" "$@"
 }
 
 ruby_init () {
@@ -22,7 +22,6 @@ ruby_init () {
   funcs=(
     Init_Object
     Init_heap
-    Init_stack
     Init_var_tables
     rb_call_inits
     ruby_init
@@ -31,19 +30,24 @@ ruby_init () {
   vars=(
     RUBSH_LIB
     __
+    __Qfalse
+    __Qnil
+    __Qtrue
     __heap
     __last_id
+    __rb_cClass
+    __rb_cFalseClass
+    __rb_cNilClass
+    __rb_cObject
+    __rb_cTrueClass
     __rb_class_tbl
     __rb_global_tbl
-    __rb_cObject
-    __rb_cClass
-    __rb_cNilClass
     __ruby_class
     __ruby_frame
     __ruby_scope
+    __ruby_top_self
     __top_frame
     __top_scope
-    __ruby_top_self
     self
   )
   unset -v "${vars[@]}"
@@ -51,7 +55,6 @@ ruby_init () {
   __next_id
   __top_frame=$__
   __ruby_frame=$__
-  # Init_stack
   Init_heap
   __next_id
   __ruby_scope=$__

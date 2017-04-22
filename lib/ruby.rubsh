@@ -1,13 +1,20 @@
-rb_class_of () {
+__Qfalse=0
+__Qtrue=2
+__Qnil=4
+
+__rb_class_of () {
   local obj=$1
+  local object
 
-  if (FIXNUM_P(obj)) return rb_cFixnum;
-  if (obj == Qnil) return rb_cNilClass;
-  if (obj == Qfalse) return rb_cFalseClass;
-  if (obj == Qtrue) return rb_cTrueClass;
-  if (SYMBOL_P(obj)) return rb_cSymbol;
-
-  return RBASIC(obj)->klass;
+  case $obj in
+    "$__Qnil"   ) __=$__rb_cNilClass    ;;
+    "$__Qfalse" ) __=$__rb_cFalseClass  ;;
+    "$__Qtrue"  ) __=$__rb_cTrueClass   ;;
+    * )
+      __get_object "$obj" object
+      __=${object[class]}
+      ;;
+  esac
 }
 
 # vim: ft=sh

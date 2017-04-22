@@ -1,24 +1,18 @@
 unset -v __features
-__features=()
+declare -Ag __features=()
 
 require () {
-  local feature=$1
   local feature_spec=$1
+  local feature
   local IFS
   local extension
-  local extensions=()
+  local extensions=( .rubsh .bash .sh '' )
   local file
   local path
 
-  feature=${feature##*/}
+  feature=${1##*/}
   feature=${feature%.*}
-  [[ " ${__features[*]:-} " == *" $feature "* ]] && return
-  extensions=(
-    .rubsh
-    .bash
-    .sh
-    ''
-  )
+  [[ -n ${__features[$feature]:-} ]] && return
   if [[ $feature_spec == */* ]]; then
     for extension in "${extensions[@]}"; do
       [[ -e $feature_spec$extension ]] && break
@@ -35,6 +29,7 @@ require () {
     file=$path/$feature_spec$extension
   fi
   [[ -e $file ]] || return
+  __features[$feature]=1
   printf 'eval source %s && __features+=( %s )\n' "$(readlink -f "$file")" "$feature"
 }
 
