@@ -58,10 +58,11 @@ __rb_ivar_set () {
   [[ -z ${object[iv_tbl]:-} ]] && {
     __st_init_numtable
     object[iv_tbl]=$__
+    __put_object "$obj" object
   }
-  __get_object "$__" iv_tbl
+  __get_object "${object[iv_tbl]}" iv_tbl
   iv_tbl[$id]=$val
-  __put_object "$__" iv_tbl
+  __put_object "${object[iv_tbl]}" iv_tbl
   __=$val
 }
 
