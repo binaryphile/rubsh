@@ -34,8 +34,8 @@ __rb_define_class () {
   local super=$2
   local klass
 
-  __rb_const_defined "$__rb_cObject" "$name" && { #
-    __rb_const_get "$__rb_cObject" "$name" #
+  __rb_const_defined "$__rb_cObject" "$name" && {
+    __rb_const_get "$__rb_cObject" "$name"
     return
   }
   __rb_define_class_id "$name" "$super"

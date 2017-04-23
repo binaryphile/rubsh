@@ -11,7 +11,7 @@ __st_lookup () {
 
   __get_object "$___table" ___table_inst
   [[ -n ${___table_inst[$___key]:-} ]] || return
-  ___value=${___table_inst[$___key]}
+  if [[ -n $3 ]]; then ___value=${___table_inst[$___key]}; fi
 }
 
 # vim: ft=sh

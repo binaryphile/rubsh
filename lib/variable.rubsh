@@ -1,8 +1,42 @@
-$(require st)
+$(require ruby)
+$(require st  )
 
 Init_var_tables () {
   declare -Ag __rb_global_tbl=()
   declare -Ag __rb_class_tbl=()
+}
+
+__rb_const_defined () {
+  local klass=$1
+  local id=$2
+  local -A class=()
+
+  __get_object "$klass" class
+
+  while true; do
+    { [[ -n ${class[iv_tbl]:-}  ]] && __st_lookup "${class[iv_tbl]}" "$id" '' ;} && return
+    [[ -n ${class[super]:-}     ]] || return
+    __get_object "${class[super]}" class
+  done
+}
+
+__rb_const_get () {
+  local klass=$1
+  local id=$2
+  local -A class=()
+  local tmp
+  local value
+
+  __get_object "$klass" class
+
+  __=''
+  while true; do
+    { [[ -n ${class[iv_tbl]:-}  ]] && __st_lookup "${class[iv_tbl]}" "$id" value ;} && { __=$value; return ;}
+    { (( tmp == __rb_cObject    )) && __top_const_get                "$id" value ;} && { __=$value; return ;}
+    [[ -n ${class[super]:-}     ]] || return
+    tmp=${class[super]}
+    __get_object "$tmp" class
+  done
 }
 
 __rb_iv_set () {
@@ -36,6 +70,14 @@ __rb_name_class () {
   local id=$2
 
   __rb_iv_set "$klass" __classid__ "$id"
+}
+
+__top_const_get () {
+  local ___id=$1
+  local ___klassp=$2
+
+  __st_lookup "$__rb_class_tbl" "$___id" "$___klassp" && { __=$__Qtrue; return ;}
+  __=$__Qfalse
 }
 
 # vim: ft=sh
