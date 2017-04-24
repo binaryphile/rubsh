@@ -30,9 +30,6 @@ ruby_init () {
   vars=(
     RUBSH_LIB
     __
-    __Qfalse
-    __Qnil
-    __Qtrue
     __heap
     __last_id
     __rb_cClass

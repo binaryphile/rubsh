@@ -1,3 +1,5 @@
+unset -v __Qfalse __Qtrue __Qnil
+
 __Qfalse=0
 __Qtrue=2
 __Qnil=4
