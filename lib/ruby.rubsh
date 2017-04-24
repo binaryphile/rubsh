@@ -6,7 +6,7 @@ __Qnil=4
 
 __rb_class_of () {
   local obj=$1
-  local object
+  local -A object=()
 
   case $obj in
     "$__Qnil"   ) __=$__rb_cNilClass    ;;
