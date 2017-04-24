@@ -9,7 +9,7 @@ __rb_class_boot () {
 
   class[super]=$super
   class[type]=T_CLASS
-  class[class]=$__rb_cClass
+  [[ -n ${__rb_cClass:-} ]] && class[class]=$__rb_cClass
   __st_init_numtable
   class[m_tbl]=$__
   __next_id

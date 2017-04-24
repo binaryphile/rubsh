@@ -79,6 +79,7 @@ __top_const_get () {
 
   __st_lookup "$__rb_class_tbl" "$___id" "$___klassp" && { __=$__Qtrue; return ;}
   __=$__Qfalse
+  return 1
 }
 
 # vim: ft=sh
