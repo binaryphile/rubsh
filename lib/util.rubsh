@@ -1,0 +1,66 @@
+clear_vars () {
+  local -n __vars=$1
+
+  unset -v "${__vars[@]}"
+}
+
+declare_hashes () {
+  local -n __vars=$1
+  local __var
+
+  for __var in "${__vars[@]}"; do
+    [[ $__var == *h ]] && declare -Ag "$__var"
+  done
+}
+
+__die () { echo "$1" >&2; exit "${2:-1}" ;}
+
+__glob () {
+  case $1 in
+    on  ) set +f    ;;
+    off ) set -f    ;;
+    *   ) return 1  ;;
+  esac
+}
+
+__inspect () {
+  __=$(declare -p "$1" 2>/dev/null) || return
+  __=${__#*=}
+  __=${__#\'}
+  __=${__%\'}
+}
+
+__next_id () {
+  : "${__last_id:=0}"
+  __=$(( __last_id++ ))
+}
+
+__return_if_sourced () { echo 'eval return 0 2>/dev/null ||:' ;}
+
+rubsh_cleanup () {
+  local functions=(
+    clear_vars
+    declare_hashes
+    rubsh_cleanup
+    rubsh_initialize
+  )
+
+  unset -f "${functions[@]}"
+}
+
+__strict_mode () {
+  case $1 in
+    on  )
+      set -o errexit
+      set -o nounset
+      set -o pipefail
+      ;;
+    off )
+      set +o errexit
+      set +o nounset
+      set +o pipefail
+      ;;
+  esac
+}
+
+# vim: ft=sh
