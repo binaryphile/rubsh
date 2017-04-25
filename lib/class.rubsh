@@ -22,7 +22,7 @@ __rb_class_inherited () {
   local super=$1
   local klass=$2
 
-  [[ -z $super ]] && super=$__rb_cObject
+  [[ -z ${super:-} ]] && super=$__rb_cObject
   __rb_funcall "$super" inherited 1 "$klass"
 }
 

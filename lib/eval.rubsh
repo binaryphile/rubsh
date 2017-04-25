@@ -3,19 +3,47 @@ $(require inits )
 $(require ruby  )
 $(require util  )
 
+__rb_call () {
+  local klass=$1
+  local recv=$2
+  local mid=$3
+  local argc=$4; shift 4
+  local argv=( "$@" )
+  local body
+
+  __rb_get_method_body "$klass" "$mid"
+  body=$__
+  [[ -n $body ]] || return
+  rb_call0 "$recv" "$body" "$argc" "${argv[@]}"
+}
+
+__rb_call0 () {
+  local recv=$1
+  local body=$2
+  local argc=$3; shift 3
+  local argv=( "$@" )
+  local -A bod=()
+  local len
+  local self=$recv
+
+  __get_object "$body" bod
+  len=${bod[argc]}
+  call_cfunc "${bod[cfnc]}" "$recv" "$len" "$argc" "${argv[@]}"
+}
+
 __rb_funcall () {
   local recv=$1
   local mid=$2
-  local n=$3
-  local va_alist=$4
+  local n=$3; shift 3
+  local va_alist=( "$@" )
   local class
 
   __rb_class_of "$recv"
-  __rb_call "$__" "$recv" "$mid" "$n" "$@"
+  class=$__
+  __rb_call "$class" "$recv" "$mid" "$n" "${va_alist[@]}"
 }
 
 ruby_init () {
-  local -A frame=()
   local funcs
   local vars
 
@@ -40,27 +68,16 @@ ruby_init () {
     __rb_class_tbl
     __rb_global_tbl
     __ruby_class
-    __ruby_frame
-    __ruby_scope
     __ruby_top_self
-    __top_frame
-    __top_scope
     self
   )
   unset -v "${vars[@]}"
 
-  __next_id
-  __top_frame=$__
-  __ruby_frame=$__
   Init_heap
-  __next_id
-  __ruby_scope=$__
-  __top_scope=$__
 
   rb_call_inits
   __ruby_class=$__rb_cObject
-  frame[self]=$__ruby_top_self
-  __put_object "$__ruby_frame" frame
+  self=$__ruby_top_self
 
   unset -f "${funcs[@]}"
   __=''
