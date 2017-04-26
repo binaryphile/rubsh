@@ -10,7 +10,7 @@ $(require util)
 __strict_mode on
 __glob off
 
-ruby_init
+rubsh_init
 
 $(__return_if_sourced)
 

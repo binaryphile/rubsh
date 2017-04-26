@@ -8,6 +8,10 @@ semver parlance.
 [Unreleased]
 ------------
 
+### Changed
+
+-   version numbering back to normal
+
 ### Added
 
 -   `require`, with RUBSH_PATH

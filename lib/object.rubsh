@@ -1,31 +1,164 @@
-class Object : ''; {
-  def class << '  end'
-    __=${__classh[$1]}
-    __=$(declare -p __)
-    __=${__#*=}
-    __classh[__]=String
-  end
+$(require class)
 
-  def methods <<'  end'
-    local self=$1
-    local inherited=${2-true}
-    local class=${__classh[$self]}
-    local methods=()
+Init_Objects () {
+  Class=__11
 
-    case $inherited in
-      'false' ) ;;
-      'true'  )
-        methods=( ${__methodsh[$class]} )
-        while [[ -n ${__superh[$class]-} ]]; do
-          class=${__superh[$class]}
-          methods+=( ${__methodsh[$class]} )
-        done
-        ;;
-      * ) return 1;;
-    esac
-    __inspect methods
-    __classh[__]=Array
-  end
+  Object=__5
+  __Object=__8
+  declare -Ag __5=(
+    [class]=$__Object
+    [methods]=__7
+    [super]=''
+    [type]=class
+    [vars]=__6
+  )
+  declare -Ag __6=(
+    [name]=Object
+  )
+  declare -Ag __7=(
+  )
+  declare -Ag __8=(
+    [class]=$__Object
+    [methods]=__10
+    [status]=Singleton
+    [super]=$Class
+    [type]=class
+    [vars]=__9
+  )
+  declare -Ag __9=(
+    [attached]=$Object
+  )
+  declare -Ag __10=(
+  )
+
+  # Class=__11
+  __Class=__14
+  declare -Ag __11=(
+    [class]=$__Class
+    [methods]=__13
+    [super]=$Object
+    [type]=class
+    [vars]=__12
+  )
+  declare -Ag __12=(
+    [name]=Class
+  )
+  declare -Ag __13=(
+  )
+  declare -Ag __14=(
+    [class]=$__Class
+    [methods]=__16
+    [status]=Singleton
+    [super]=$__Object
+    [type]=class
+    [vars]=__15
+  )
+  declare -Ag __15=(
+    [attached]=$Class
+  )
+  declare -Ag __16=(
+  )
+
+  __top_self=__17
+  declare -Ag __17=(
+    [class]=$Object
+    [type]=object
+    [vars]=__18
+  )
+  declare -Ag __18=(
+  )
+
+  NilClass=__19
+  __NilClass=__22
+  declare -Ag __19=(
+    [class]=$__NilClass
+    [methods]=__21
+    [super]=$Object
+    [type]=class
+    [vars]=__20
+  )
+  declare -Ag __20=(
+    [name]=NilClass
+  )
+  declare -Ag __21=(
+  )
+  declare -Ag __22=(
+    [class]=$__NilClass
+    [methods]=__24
+    [status]=Singleton
+    [super]=$__Object
+    [type]=class
+    [vars]=__23
+  )
+  declare -Ag __23=(
+    [attached]=$NilClass
+  )
+  declare -Ag __24=(
+  )
+
+  TrueClass=__25
+  __TrueClass=__28
+  declare -Ag __25=(
+    [class]=$__TrueClass
+    [methods]=__27
+    [super]=$Object
+    [type]=class
+    [vars]=__26
+  )
+  declare -Ag __26=(
+    [name]=TrueClass
+  )
+  declare -Ag __27=(
+  )
+  declare -Ag __28=(
+    [class]=$__TrueClass
+    [methods]=__30
+    [status]=Singleton
+    [super]=$__Object
+    [type]=class
+    [vars]=__29
+  )
+  declare -Ag __29=(
+    [attached]=$TrueClass
+  )
+  declare -Ag __30=(
+  )
+
+  FalseClass=__31
+  __FalseClass=__34
+  declare -Ag __31=(
+    [class]=$__FalseClass
+    [methods]=__33
+    [super]=$Object
+    [type]=class
+    [vars]=__32
+  )
+  declare -Ag __32=(
+    [name]=FalseClass
+  )
+  declare -Ag __33=(
+  )
+  declare -Ag __34=(
+    [class]=$__FalseClass
+    [methods]=__36
+    [status]=Singleton
+    [super]=$__Object
+    [type]=class
+    [vars]=__35
+  )
+  declare -Ag __35=(
+    [attached]=$FalseClass
+  )
+  declare -Ag __36=(
+  )
+
+  declare -Ag __classesh=(
+    [Object]=$Object
+    [Class]=$Class
+    [NilClass]=$NilClass
+    [TrueClass]=$TrueClass
+    [FalseClass]=$FalseClass
+  )
 }
 
 # vim: ft=sh

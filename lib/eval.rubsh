@@ -1,0 +1,130 @@
+$(require object)
+$(require ruby  )
+$(require util  )
+
+__dispatch () {
+  local method=${1-.inspect}; shift ||:
+  local self=${FUNCNAME[1]}
+  local class=${__classh[$self]}
+  local i
+  local rest=()
+  local statement
+
+  [[ $method != '.'* ]] && {
+    case $method in
+      '=' ) method=.=;;
+      *   )
+        case ${1-} in
+          '='   ) set -- "$method" "${@:2}"; method=.new     ;;
+          ':='  ) set -- "$method" "${@:2}"; method=.declare ;;
+          * )
+            [[ $class == 'Class' ]] || return
+            $("$self" .declare anon "$method")
+            anon "$@"
+            return
+            ;;
+          * ) return 1;;
+        esac
+        ;;
+    esac
+  }
+  method=${method#.}
+  while [[ ${__method_classesh[$method]} != *" $class "* ]]; do
+    [[ -n ${__superh[$class]-} ]] || return
+    class=${__superh[$class]}
+  done
+  [[ -n ${__method_bodyh[$class.$method]-} ]] || return
+  [[ ${1-} == '{' ]] && {
+    for (( i = 1; i <= $#; i++ )); do
+      [[ ${!i} == '}' ]] && break;
+    done
+    [[ ${!i} == '}' ]] || return
+    rest=( "${@:i+1}" )
+    set -- "${@:2:i-2}"
+  }
+  printf -v statement 'function __ { %s ;}; __ "$self" "$@"' "${__method_bodyh[$class.$method]}"
+  eval "$statement"
+  ! (( ${#rest[@]} )) && return
+  "${__classh[__]}" "$__" "${rest[@]}"
+}
+
+__rb_call () {
+  local klass=$1
+  local recv=$2
+  local mid=$3
+  local argc=$4; shift 4
+  local argv=( "$@" )
+  local body
+
+  __rb_get_method_body "$klass" "$mid"
+  body=$__
+  [[ -n $body ]] || return
+  rb_call0 "$recv" "$body" "$argc" "${argv[@]}"
+}
+
+__rb_call0 () {
+  local recv=$1
+  local body=$2
+  local argc=$3; shift 3
+  local argv=( "$@" )
+  local -A bod=()
+  local len
+  local self=$recv
+
+  __get_object "$body" bod
+  len=${bod[argc]}
+  call_cfunc "${bod[cfnc]}" "$recv" "$len" "$argc" "${argv[@]}"
+}
+
+__rb_funcall () {
+  local recv=$1
+  local mid=$2
+  local n=$3; shift 3
+  local va_alist=( "$@" )
+  local class
+
+  __rb_class_of "$recv"
+  class=$__
+  __rb_call "$class" "$recv" "$mid" "$n" "${va_alist[@]}"
+}
+
+rubsh_init () {
+  local funcs
+  local vars
+
+  funcs=(
+    Init_Objects
+    rubsh_init
+  )
+
+  vars=(
+    Class
+    FalseClass
+    NilClass
+    Object
+    RUBSH_LIB
+    TrueClass
+    __
+    __Class
+    __FalseClass
+    __NilClass
+    __Object
+    __TrueClass
+    __class
+    __classesh
+    __last_id
+    __top_self
+    self
+  )
+  unset -v "${vars[@]}"
+
+  Init_Objects
+
+  __class=$Object
+  self=__top_self
+
+  unset -f "${funcs[@]}"
+  __=''
+}
+
+# vim: ft=sh

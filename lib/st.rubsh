@@ -1,0 +1,17 @@
+__st_init_numtable () {
+    __next_id
+    __heap[$__]='()'
+}
+
+__st_lookup () {
+  local ___table=$1
+  local ___key=$2
+  local -n ___value=$3
+  local -A ___table_inst=()
+
+  __get_object "$___table" ___table_inst
+  [[ -n ${___table_inst[$___key]:-} ]] || return
+  if [[ -n $3 ]]; then ___value=${___table_inst[$___key]}; fi
+}
+
+# vim: ft=sh

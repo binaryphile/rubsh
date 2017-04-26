@@ -1,3 +1,39 @@
+$(require eval      )
+$(require st        )
+$(require variable  )
+
+class () {
+  __class=$1 # not local
+  local super=${3-String}
+  local statement
+
+  [[ -z ${2:-}  || $2 == ':' ]] || return
+  [[ -n $super ]] && {
+    ! declare -f "$__class" >/dev/null 2>&1 || return
+      declare -f "$super"   >/dev/null 2>&1 || return
+    __superh[$__class]=$super
+  }
+  printf -v statement 'function %s { __dispatch "$@" ;}' "$__class"
+  eval "$statement"
+  __classh[$__class]=Class
+  __methodsh[$__class]=' '
+  self=$__class
+  __='""'
+  __classh[__]=String
+}
+
+def () {
+  local method=$1
+  local body=${2-$(</dev/stdin)}
+
+  __methodsh[$__class]+="$method "
+  [[ -z ${__method_classesh[$method]-} ]] && __method_classesh[$method]=' '
+  __method_classesh[$method]+="$__class "
+  __method_bodyh[$__class.$method]=$body
+  __='""'
+  __classh[__]=String
+}
+
 class Class : Object; {
   def ancestors <<'  end'
     local class=$1
@@ -82,5 +118,6 @@ class Class : Object; {
     __classh[__]=String
   end
 }
+
 
 # vim: ft=sh
