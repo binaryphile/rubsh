@@ -2,7 +2,6 @@ $(require ruby)
 $(require st  )
 
 Init_var_tables () {
-  declare -Ag __rb_global_tbl=()
   declare -Ag __rb_class_tbl=()
 }
 

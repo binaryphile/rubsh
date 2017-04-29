@@ -10,7 +10,7 @@ initialize_shpec_helper
 stop_on_error=true
 stop_on_error
 
-source "$(shpec_cwd)"/../lib/rubsh.bash
+source "$(shpec_cwd)"/../lib/rubsh
 
 is_function () { declare -f "$1" >/dev/null 2>&1 ;}
 
@@ -20,15 +20,19 @@ describe Class
     assert equal 0 $?
   end
 
+  it "is a variable"
+    assert equal class "$Class"
+  end
+
   it "has a super of Object"
-    assert equal Object "${__superh[Class]}"
+    assert equal Object "${__superh[$Class]}"
   end
 end
 
 describe ancestors
   it "lists an array string of Class ancestor classes, starting with the class itself"
     Class .ancestors
-    assert equal '([0]="Class" [1]="Object")' "$__"
+    assert equal 'Class Object' "$__a"
   end
 
   it "lists an array string of Object ancestor classes"
