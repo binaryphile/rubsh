@@ -9,15 +9,14 @@ Features
 
 -   ruby-inspired apis for common objects
 
--   the ability to return objects, including arrays and hashes, from
-    methods
+-   variables store object references
+
+-   methods return objects, including arrays and hashes
 
 -   chained method calls
 
--   ruby-inspired block syntax for functional-style methods (.each,
-    .map)
-
--   control over variable scope
+-   ruby-inspired block syntax for functional-style methods (#each,
+    #map)
 
 -   a near-complete lack of dollar signs and quotation marks
 
@@ -28,6 +27,8 @@ Features
 
 -   interoperability with standard bash syntax
 
+-   interactive `irbsh` shell
+
 Requirements
 ------------
 
@@ -36,11 +37,14 @@ Bash 4.3+
 Installation
 ------------
 
-Clone and put `lib` in your path, then use `source rubsh.bash` in your
-scripts.
+Clone and put `bin` and `lib` in your path, then use `source rubsh.bash`
+in your scripts, or run `rubsh <script>` to run the script without the
+need to source rubsh (ruby-style).
 
 Usage
 -----
+
+You can run through the examples with `irbsh`.
 
 ### Output
 
