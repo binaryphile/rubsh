@@ -82,6 +82,7 @@ rubsh_init () {
   Init_Objects
 
   __class=Object
+  Object .new __top_self
   self=__top_self
 
   unset -f "${funcs[@]}"
