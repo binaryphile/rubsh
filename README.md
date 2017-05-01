@@ -386,6 +386,164 @@ Keywords
     Works the same as `require`, but relative to the file from which it
     is called.
 
+Design
+------
+
+Rubsh attempts to faithfully translate a few core features from ruby
+into bash.
+
+Of course, not everything needs to be recreated because bash has many of
+the basics implemented by ruby already, albeit in bash's way not ruby's.
+For example, bash already handles low-level allocation of memory, as
+well as most parsing.
+
+What can't be handled ruby's way can be faked fairly well in a number of
+cases.  For example, if some ruby-like syntax doesn't exist in bash's
+parser, a function can usually let rubsh do the parsing itself.  In
+order to use a function, all that is necessary is that the syntax allows
+rubsh to specify the function name as the first item in the command, and
+everything else on the line will be interpreted as arguments to the
+function (except special bash tokens such as semicolon or the
+redirection operators, so these are avoided).
+
+The primary design features of ruby targeted by rubsh include:
+
+-   reference variables
+
+-   capitalized constants (sorta)
+
+-   objects
+
+-   instance variables
+
+-   classes
+
+-   singleton classes (a.k.a. metaclasses or eigenclasses)
+
+-   methods
+
+-   class methods
+
+-   class variables
+
+That means some big features are left out, of course, notably:
+
+-   constants which are actually constant
+
+-   nested constants
+
+-   nested classes
+
+-   modules, nested or otherwise
+
+-   scopes
+
+-   Procs
+
+-   etc.
+
+### Reference Variables
+
+Variables in ruby, whether they are local, instance, class or global,
+store one thing and that's objects.  More specifically, they store
+references to objects.  That's so an object can be referenced by more
+than one variable, and each variable has the same access to that object.
+The object doesn't care what particular variable is used to send
+messages (method calls) to it, just that the variable knows where it is.
+
+Bash variables are different.  They are strictly values.  Although bash
+offers structured data types such as arrays and hashes, which have some
+of the characteristics of ruby arrays and hashesand , the big difference is
+that bash variables aren't shareable by reference (at least, through
+normal usage, although you can do indirection in bash).  If you have two
+bash variables with the same content, they are each their own copy.
+
+In order to get around this, when rubsh uses actual bash variables, the
+actual value stored is an id for an object, not a normal value.  How the
+objects are structured to use this id is discussed a bit further below.
+However, the ids themselves are simple.  In the case of classes, which
+have names assigned as constants, the id is the snake-case version of
+the name, such as `my_class` for `MyClass`.  These have the advantage of
+being easy to use internally for all of the predefined classes, since
+they can be easily hardcoded.  For normal objects, the ids are simply
+unique integers, allocated by the function `__next_id`.  Objects don't
+have constant names and so can't be identified the same way as classes.
+
+When rubsh's internal functions use those variables, there are usually
+two levels of indirection.  I wanted rubsh's variable syntax to more
+closely resemble that of ruby's, where it is sufficient to use the
+variable's name to get at the object which it references.  In bash, you
+have to expand the variable to get at its contents using the dollar-sign
+notation.  That's because all arguments in bash are string literals, so
+variables are expanded before being passed to functions.  Therefore, in
+order to not have dollar-sign expansion everywhere, rubsh expects the
+names of variables as (string-literal) arguments.  Rubsh explicitly
+expands the variable names itself.
+
+A second level of indirection happens at that point, since the rubsh
+function only has a variable name by then.  The variable's contents
+should be an object id, as discussed above, such as `my_class` or `1`.
+Rubsh then refers to that id when accessing the object itself.
+
+As a side note on constants, while rubsh doesn't treat constants
+(capitalized variables) as unchangeable like ruby would, it does use the
+capitalization to know how to look up and treat constants in other
+respects (stored as class names, etc.).
+
+### Objects
+
+In ruby, everything is an object.  Every object has a basic shared
+structure with some meta-information, and values stored in instance
+variables.  Objects also have a class, which in turn has an inheritance
+hierarchy.  Methods are "sent" to the object by calling one if the
+object's reference variables with the method name, tacked onto the
+variable name with a ".".
+
+Rubsh emulates most of this.  Objects in rubsh have some of the ruby
+metadata, enough to allow inheritance and the object model to function.
+Unlike ruby, which stores individual structs of metadata corresponding
+to individual objects, rubsh consolidates the metadata of any given kind
+into a hash for all objects.  For example, instead of storing the
+object's class in a struct for that object, the classes for all objects
+are stored in a hash called `__classh`.  All internal rubsh variables
+start with two underscores (so the "__" namespace is reserved), and the
+terminal h is for "hash".  The object's id is the index into the hash.
+As usual, hashes can only store string values, so any more complex
+metadata are stored in their own standalone array or hash variables with
+their own ids, and those ids are stored in a hash indexed by the object
+id.
+
+Some metadata are used to keep track of the existence of objects, such
+as the `__classesh` hash, which tracks the defined class ids.  Because
+these are frequently used to test for the existence of an id, a hash is
+used, since a key can easily (and quickly) be tested for with the
+expression `[[ -z ${__classesh[$id]:-} ]]`.  The value stored at the key
+is never used, so it is usually set to "1" arbitrarily.  Using hash keys
+for this purpose should scale well.
+
+Other object metadata hashes include:
+
+-   `__typeh` - shortcut for the basic types of `class` and `object`, to
+    optimize the number of lookups needed to determine the available
+    metadata fields (as does ruby)
+
+-   `__classesh` - list of the defined class ids (values are "1")
+
+-   `__superh` - superclasses of classes. Values are the super.
+
+-   `__methodsh` - list of instance methods defined on a class (values
+    are "1")
+
+-   `__method_bodyh` - hash of method bodies.  Values are eval'able
+    strings, keys are `<classid>#<method_name>`.
+
+-   `__<id>_methodsh` - list of the defined methods for a particular
+    class (values are "1")
+
+-   `__<id>_varsh` - hash of the instance variables for a class
+    particular object.  Values are either the values themselves
+    (strings) or ids (arrays and hashes).
+
 Conclusion
 ----------
 
