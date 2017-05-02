@@ -15,8 +15,8 @@ Features
 
 -   chained method calls
 
--   ruby-inspired block syntax for functional-style methods (#each,
-    #map)
+-   ruby-inspired block syntax for functional-style methods
+    (\#each, \#map)
 
 -   a near-complete lack of dollar signs and quotation marks
 
@@ -106,7 +106,7 @@ the object name.
     > ZERO-ONE
 
 Method parameters must be braced for rubsh to know where the prior
-method call ends.  Braces require surrounding spaces.
+method call ends. Braces require surrounding spaces.
 
 ### Blocks
 
@@ -117,13 +117,13 @@ method call ends.  Braces require surrounding spaces.
     > ([0]="zero: 0")
 
 Blocks use either one-line bracket syntax (shown here) or multiline
-do/end syntax.  Parameter names are given between braces instead of
+do/end syntax. Parameter names are given between braces instead of
 pipes.
 
 The shown spacing is significant for both the brackets and braces.
 
-For #map, the block body is an expression which is evaluated to a
-string.  It uses single quotes to prevent variable expansion until
+For \#map, the block body is an expression which is evaluated to a
+string. It uses single quotes to prevent variable expansion until
 execution.
 
 ### Object Literals
@@ -177,7 +177,7 @@ context.
 
     > Heck yeah!
 
-Inheritance uses : rather than ruby's < to indicate the parent class.
+Inheritance uses : rather than ruby's &lt; to indicate the parent class.
 
 ### Introspection
 
@@ -228,12 +228,12 @@ experience. But it should also be fairly easy for anyone familiar with
 general object-oriented concepts.
 
 **NOTE**: So that it can use glob characters such as "?" in method
-names, rubsh turns off bash globbing!  If you are using rubsh objects,
+names, rubsh turns off bash globbing! If you are using rubsh objects,
 most of the time you won't miss it because rubsh selectively turns it on
-an off as needed.  However, commands like `echo *` will only echo "*",
-not the current directory contents as you would normally expect.  If you
+an off as needed. However, commands like `echo *` will only echo "\*",
+not the current directory contents as you would normally expect. If you
 need to enable globbing, do so with `set +f` (and turn it back off with
-`set -f`).  Do not leave it on, however, or rubsh will not work
+`set -f`). Do not leave it on, however, or rubsh will not work
 correctly!
 
 How It Works
@@ -281,8 +281,8 @@ variable:
 
 You would then call a method such as \#join on the myarray object.
 
-rubsh needs Array to be first on the command line, so it turns the syntax
-around a bit by necessity:
+rubsh needs Array to be first on the command line, so it turns the
+syntax around a bit by necessity:
 
     Array myarray = <initializer>
 
@@ -298,8 +298,9 @@ The array variable stores the given array, just like any other bash
 variable would. It can be used with all the usual bash functions and
 expansions for arrays.
 
-The function is rubsh's contribution. The myarray function represents the
-object instance of the Array class. It's what responds to Array methods:
+The function is rubsh's contribution. The myarray function represents
+the object instance of the Array class. It's what responds to Array
+methods:
 
     puts myarray .join -
 
@@ -338,11 +339,11 @@ statement on stdout. The statement declares the variable as local, and
 also instantiates the object. The statement is captured and executed by
 the bash shell substitution `$()`.
 
-Of course, bash throws one special case at us.  bash requires explicit
+Of course, bash throws one special case at us. bash requires explicit
 declaration for hashes.
 
 To create a hash variable, you should declare the variable yourself
-before instantiating the object.  Here is how you declare a global hash
+before instantiating the object. Here is how you declare a global hash
 variable:
 
     declare -Ag myhash
@@ -351,7 +352,7 @@ variable:
 Drop the -g and you have a locally scoped myhash (you can use the
 `local` builtin, but `declare` works too).
 
-If you want a local hash, however, the (syntactically sugared) #declare
+If you want a local hash, however, the (syntactically sugared) \#declare
 method is the least verbose:
 
     $(Hash myhash := '( [zero]=0 )')
@@ -365,7 +366,7 @@ Keywords
 -   **`require`** *`<feature_name>`* - load rubsh features
 
     Much like ruby's keyword, `require` can load files with or without
-    extension and with or without specific paths.  Paths are relative to
+    extension and with or without specific paths. Paths are relative to
     the current working directory of the script.
 
     Features not specified by path are searched for on the environment
@@ -379,7 +380,6 @@ Keywords
     -   `.rubsh`
     -   `.bash`
     -   `.sh`
-
 -   **`require_relative`** *`<feature_name>`* - load rubsh features
     relative to the current source file
 
@@ -398,10 +398,10 @@ For example, bash already handles low-level allocation of memory, as
 well as most parsing.
 
 What can't be handled ruby's way can be faked fairly well in a number of
-cases.  For example, if some ruby-like syntax doesn't exist in bash's
-parser, a function can usually let rubsh do the parsing itself.  In
-order to use a function, all that is necessary is that the syntax allows
-rubsh to specify the function name as the first item in the command, and
+cases. For example, if some ruby-like syntax doesn't exist in bash's
+parser, a function can usually let rubsh do the parsing itself. In order
+to use a function, all that is necessary is that the syntax allows rubsh
+to specify the function name as the first item in the command, and
 everything else on the line will be interpreted as arguments to the
 function (except special bash tokens such as semicolon or the
 redirection operators, so these are avoided).
@@ -447,43 +447,43 @@ That means some big features are left out, of course, notably:
 ### Reference Variables
 
 Variables in ruby, whether they are local, instance, class or global,
-store one thing and that's objects.  More specifically, they store
-references to objects.  That's so an object can be referenced by more
+store one thing and that's objects. More specifically, they store
+references to objects. That's so an object can be referenced by more
 than one variable, and each variable has the same access to that object.
 The object doesn't care what particular variable is used to send
 messages (method calls) to it, just that the variable knows where it is.
 
-Bash variables are different.  They are strictly values.  Although bash
+Bash variables are different. They are strictly values. Although bash
 offers structured data types such as arrays and hashes, which have some
-of the characteristics of ruby arrays and hashesand , the big difference is
-that bash variables aren't shareable by reference (at least, through
-normal usage, although you can do indirection in bash).  If you have two
+of the characteristics of ruby arrays and hashesand , the big difference
+is that bash variables aren't shareable by reference (at least, through
+normal usage, although you can do indirection in bash). If you have two
 bash variables with the same content, they are each their own copy.
 
 In order to get around this, when rubsh uses actual bash variables, the
-actual value stored is an id for an object, not a normal value.  How the
+actual value stored is an id for an object, not a normal value. How the
 objects are structured to use this id is discussed a bit further below.
-However, the ids themselves are simple.  In the case of classes, which
+However, the ids themselves are simple. In the case of classes, which
 have names assigned as constants, the id is the snake-case version of
-the name, such as `my_class` for `MyClass`.  These have the advantage of
+the name, such as `my_class` for `MyClass`. These have the advantage of
 being easy to use internally for all of the predefined classes, since
-they can be easily hardcoded.  For normal objects, the ids are simply
-unique integers, allocated by the function `__next_id`.  Objects don't
+they can be easily hardcoded. For normal objects, the ids are simply
+unique integers, allocated by the function `__next_id`. Objects don't
 have constant names and so can't be identified the same way as classes.
 
 When rubsh's internal functions use those variables, there are usually
-two levels of indirection.  I wanted rubsh's variable syntax to more
+two levels of indirection. I wanted rubsh's variable syntax to more
 closely resemble that of ruby's, where it is sufficient to use the
-variable's name to get at the object which it references.  In bash, you
+variable's name to get at the object which it references. In bash, you
 have to expand the variable to get at its contents using the dollar-sign
-notation.  That's because all arguments in bash are string literals, so
-variables are expanded before being passed to functions.  Therefore, in
+notation. That's because all arguments in bash are string literals, so
+variables are expanded before being passed to functions. Therefore, in
 order to not have dollar-sign expansion everywhere, rubsh expects the
-names of variables as (string-literal) arguments.  Rubsh explicitly
+names of variables as (string-literal) arguments. Rubsh explicitly
 expands the variable names itself.
 
 A second level of indirection happens at that point, since the rubsh
-function only has a variable name by then.  The variable's contents
+function only has a variable name by then. The variable's contents
 should be an object id, as discussed above, such as `my_class` or `21`.
 Rubsh then refers to that id when accessing the object itself.
 
@@ -494,47 +494,47 @@ respects (stored as class names, etc.).
 
 ### Objects
 
-In ruby, everything is an object.  Every object has a basic shared
+In ruby, everything is an object. Every object has a basic shared
 structure with some meta-information, and values stored in instance
-variables.  Objects also have a class, which in turn has an inheritance
-hierarchy.  Methods are "sent" to the object by calling one if the
+variables. Objects also have a class, which in turn has an inheritance
+hierarchy. Methods are "sent" to the object by calling one if the
 object's reference variables with the method name, tacked onto the
 variable name with a ".".
 
-Rubsh emulates most of this.  Objects in rubsh have some of the ruby
+Rubsh emulates most of this. Objects in rubsh have some of the ruby
 metadata, enough to allow inheritance and the object model to function.
 Unlike ruby, which stores individual structs of metadata corresponding
 to individual objects, rubsh usually consolidates any given field of
-metadata into a single hash for all objects.  For example, instead of
+metadata into a single hash for all objects. For example, instead of
 storing the object's class in a struct for that object, the classes for
-all objects are stored in a hash called `__classh`.  All internal rubsh
-variables start with two underscores (so the "__" namespace is
-reserved), and the terminal h is for "hash".  The object's id is the
-index into the hash.  As usual, hashes can only store string values, so
+all objects are stored in a hash called `__classh`. All internal rubsh
+variables start with two underscores (so the "\_\_" namespace is
+reserved), and the terminal h is for "hash". The object's id is the
+index into the hash. As usual, hashes can only store string values, so
 any more complex metadata are stored in their own standalone array or
 hash variables with their own ids, and those ids are stored in a hash
 indexed by the object id.
 
 Some metadata are used to keep track of a list of objects, such as the
-`__classesh` hash, which tracks the defined class objects by id.
-Because it is frequently used to test for the existence of an id, a hash
-is used instead of an array.  This way a key can easily (and quickly) be
-tested for with the `-z` and `-n` boolean operators, e.g. with `[[ -z
-${__classesh[$id]:-} ]]`.  The value stored at the key is never used, so
-it is usually set to "1" arbitrarily.  Using hash keys for this purpose
-should scale well.  Additionally, an actual list of the keys can easily
-be generated with the expression `${!__classesh[@]}`, allowing simple
-for loops.
+`__classesh` hash, which tracks the defined class objects by id. Because
+it is frequently used to test for the existence of an id, a hash is used
+instead of an array. This way a key can easily (and quickly) be tested
+for with the `-z` and `-n` boolean operators, e.g. with
+`[[ -z ${__classesh[$id]:-} ]]`. The value stored at the key is never
+used, so it is usually set to "1" arbitrarily. Using hash keys for this
+purpose should scale well. Additionally, an actual list of the keys can
+easily be generated with the expression `${!__classesh[@]}`, allowing
+simple for loops.
 
 Basic object metadata include:
 
 -   `__typeh` - shortcut for the basic types of:
 
-      -   `class` - classes
-      -   `object` - instances of classes
-      -   `string` - string objects, as distinct from bash strings
-      -   `array` - array objects, ditto
-      -   `hash` - hash objects, ditto
+    -   `class` - classes
+    -   `object` - instances of classes
+    -   `string` - string objects, as distinct from bash strings
+    -   `array` - array objects, ditto
+    -   `hash` - hash objects, ditto
 
     This is for optimizing the number of lookups needed to determine the
     available metadata fields (which ruby does as well)
@@ -552,17 +552,18 @@ Classes include the following, in addition to the basic metadata:
 -   `__method_bodyh` - hash of method bodies (by
     `<classid>#<method_name>`)
 
--   `__<classid>_methodsh` - instance methods of an class (by method name)
+-   `__<classid>_methodsh` - instance methods of an class (by
+    method name)
 
 #### Types
 
 The `__typeh` hash returns the type of object by the object id (class
-ids are just object ids as well).  This is used to tell what other
+ids are just object ids as well). This is used to tell what other
 metadata is available.
 
-`class` and `object` have their own types.  `class` is for classes, both
-builtin and user-defined.  `object` is for instances of classes other
-than strings, arrays and hashes.  Mostly these are user-defined objects,
+`class` and `object` have their own types. `class` is for classes, both
+builtin and user-defined. `object` is for instances of classes other
+than strings, arrays and hashes. Mostly these are user-defined objects,
 although there are other objects defined by rubsh, such as the top-level
 `self` object.
 
