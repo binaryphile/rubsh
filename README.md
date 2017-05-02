@@ -438,6 +438,8 @@ That means some big features are left out, of course, notably:
 
 -   scopes
 
+-   iterators
+
 -   Procs
 
 -   etc.
@@ -482,7 +484,7 @@ expands the variable names itself.
 
 A second level of indirection happens at that point, since the rubsh
 function only has a variable name by then.  The variable's contents
-should be an object id, as discussed above, such as `my_class` or `1`.
+should be an object id, as discussed above, such as `my_class` or `21`.
 Rubsh then refers to that id when accessing the object itself.
 
 As a side note on constants, while rubsh doesn't treat constants
@@ -502,47 +504,67 @@ variable name with a ".".
 Rubsh emulates most of this.  Objects in rubsh have some of the ruby
 metadata, enough to allow inheritance and the object model to function.
 Unlike ruby, which stores individual structs of metadata corresponding
-to individual objects, rubsh consolidates the metadata of any given kind
-into a hash for all objects.  For example, instead of storing the
-object's class in a struct for that object, the classes for all objects
-are stored in a hash called `__classh`.  All internal rubsh variables
-start with two underscores (so the "__" namespace is reserved), and the
-terminal h is for "hash".  The object's id is the index into the hash.
-As usual, hashes can only store string values, so any more complex
-metadata are stored in their own standalone array or hash variables with
-their own ids, and those ids are stored in a hash indexed by the object
-id.
+to individual objects, rubsh usually consolidates any given field of
+metadata into a single hash for all objects.  For example, instead of
+storing the object's class in a struct for that object, the classes for
+all objects are stored in a hash called `__classh`.  All internal rubsh
+variables start with two underscores (so the "__" namespace is
+reserved), and the terminal h is for "hash".  The object's id is the
+index into the hash.  As usual, hashes can only store string values, so
+any more complex metadata are stored in their own standalone array or
+hash variables with their own ids, and those ids are stored in a hash
+indexed by the object id.
 
-Some metadata are used to keep track of the existence of objects, such
-as the `__classesh` hash, which tracks the defined class ids.  Because
-these are frequently used to test for the existence of an id, a hash is
-used, since a key can easily (and quickly) be tested for with the
-expression `[[ -z ${__classesh[$id]:-} ]]`.  The value stored at the key
-is never used, so it is usually set to "1" arbitrarily.  Using hash keys
-for this purpose should scale well.
+Some metadata are used to keep track of a list of objects, such as the
+`__classesh` hash, which tracks the defined class objects by id.
+Because it is frequently used to test for the existence of an id, a hash
+is used instead of an array.  This way a key can easily (and quickly) be
+tested for with the `-z` and `-n` boolean operators, e.g. with `[[ -z
+${__classesh[$id]:-} ]]`.  The value stored at the key is never used, so
+it is usually set to "1" arbitrarily.  Using hash keys for this purpose
+should scale well.  Additionally, an actual list of the keys can easily
+be generated with the expression `${!__classesh[@]}`, allowing simple
+for loops.
 
-Other object metadata hashes include:
+Basic object metadata include:
 
--   `__typeh` - shortcut for the basic types of `class` and `object`, to
-    optimize the number of lookups needed to determine the available
-    metadata fields (as does ruby)
+-   `__typeh` - shortcut for the basic types of:
 
--   `__classesh` - list of the defined class ids (values are "1")
+      -   `class` - classes
+      -   `object` - instances of classes
+      -   `string` - string objects, as distinct from bash strings
+      -   `array` - array objects, ditto
+      -   `hash` - hash objects, ditto
 
--   `__superh` - superclasses of classes. Values are the super.
+    This is for optimizing the number of lookups needed to determine the
+    available metadata fields (which ruby does as well)
 
--   `__methodsh` - list of instance methods defined on a class (values
-    are "1")
+-   `__classh` - class of an object (by object id)
 
--   `__method_bodyh` - hash of method bodies.  Values are eval'able
-    strings, keys are `<classid>#<method_name>`.
+-   `__<objectid>_varsh` - instance variables (by variable name)
 
--   `__<id>_methodsh` - list of the defined methods for a particular
-    class (values are "1")
+Classes include the following, in addition to the basic metadata:
 
--   `__<id>_varsh` - hash of the instance variables for a class
-    particular object.  Values are either the values themselves
-    (strings) or ids (arrays and hashes).
+-   `__superh` - superclass of a class object (by class id)
+
+-   `__methodsh` - instance methods of a class (by method name)
+
+-   `__method_bodyh` - hash of method bodies (by
+    `<classid>#<method_name>`)
+
+-   `__<classid>_methodsh` - instance methods of an class (by method name)
+
+#### Types
+
+The `__typeh` hash returns the type of object by the object id (class
+ids are just object ids as well).  This is used to tell what other
+metadata is available.
+
+`class` and `object` have their own types.  `class` is for classes, both
+builtin and user-defined.  `object` is for instances of classes other
+than strings, arrays and hashes.  Mostly these are user-defined objects,
+although there are other objects defined by rubsh, such as the top-level
+`self` object.
 
 Conclusion
 ----------
