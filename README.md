@@ -541,7 +541,7 @@ Basic object metadata include:
     -   `string` - string objects, as distinct from bash strings
     -   `true` - boolean true
 
--   `__varh` - instance variable ids (by `<objectid>@<variable_name>`)
+-   `__ivarh` - instance variable ids (by `<objectid>@<variable_name>`)
 
 Classes include the following, in addition to the basic metadata:
 
@@ -597,7 +597,7 @@ themselves once the type is known.
 
 #### Instance Variables
 
-`__varh` stores object ids for the instance variables of an object.  To
+`__ivarh` stores object ids for the instance variables of an object.  To
 get to the object id stored by the variable, you need to supply a key
 `<objectid@variable_name>`.  The "@" sign matches the variable naming
 used by ruby, so the key is specified by appending the variable name to
