@@ -1,0 +1,104 @@
+export RUBSH_ROOT=$(dirname "$(dirname "$(readlink -f "$BASH_SOURCE")")")
+export RUBSH_VERSION=$(<"$RUBSH_ROOT"/VERSION)
+
+# values are object ids (the keys used in the following hashes)
+__class=object
+false=false
+nil=nil
+self=top_self
+true=true
+__stack=()
+
+# public classes
+Class       () { __dispatch "$@" ;}
+FalseClass  () { __dispatch "$@" ;}
+NilClass    () { __dispatch "$@" ;}
+Object      () { __dispatch "$@" ;}
+TrueClass   () { __dispatch "$@" ;}
+
+declare -Ag __method_bodyh=()
+
+declare -Ag __class_methodsh=()
+declare -Ag __false_class_methodsh=()
+declare -Ag __nil_class_methodsh=()
+declare -Ag __object_methodsh=()
+declare -Ag __true_class_methodsh=()
+declare -Ag __class_singleton_methodsh=()
+declare -Ag __object_singleton_methodsh=()
+
+declare -Ag __constanth=(
+  [Class]=class
+  [FalseClass]=false_class
+  [NilClass]=nil_class
+  [Object]=object
+  [TrueClass]=true_class
+)
+
+declare -Ag __classesh=(
+  [class]=1
+  [false_class]=1
+  [nil_class]=1
+  [object]=1
+  [true_class]=1
+)
+
+declare -Ag __classh=(
+  [class]=class_singleton               # class of class is singleton class
+  [class_singleton]=class_singleton     # class of singleton class is itself
+  [false]=false_class
+  [false_class]=class
+  [nil]=nil_class
+  [nil_class]=class
+  [object]=object_singleton
+  [object_singleton]=object_singleton
+  [top_self]=object
+  [true]=true_class
+  [true_class]=class
+)
+
+declare -Ag __superh=(
+  [class]=object
+  [class_singleton]=object_singleton
+  [false_class]=class_singleton
+  [nil_class]=class_singleton
+  [object]=''                           # Object has no super
+  [object_singleton]=class
+  [true_class]=class_singleton
+)
+
+# using the string "class" to designate type, not as the object id "class"
+declare -Ag __typeh=(
+  [class]=class
+  [class_singleton]=class
+  [false]=false
+  [false_class]=class
+  [nil]=nil
+  [nil_class]=class
+  [object]=class
+  [object_singleton]=class
+  [top_self]=object
+  [true]=true
+  [true_class]=class
+)
+
+declare -Ag __singletonh=(
+  [class_singleton]=1
+  [false_class]=1
+  [nil_class]=1
+  [object_singleton]=1
+  [true_class]=1
+)
+
+declare -Ag __ivarh=(
+  [class.name]=Class
+  [class_singleton.attached]=class
+  [false_class.name]=FalseClass
+  [nil_class.name]=NilClass
+  [object.name]=Object
+  [object_singleton.attached]=object
+  [true_class.name]=TrueClass
+)
+
+__=''
+
+# vim: ft=sh
