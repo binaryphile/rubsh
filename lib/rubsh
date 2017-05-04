@@ -3,16 +3,27 @@
 RUBSH_LIB=$(dirname "$(readlink -f "$BASH_SOURCE")")
 export RUBSH_PATH=$RUBSH_LIB${RUBSH_PATH:+:}${RUBSH_PATH:-}:.
 source "$RUBSH_LIB"/require.rubsh
+unset -v RUBSH_LIB
 
-$(require eval)
+$(require init)
 $(require util)
 
 __strict_mode on
 __glob off
 
-rubsh_init
+$(require bootstrap )
+$(require object    )
+$(require class     )
+$(require string    )
+$(require array     )
+$(require hash      )
+$(require io        )
+$(require file      )
 
 $(__return_if_sourced)
 
+usage=''
 (( $# )) || __die "$usage"
+unset -v usage
+
 source "$@"

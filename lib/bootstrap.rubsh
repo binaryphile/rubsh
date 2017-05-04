@@ -1,0 +1,82 @@
+$(require util)
+
+class () {
+  __stack+=( "$__class" )
+  __id_from_class "$1"
+  __class=$__   # not local
+  __id_from_class "${3:-Object}"
+  local super=$__
+  local class=$__class        # reduce underscore madness
+  local id
+  local statement
+  local super_id
+
+  [[ -z ${2:-} || $2 == ':' ]] || return
+  [[ -n ${2:-} ]] && {
+    [[ -z ${__classesh[$class]:-} ]] || return
+    [[ -n ${__classesh[$super]:-} ]] || return
+  }
+  __superh[$class]=$super
+  __superh["$class"_singleton]="$super"_singleton
+  printf -v statement 'function %s { __dispatch "$@" ;}' "$1"
+  eval "$statement"
+  __constanth[$1]=$class
+  __classesh[$class]=1
+  __classh[$class]="$class"_singleton
+  __classh["$class"_singleton]="$class"_singleton
+  __typeh[$class]=class
+  __typeh["$class"_singleton]=class
+  __singletonh["$class"_singleton]=1
+  declare -Ag __"$class"_methodsh='()'
+  declare -Ag __"$class"_singleton_methodsh='()'
+  __ivarh[$class.name]=$1
+  __ivarh["$class"_singleton.attached]=$class
+  __=nil
+}
+
+def () {
+  local method=$1
+  local body=${2-$(</dev/stdin)}
+  local class=$__class
+  local id
+
+  __id_from_class $class
+  id=$__
+  eval __"$id"_methodsh["$method"]=1
+  declare -p __"$method"_classesh >/dev/null 2>&1 || declare -Ag "__${method}_classesh=()"
+  eval __"$method"_classesh[$id]=1
+  __method_bodyh[$id#$method]=$body
+  __=''
+  __classh[__]=String
+}
+
+rubend () {
+  __class=${__stack[-1]}
+  unset -v __stack[-1]
+}
+
+__id_from_class () {
+  local class=$1
+  local capitals=()
+  local char
+  local i
+  local j
+  local id
+
+  for (( i = 1; i < ${#class}; i++ )); do
+    char=${class:i:1}
+    [[ ${char^} == "$char" ]] && capitals+=( "$i" )
+  done
+  class=${class,,}
+  (( ! ${#capitals[@]} )) && { __=$class; return ;}
+  i=${capitals[0]}
+  id=${class:0:i}
+  for j in "${capitals[@]:1}"; do
+    id+=_${class:i:j-i}
+    i=$j
+  done
+  id+=_${class:i}
+  __=$id
+}
+
+# vim: ft=sh

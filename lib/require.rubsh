@@ -1,5 +1,7 @@
+[[ -v __features && -n ${__features[require]:-} ]] && return
+
 unset -v __features
-declare -Ag __features=()
+declare -Ag __features=([require]=1)
 
 require () {
   local feature_spec=$1

@@ -8,7 +8,7 @@ read -rd '' block <<'EOS' ||:
   EOS
   PROMPT_COMMAND=$(IFS=';'; echo "${statements[*]}")
   unset -v statements
-  PS1="\$IRBSH\${IRBSH:+\\n}irbsh-11.10> "
+  PS1="\$IRBSH\${IRBSH:+\\n}irbsh-\$RUBSH_VERSION> "
   source %s/rubsh
   __strict_mode off
 EOS
