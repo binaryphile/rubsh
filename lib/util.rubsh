@@ -23,6 +23,30 @@ __glob () {
   esac
 }
 
+__id_from_class () {
+  local class=$1
+  local capitals=()
+  local char
+  local i
+  local j
+  local id
+
+  for (( i = 1; i < ${#class}; i++ )); do
+    char=${class:i:1}
+    [[ ${char^} == "$char" ]] && capitals+=( "$i" )
+  done
+  class=${class,,}
+  (( ! ${#capitals[@]} )) && { __=$class; return ;}
+  i=${capitals[0]}
+  id=${class:0:i}
+  for j in "${capitals[@]:1}"; do
+    id+=_${class:i:j-i}
+    i=$j
+  done
+  id+=_${class:i}
+  __=$id
+}
+
 __inspect () {
   __=$(declare -p "$1" 2>/dev/null) || return
   __=${__#*=}

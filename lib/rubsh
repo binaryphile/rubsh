@@ -11,14 +11,15 @@ $(require util)
 __strict_mode on
 __glob off
 
+set -x
 $(require bootstrap )
-$(require object    )
-$(require class     )
-$(require string    )
-$(require array     )
-$(require hash      )
-$(require io        )
-$(require file      )
+# $(require object    )
+# $(require class     )
+# $(require string    )
+# $(require array     )
+# $(require hash      )
+# $(require io        )
+# $(require file      )
 
 $(__return_if_sourced)
 

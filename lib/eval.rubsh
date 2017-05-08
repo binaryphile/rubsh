@@ -50,43 +50,4 @@ __dispatch () {
   "${__classh[__]}" "$__" "${rest[@]}"
 }
 
-rubsh_init () {
-  local funcs
-  local vars
-
-  funcs=(
-    Init_Objects
-    rubsh_init
-  )
-
-  vars=(
-    Class
-    FalseClass
-    NilClass
-    Object
-    RUBSH_LIB
-    TrueClass
-    __
-    __Class
-    __FalseClass
-    __NilClass
-    __Object
-    __TrueClass
-    __class
-    __classesh
-    __top_self
-    self
-  )
-  unset -v "${vars[@]}"
-
-  Init_Objects
-
-  __class=Object
-  Object .new __top_self
-  self=__top_self
-
-  unset -f "${funcs[@]}"
-  __=''
-}
-
 # vim: ft=sh

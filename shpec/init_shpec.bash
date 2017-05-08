@@ -124,11 +124,6 @@ describe Class
   it "has a hidden classname variable"
     assert equal Class "${__ivarh[class.name]}"
   end
-
-  it "has a methods hash"
-    variable? __class_methodsh
-    assert equal 0 $?
-  end
 end
 
 describe FalseClass
@@ -165,11 +160,6 @@ describe FalseClass
 
   it "has a hidden classname variable"
     assert equal FalseClass "${__ivarh[false_class.name]}"
-  end
-
-  it "has a method body hash"
-    variable? __false_class_methodsh
-    assert equal 0 $?
   end
 end
 
@@ -208,11 +198,6 @@ describe NilClass
   it "has a hidden classname variable"
     assert equal NilClass "${__ivarh[nil_class.name]}"
   end
-
-  it "has a method body hash"
-    variable? __nil_class_methodsh
-    assert equal 0 $?
-  end
 end
 
 describe Object
@@ -249,11 +234,6 @@ describe Object
 
   it "has a hidden classname variable"
     assert equal Object "${__ivarh[object.name]}"
-  end
-
-  it "has a method body hash"
-    variable? __object_methodsh
-    assert equal 0 $?
   end
 end
 
@@ -292,11 +272,6 @@ describe TrueClass
   it "has a hidden classname variable"
     assert equal TrueClass "${__ivarh[true_class.name]}"
   end
-
-  it "has a method body hash"
-    variable? __true_class_methodsh
-    assert equal 0 $?
-  end
 end
 
 describe __Class
@@ -330,11 +305,6 @@ describe __Class
   it "has a hidden attachment variable"
     assert equal class "${__ivarh[class_singleton.attached]}"
   end
-
-  it "has a method body hash"
-    variable? __class_singleton_methodsh
-    assert equal 0 $?
-  end
 end
 
 describe __Object
@@ -367,10 +337,5 @@ describe __Object
 
   it "has a hidden attachment variable"
     assert equal object "${__ivarh[object_singleton.attached]}"
-  end
-
-  it "has a method body hash"
-    variable? __object_singleton_methodsh
-    assert equal 0 $?
   end
 end

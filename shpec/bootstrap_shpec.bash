@@ -160,3 +160,117 @@ describe class
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
 end
+
+describe def
+  it "records the method name in __<class>_methodsh"; (
+    _shpec_failures=0
+
+    class Sample
+      def sample example
+    rubend
+    [[ -n __sample_methodsh[sample] ]]
+    assert equal 0 $?
+    return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
+  end
+
+  it "stores the body in __method_bodyh"; (
+    _shpec_failures=0
+
+    class Sample
+      def sample example
+    rubend
+    assert equal example "${__method_bodyh[sample#sample]}"
+    return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
+  end
+end
+
+describe __dispatch
+  it "calls the named method"; (
+    _shpec_failures=0
+
+    __localh[sample]=__0
+    __classh[__0]=sample
+    __classesh[sample]=1
+    __superh[sample]=''
+    __typeh[sample]=class
+    __method_bodyh[sample#sample]='echo hello'
+    sample () { __dispatch "$@" ;}
+    assert equal hello "$(sample .sample)"
+    return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
+  end
+
+  # it "allows a literal String object"; (
+  #   _shpec_failures=0
+  #   String "an example" .class
+  #   assert equal '"String"' "$__"
+  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  # end
+  #
+  # it "calls #inspect on a bare object literal"; (
+  #   _shpec_failures=0
+  #   String "an example"
+  #   assert equal '"an example"' "$__"
+  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  # end
+  #
+  # it "allows a literal Array object"; (
+  #   _shpec_failures=0
+  #   Array '( zero one )' .class
+  #   assert equal '"Array"' "$__"
+  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  # end
+  #
+  # it "allows a literal Hash object"; (
+  #   _shpec_failures=0
+  #   Hash '( [zero]=0 [one]=1 )' .class
+  #   assert equal '"Hash"' "$__"
+  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  # end
+  #
+  # it "implicitly calls #inspect"; (
+  #   _shpec_failures=0
+  #   String .new sample "an example"
+  #   sample
+  #   assert equal '"an example"' "$__"
+  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  # end
+  #
+  # it "allows a bare = on .= calls"; (
+  #   _shpec_failures=0
+  #   String .new sample "an example"
+  #   sample = "a result"
+  #   assert equal "a result" "$sample"
+  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  # end
+  #
+  # it "allows braces on method calls"; (
+  #   _shpec_failures=0
+  #   unset -v sample
+  #   unset -f sample
+  #   String .new { sample "an example" }
+  #   is_function sample
+  #   assert equal 0 $?
+  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  # end
+  #
+  # it "does basic method chaining with braces"; (
+  #   _shpec_failures=0
+  #   Array .new samples '( one two )'
+  #   samples .join { - } .class
+  #   assert equal '"String"' "$__"
+  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  # end
+  #
+  # it "sets self"; (
+  #   _shpec_failures=0
+  #   class Sample; {
+  #     def self <<'      end'
+  #       __=\"$self\"
+  #     end
+  #   }
+  #   Sample .new sample
+  #   sample .self
+  #   assert equal '"sample"' "$__"
+  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
+  # end
+end

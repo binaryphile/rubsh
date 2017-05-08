@@ -1,3 +1,4 @@
+$(require init)
 $(require util)
 
 class () {
@@ -36,47 +37,65 @@ class () {
 
 def () {
   local method=$1
-  local body=${2-$(</dev/stdin)}
+  local body=${2:-$(</dev/stdin)}
   local class=$__class
-  local id
 
-  __id_from_class $class
-  id=$__
-  eval __"$id"_methodsh["$method"]=1
-  declare -p __"$method"_classesh >/dev/null 2>&1 || declare -Ag "__${method}_classesh=()"
-  eval __"$method"_classesh[$id]=1
-  __method_bodyh[$id#$method]=$body
-  __=''
-  __classh[__]=String
+  eval __"$class"_methodsh["$method"]=1
+  __method_bodyh[$class#$method]=$body
+  __=nil
+}
+
+__dispatch () {
+  local method=${1-.inspect}; shift ||:
+  local self=${FUNCNAME[1]}
+  local class
+  local i
+  local id
+  local rest=()
+  local statement
+
+  self=${FUNCNAME[1]}
+  self=${__constanth[$self]:-${__localh[$self]:-}}
+  class=${__classh[$self]}
+  # [[ $method != '.'* ]] && {
+  #   case $method in
+  #     '=' ) method=.=;;
+  #     *   )
+  #       case ${1-} in
+  #         '='   ) set -- "$method" "${@:2}"; method=.new     ;;
+  #         ':='  ) set -- "$method" "${@:2}"; method=.declare ;;
+  #         * )
+  #           [[ $class == 'Class' ]] || return
+  #           $("$self" .declare anon "$method")
+  #           anon "$@"
+  #           return
+  #           ;;
+  #         * ) return 1;;
+  #       esac
+  #       ;;
+  #   esac
+  # }
+  method=${method#.}
+  while [[ -z __method_bodyh[$class#$method] ]]; do
+    [[ -n ${__superh[$class]:-} ]] || return
+    class=${__superh[$class]}
+  done
+  # [[ ${1-} == '{' ]] && {
+  #   for (( i = 1; i <= $#; i++ )); do
+  #     [[ ${!i} == '}' ]] && break;
+  #   done
+  #   [[ ${!i} == '}' ]] || return
+  #   rest=( "${@:i+1}" )
+  #   set -- "${@:2:i-2}"
+  # }
+  printf -v statement 'function __ { %s ;}; __ "$self" "$@"' "${__method_bodyh[$class#$method]}"
+  unset -v class method
+  eval "$statement"
 }
 
 rubend () {
   __class=${__stack[-1]}
   unset -v __stack[-1]
-}
-
-__id_from_class () {
-  local class=$1
-  local capitals=()
-  local char
-  local i
-  local j
-  local id
-
-  for (( i = 1; i < ${#class}; i++ )); do
-    char=${class:i:1}
-    [[ ${char^} == "$char" ]] && capitals+=( "$i" )
-  done
-  class=${class,,}
-  (( ! ${#capitals[@]} )) && { __=$class; return ;}
-  i=${capitals[0]}
-  id=${class:0:i}
-  for j in "${capitals[@]:1}"; do
-    id+=_${class:i:j-i}
-    i=$j
-  done
-  id+=_${class:i}
-  __=$id
 }
 
 # vim: ft=sh

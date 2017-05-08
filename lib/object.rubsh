@@ -1,90 +1,5 @@
-$(require class)
-
-Init_Objects () {
-  # public class refs (values are internal ids)
-  Class       () { __dispatch "$@" ;}
-  FalseClass  () { __dispatch "$@" ;}
-  NilClass    () { __dispatch "$@" ;}
-  Object      () { __dispatch "$@" ;}
-  TrueClass   () { __dispatch "$@" ;}
-
-  # public class refs (values are internal ids)
-  Class=class
-  FalseClass=false_class
-  NilClass=nil_class
-  Object=object
-  TrueClass=true_class
-
-  # private singleton class refs
-  __Class=class_singleton
-  __FalseClass=false_class_singleton
-  __NilClass=nil_class_singleton
-  __Object=object_singleton
-  __TrueClass=true_class_singleton
-
-  declare -Ag __classesh=(
-    [class]=1
-    [false_class]=1
-    [nil_class]=1
-    [object]=1
-    [true_class]=1
-  )
-
-  # keys are always (internal) ids, values are always names of refs
-  declare -Ag __classh=(
-    [class]=__Class                       # class of class is singleton class
-    [class_singleton]=__Class             # class of singleton class is itself
-    [false_class]=__FalseClass
-    [false_class_singleton]=__FalseClass
-    [nil_class]=__NilClass
-    [nil_class_singleton]=__NilClass
-    [object]=__Object
-    [object_singleton]=__Object
-    [true_class]=__TrueClass
-    [true_class_singleton]=__TrueClass
-  )
-
-  declare -Ag __superh=(
-    [class]=Object
-    [class_singleton]=__Object
-    [false_class]=Object
-    [false_class_singleton]=__Object
-    [nil_class]=Object
-    [nil_class_singleton]=__Object
-    [object]=''                       # Object has no super
-    [object_singleton]=Class
-    [true_class]=Object
-    [true_class_singleton]=__Object
-  )
-
-  # using the string "class" to designate type, not the object id "class"
-  declare -Ag __typeh=(
-    [class]=class
-    [class_singleton]=class
-    [false_class]=class
-    [false_class_singleton]=class
-    [nil_class]=class
-    [nil_class_singleton]=class
-    [object]=class
-    [object_singleton]=class
-    [true_class]=class
-    [true_class_singleton]=class
-  )
-
-  declare -Ag __ivarh=(
-    [class.name]=Class
-    [class_singleton.attached]=Class
-    [false_class.name]=FalseClass
-    [false_class_singleton.attached]=FalseClass
-    [nil_class.name]=NilClass
-    [nil_class_singleton.attached]=NilClass
-    [object.name]=Object
-    [object_singleton.attached]=Object
-    [true_class.name]=TrueClass
-    [true_class_singleton.attached]=TrueClass
-  )
-
-  declare -Ag __methodsh=()
+$(require init      )
+$(require bootstrap )
 
 class Object
   def class << '  end'
@@ -227,6 +142,5 @@ class Class
     __classh[__]=String
   end
 rubend
-}
 
 # vim: ft=sh

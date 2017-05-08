@@ -16,15 +16,8 @@ NilClass    () { __dispatch "$@" ;}
 Object      () { __dispatch "$@" ;}
 TrueClass   () { __dispatch "$@" ;}
 
+declare -Ag __localh=()
 declare -Ag __method_bodyh=()
-
-declare -Ag __class_methodsh=()
-declare -Ag __false_class_methodsh=()
-declare -Ag __nil_class_methodsh=()
-declare -Ag __object_methodsh=()
-declare -Ag __true_class_methodsh=()
-declare -Ag __class_singleton_methodsh=()
-declare -Ag __object_singleton_methodsh=()
 
 declare -Ag __constanth=(
   [Class]=class
