@@ -48,32 +48,6 @@ class Class
     __classh[__]=Array
   end
 
-  def new <<'  end'
-    local class=$1
-    local var=$2; shift 2
-    local id
-    local statement
-
-    [[ $class != 'Class' ]] && {
-      __next_id
-      id=$__
-      printf -v statement 'function %s { __dispatch "$@" ;}' "$var"
-      eval "$statement"
-      __localh[$var]=$id
-      __classh[$id]=$class
-      __typeh[$id]=object
-      __=$id
-      return
-    }
-    __next_id
-    id=$__
-    printf -v statement 'function %s { __dispatch %s "$@" ;}' "$var" "$__"
-    eval "$statement"
-    __classh[$id]=$class
-    __localh[$var]=$id
-    __=$id
-  end
-
   def superclass <<'  end'
     local class=$1
 

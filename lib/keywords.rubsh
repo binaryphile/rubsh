@@ -81,7 +81,7 @@ def () {
 
 __dispatch () {
   local method=${1-.inspect}; shift ||:
-  local self=${FUNCNAME[1]}
+  local self
   local class
   local i
   local id
@@ -132,5 +132,22 @@ rubend () {
   __class=${__stack[-1]}
   unset -v __stack[-1]
 }
+
+class Class
+  def new <<'  end'
+    local class=$1
+    local var=$2
+    local id
+    local statement
+
+    __next_id
+    id=$__
+    printf -v statement 'function %s { __dispatch "$@" ;}' "$var"
+    eval "$statement"
+    __classh[$id]=$class
+    __localh[$var]=$id
+    __=$id
+  end
+rubend
 
 # vim: ft=sh

@@ -10,8 +10,8 @@ initialize_shpec_helper
 stop_on_error=true
 stop_on_error
 
-source "$(shpec_cwd)"/../lib/class.rubsh
+export RUBSH_PATH=$(shpec_cwd)/../lib
+source "$RUBSH_PATH"/keywords.rubsh
+$(require class)
 
-is_function () { declare -f "$1" >/dev/null 2>&1 ;}
-
-
+function? () { declare -f "$1" >/dev/null 2>&1 ;}
