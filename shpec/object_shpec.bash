@@ -34,7 +34,7 @@ describe Object
       _shpec_failures=0
       Object .new object
       object .class
-      assert equal Object "$__values[$__]"
+      assert equal object "$__"
       return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
     end
   end

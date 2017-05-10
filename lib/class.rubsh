@@ -52,11 +52,6 @@ class Class
     local class=$1
     local var=$2; shift 2
     local id
-    # local value=${1:-}
-    # local -n methods
-    # local format
-    # local method
-    # local stdout
     local statement
 
     [[ $class != 'Class' ]] && {
@@ -70,37 +65,13 @@ class Class
       __=$id
       return
     }
-    printf -v statement 'function %s { __dispatch "$@" ;}' "$var"
-    eval "$statement"
-    __constanth[$var]=$id
-    __classesh[$id]=1
-    __classh[$id]="$id"_singleton
-    __classh["$id"_singleton]=${__constanth[$class]}
-    __id_from_constant "$var"
+    __next_id
     id=$__
-    __superh[$id]=Object
+    printf -v statement 'function %s { __dispatch %s "$@" ;}' "$var" "$__"
+    eval "$statement"
+    __classh[$id]=$class
+    __localh[$var]=$id
     __=$id
-    # [[ -z $value ]] && return
-    # declare -f "$value" >/dev/null 2>&1 && {
-    #   "$@"
-    #   value=$__
-    # }
-    # case $value in
-    #   '('* ) format='%s=%s';;
-    #      * ) format='%s=%q';;
-    # esac
-    # printf -v statement "$format" "$var" "$value"
-    # eval "$statement"
-    # printf -v statement 'function __ { %s ;}' "${__method_bodyh[class#var_methods]}"
-    # eval "$statement"
-    # __ "$var"
-    # methods=__
-    # for method in "${methods[@]}"; do
-    #   printf -v statement 'function %s { __dispatch "$@" ;}' "$method"
-    #   eval "$statement"
-    # done
-    # __=$value
-    # __classh[__]=String
   end
 
   def superclass <<'  end'
