@@ -2,17 +2,14 @@
 
 RUBSH_LIB=$(dirname "$(readlink -f "$BASH_SOURCE")")
 export RUBSH_PATH=$RUBSH_LIB${RUBSH_PATH:+:}${RUBSH_PATH:-}:.
-source "$RUBSH_LIB"/require.rubsh
+source "$RUBSH_LIB"/keywords.rubsh
 unset -v RUBSH_LIB
 
-$(require init)
 $(require util)
 
-__strict_mode on
-__glob off
+strict_mode on
+glob off
 
-set -x
-$(require bootstrap )
 # $(require object    )
 # $(require class     )
 # $(require string    )

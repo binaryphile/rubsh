@@ -1,89 +1,114 @@
-# $(require eval      )
-# $(require st        )
-# $(require variable  )
+class Class
+  def ancestors <<'  end'
+    local class=$1
+    local ancestors=( $class )
 
-unset -v __stack
-__stack=( __top_self )
-declare -Ag __methodsh=()
-declare -Ag __method_bodyh=()
+    while [[ -n ${__superh[${!class}]:-} ]]; do
+      class=${__superh[${!class}]}
+      [[ ${!class} != __* ]] && ancestors+=( "$class" )
+    done
+    __inspect ancestors
+    __classh[__]=Array
+  end
 
-class () {
-  __stack+=( "${__class:-}" )
-  __class=$1    # not local
-  self=$__class # not local
-  local super=${3:-Object}
-  local class=$__class        # reduce underscore madness
-  local id
-  local statement
-  local super_id
+  def declare <<'  end'
+    local class=$1
+    local self=$2; shift 2
+    local value=${1-}
+    local format
 
-  [[ -z ${2:-}  || $2 == ':' ]] || return
-  [[ -n ${2:-}  ]] && {
-    [[ -z ${__classesh[$id]:-}        ]] || return
-    [[ -n ${__classesh[$super_id]:-}  ]] || return
-  }
-  __id_from_class "$class"
-  id=$__
-  __id_from_class "$super"
-  super_id=$__
-  __superh[$id]=$super
-  __superh["$id"_singleton]=__$super
-  printf -v statement 'function %s { __dispatch "$@" ;}' "$class"
-  eval "$statement"
-  eval "$class=$id"
-  __classh[$id]=__$class
-  eval __"$class=$id"_singleton
-  __classh["$id"_singleton]=__$class
-  __classesh[$id]=1
-  declare -Ag "__${id}_methodsh=()"
-  __=''
-  __classh[__]=String
-}
+    value=$(declare -p value)
+    value=${value#*=}
+    case $class in
+      'Array' ) printf 'eval declare -a %s=%s; %s .new %s\n' "$self" "${value:1:-1}" "$class" "$self" ;;
+      'Hash'  ) printf 'eval declare -A %s=%s; %s .new %s\n' "$self" "${value:1:-1}" "$class" "$self" ;;
+      *       ) printf 'eval declare -- %s=%s; %s .new %s\n' "$self" "$value"        "$class" "$self" ;;
+    esac
+    __=$value
+    __classh[__]=String
+  end
 
-def () {
-  local method=$1
-  local body=${2-$(</dev/stdin)}
-  local class=$__class
-  local id
+  def instance_methods <<'  end'
+    local class=$1
+    local inherited=${2:-true}
 
-  __id_from_class $class
-  id=$__
-  eval __"$id"_methodsh["$method"]=1
-  declare -p __"$method"_classesh >/dev/null 2>&1 || declare -Ag "__${method}_classesh=()"
-  eval __"$method"_classesh[$id]=1
-  __method_bodyh[$id#$method]=$body
-  __=''
-  __classh[__]=String
-}
+    eval "local instance_methods=( \${!__${!class}_methodsh[@]} )"
 
-rubend () {
-  __class=${__stack[-1]}
-  unset -v __stack[-1]
-  self=$__class
-}
+    case $inherited in
+      'false' ) ;;
+      'true'  )
+        while [[ -n ${__superh[${!class}]:-} ]]; do
+          class=${__superh[${!class}]}
+          eval "instance_methods+=( \${!__${!class}_methodsh[@]} )"
+        done
+        ;;
+      * ) return 1;;
+    esac
+    __inspect instance_methods
+    __classh[__]=Array
+  end
 
-__id_from_class () {
-  local class=$1
-  local capitals=()
-  local char
-  local i
-  local j
-  local id
+  def new <<'  end'
+    local class=$1
+    local var=$2; shift 2
+    local id
+    # local value=${1:-}
+    # local -n methods
+    # local format
+    # local method
+    # local stdout
+    local statement
 
-  for (( i = 1; i < ${#class}; i++ )); do
-    char=${class:i:1}
-    [[ ${char^} == "$char" ]] && capitals+=( "$i" )
-  done
-  class=${class,,}
-  (( ! ${#capitals[@]} )) && { __=$class; return ;}
-  i=${capitals[0]}
-  id=${class:0:i}
-  for j in "${capitals[@]:1}"; do
-    id+=_${class:i:j-i}
-    i=$j
-  done
-  id+=_${class:i}
-  __=$id
-}
+    [[ $class != 'Class' ]] && {
+      __next_id
+      id=$__
+      printf -v statement 'function %s { __dispatch "$@" ;}' "$var"
+      eval "$statement"
+      __localh[$var]=$id
+      __classh[$id]=$class
+      __typeh[$id]=object
+      __=$id
+      return
+    }
+    printf -v statement 'function %s { __dispatch "$@" ;}' "$var"
+    eval "$statement"
+    __constanth[$var]=$id
+    __classesh[$id]=1
+    __classh[$id]="$id"_singleton
+    __classh["$id"_singleton]=${__constanth[$class]}
+    __id_from_constant "$var"
+    id=$__
+    __superh[$id]=Object
+    __=$id
+    # [[ -z $value ]] && return
+    # declare -f "$value" >/dev/null 2>&1 && {
+    #   "$@"
+    #   value=$__
+    # }
+    # case $value in
+    #   '('* ) format='%s=%s';;
+    #      * ) format='%s=%q';;
+    # esac
+    # printf -v statement "$format" "$var" "$value"
+    # eval "$statement"
+    # printf -v statement 'function __ { %s ;}' "${__method_bodyh[class#var_methods]}"
+    # eval "$statement"
+    # __ "$var"
+    # methods=__
+    # for method in "${methods[@]}"; do
+    #   printf -v statement 'function %s { __dispatch "$@" ;}' "$method"
+    #   eval "$statement"
+    # done
+    # __=$value
+    # __classh[__]=String
+  end
+
+  def superclass <<'  end'
+    local class=$1
+
+    __=\"${__superh[$class]-}\"
+    __classh[__]=String
+  end
+rubend
 
 # vim: ft=sh

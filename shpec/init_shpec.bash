@@ -11,7 +11,7 @@ stop_on_error=true
 stop_on_error
 
 export RUBSH_PATH=$(shpec_cwd)/../lib
-source "$RUBSH_PATH"/require.rubsh
+source "$RUBSH_PATH"/keywords.rubsh
 $(require init)
 
 function? () { declare -f "$1" >/dev/null 2>&1 ;}

@@ -1,21 +1,6 @@
-clear_vars () {
-  local -n __vars=$1
-
-  unset -v "${__vars[@]}"
-}
-
-declare_hashes () {
-  local -n __vars=$1
-  local __var
-
-  for __var in "${__vars[@]}"; do
-    [[ $__var == *h ]] && declare -Ag "$__var"
-  done
-}
-
 __die () { echo "$1" >&2; exit "${2:-1}" ;}
 
-__glob () {
+glob () {
   case $1 in
     on  ) set +f    ;;
     off ) set -f    ;;
@@ -23,27 +8,27 @@ __glob () {
   esac
 }
 
-__id_from_class () {
-  local class=$1
+__id_from_constant () {
+  local constant=$1
   local capitals=()
   local char
   local i
   local j
   local id
 
-  for (( i = 1; i < ${#class}; i++ )); do
-    char=${class:i:1}
+  for (( i = 1; i < ${#constant}; i++ )); do
+    char=${constant:i:1}
     [[ ${char^} == "$char" ]] && capitals+=( "$i" )
   done
-  class=${class,,}
-  (( ! ${#capitals[@]} )) && { __=$class; return ;}
+  constant=${constant,,}
+  (( ! ${#capitals[@]} )) && { __=$constant; return ;}
   i=${capitals[0]}
-  id=${class:0:i}
+  id=${constant:0:i}
   for j in "${capitals[@]:1}"; do
-    id+=_${class:i:j-i}
+    id+=_${constant:i:j-i}
     i=$j
   done
-  id+=_${class:i}
+  id+=_${constant:i}
   __=$id
 }
 
@@ -55,24 +40,13 @@ __inspect () {
 }
 
 __next_id () {
-  : "${__last_id:=0}"
-  __=$(( __last_id++ ))
+  : "${__last_id:=5}"
+  __=__$(( __last_id++ ))
 }
 
 __return_if_sourced () { echo 'eval return 0 2>/dev/null ||:' ;}
 
-rubsh_cleanup () {
-  local functions=(
-    clear_vars
-    declare_hashes
-    rubsh_cleanup
-    rubsh_initialize
-  )
-
-  unset -f "${functions[@]}"
-}
-
-__strict_mode () {
+strict_mode () {
   case $1 in
     on  )
       set -o errexit

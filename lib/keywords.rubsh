@@ -1,71 +1,136 @@
-class () {
-  __class=$1 # not local
-  local super=${3-String}
-  local statement
+[[ -v __features && -n ${__features[keywords]:-} ]] && return
 
-  [[ -z ${2-}  || $2 == ':' ]] || return
-  [[ -n $super ]] && {
-    ! declare -f "$__class" >/dev/null 2>&1 || return
-      declare -f "$super"   >/dev/null 2>&1 || return
-    __superh[$__class]=$super
+unset -v __features
+declare -Ag __features=([keywords]=1)
+
+require () {
+  local feature_spec=$1
+  local feature
+  local IFS
+  local extension
+  local extensions=( .rubsh .bash .sh '' )
+  local file
+  local path
+
+  feature=${1##*/}
+  feature=${feature%.*}
+  [[ -n ${__features[$feature]:-} ]] && return
+  if [[ $feature_spec == */* ]]; then
+    for extension in "${extensions[@]}"; do
+      [[ -e $feature_spec$extension ]] && break
+    done
+    file=$feature_spec$extension
+  else
+    [[ -n ${RUBSH_PATH:-} ]] || return
+    IFS=:
+    for path in $RUBSH_PATH; do
+      for extension in "${extensions[@]}"; do
+        [[ -e $path/$feature_spec$extension ]] && break 2
+      done
+    done
+    file=$path/$feature_spec$extension
+  fi
+  [[ -e $file ]] || return
+  printf 'eval __features[%s]=1; source %s\n' "$feature" "$(readlink -f "$file")"
+}
+
+$(require init)
+$(require util)
+
+class () {
+  __stack+=( "$__class" )
+  __id_from_constant "$1"
+  __class=$__   # not local
+  __id_from_constant "${3:-Object}"
+  local super=$__
+  local class=$__class        # reduce underscore madness
+  local id
+  local statement
+  local super_id
+
+  [[ -z ${2:-} || $2 == ':' ]] || return
+  [[ -n ${2:-} ]] && {
+    [[ -z ${__classesh[$class]:-} ]] || return
+    [[ -n ${__classesh[$super]:-} ]] || return
   }
-  printf -v statement 'function %s { __dispatch "$@" ;}' "$__class"
+  __=nil
+  [[ -n ${__classesh[$class]:-} ]] && return
+  __superh[$class]=$super
+  __superh["$class"_singleton]="$super"_singleton
+  printf -v statement 'function %s { __dispatch "$@" ;}' "$1"
   eval "$statement"
-  __classh[$__class]=Class
-  __methodsh[$__class]=' '
-  self=$__class
-  __='""'
-  __classh[__]=String
+  __constanth[$1]=$class
+  __classesh[$class]=1
+  __classh[$class]="$class"_singleton
+  __classh["$class"_singleton]="$class"_singleton
+  __typeh[$class]=class
+  __typeh["$class"_singleton]=class
+  __singletonh["$class"_singleton]=1
+  __ivarh[$class.name]=$1
+  __ivarh["$class"_singleton.attached]=$class
 }
 
 def () {
   local method=$1
-  local body=${2-$(</dev/stdin)}
+  local body=${2:-$(</dev/stdin)}
+  local class=$__class
 
-  __methodsh[$__class]+="$method "
-  [[ -z ${__method_classesh[$method]-} ]] && __method_classesh[$method]=' '
-  __method_classesh[$method]+="$__class "
-  __method_bodyh[$__class.$method]=$body
-  __='""'
-  __classh[__]=String
+  __method_bodyh[$class#$method]=$body
+  __=nil
 }
 
-glob () {
-  case $1 in
-    'on'  ) set +f;;
-    'off' ) set -f;;
-    *     ) return 1;;
-  esac
+__dispatch () {
+  local method=${1-.inspect}; shift ||:
+  local self=${FUNCNAME[1]}
+  local class
+  local i
+  local id
+  local rest=()
+  local statement
+
+  self=${FUNCNAME[1]}
+  self=${__constanth[$self]:-${__localh[$self]:-}}
+  [[ -n $self ]] || return
+  class=${__classh[$self]}
+  # [[ $method != '.'* ]] && {
+  #   case $method in
+  #     '=' ) method=.=;;
+  #     *   )
+  #       case ${1-} in
+  #         '='   ) set -- "$method" "${@:2}"; method=.new     ;;
+  #         ':='  ) set -- "$method" "${@:2}"; method=.declare ;;
+  #         * )
+  #           [[ $class == 'Class' ]] || return
+  #           $("$self" .declare anon "$method")
+  #           anon "$@"
+  #           return
+  #           ;;
+  #         * ) return 1;;
+  #       esac
+  #       ;;
+  #   esac
+  # }
+  method=${method#.}
+  while [[ -z ${__method_bodyh[$class#$method]:-} ]]; do
+    [[ -n ${__superh[$class]:-} ]] || return
+    class=${__superh[$class]}
+  done
+  # [[ ${1-} == '{' ]] && {
+  #   for (( i = 1; i <= $#; i++ )); do
+  #     [[ ${!i} == '}' ]] && break;
+  #   done
+  #   [[ ${!i} == '}' ]] || return
+  #   rest=( "${@:i+1}" )
+  #   set -- "${@:2:i-2}"
+  # }
+  printf -v statement 'function __ { %s ;}; __ "$self" "$@"' "${__method_bodyh[$class#$method]}"
+  unset -v class method
+  eval "$statement"
 }
 
-puts () {
-  { declare -f "$1" >/dev/null 2>&1 && [[ " ${!__classh[*]} " == *" $1 "* ]] ;} && {
-    (( $# == 1 )) && { "$1" .to_s; printf '%s\n' "$__"; return ;}
-    "$@"
-    printf '%s\n' "$__"
-    return
-  }
-  printf '%s\n' "$@"
-  __='""'
-  __classh['__']=String
-}
-
-require () {
-  local feature_name=$1
-  local path
-
-  [[ " ${__features[*]-} " == *" $feature_name "* ]] && return
-  path=$PATH
-  PATH=${RUBSH_PATH-}
-  source "$feature_name"          2>/dev/null ||
-    source "$feature_name".rubsh  2>/dev/null ||
-    source "$feature_name".bash   2>/dev/null ||
-    source "$feature_name".sh     2>/dev/null ||
-    { PATH=$path; return 1 ;}
-  PATH=$path
-  feature_name=${feature_name##*/}
-  feature_name=${feature_name%.*}
-  __features+=( $feature_name )
+rubend () {
+  __class=${__stack[-1]}
+  unset -v __stack[-1]
 }
 
 # vim: ft=sh
