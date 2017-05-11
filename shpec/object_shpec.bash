@@ -84,3 +84,22 @@ describe Object
     end
   end
 end
+
+describe top_self
+  it "defines methods"
+    function? methods
+    assert equal 0 $?
+  end
+
+  it "receives methods"
+    methods
+    local -n array=$__
+    expecteds=(
+      class
+      methods
+      puts
+    )
+    IFS=$'\n'
+    assert equal "${expecteds[*]}" "$(echo "${array[*]:0:3}" | sort)"
+  end
+end

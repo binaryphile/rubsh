@@ -116,24 +116,6 @@ describe class
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
 
-  it "creates a method hash"; (
-    _shpec_failures=0
-
-    class Sample
-    variable? __sample_methodsh
-    assert equal 0 $?
-    return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
-  end
-
-  it "creates a singleton method hash"; (
-    _shpec_failures=0
-
-    class Sample
-    variable? __sample_singleton_methodsh
-    assert equal 0 $?
-    return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
-  end
-
   it "binds the class name"; (
     _shpec_failures=0
 
@@ -186,14 +168,14 @@ describe __dispatch
   it "calls the named method"; (
     _shpec_failures=0
 
-    __localh[sample]=__0
+    __localh[example]=__0
     __classh[__0]=sample
     __classesh[sample]=1
     __superh[sample]=''
     __typeh[sample]=class
     __method_bodyh[sample#sample]='echo hello'
-    sample () { __dispatch "$@" ;}
-    assert equal hello "$(sample .sample)"
+    example () { local self=__0; __dispatch "$@" ;}
+    assert equal hello "$(example .sample)"
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
 

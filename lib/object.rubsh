@@ -39,4 +39,11 @@ class Object
   end
 rubend
 
+for method in ${__methodsh[object]}; do
+  [[ $method == 'class' ]] && continue
+  printf -v statement 'function %s { local self=$self; __dispatch ."$FUNCNAME" "$@" ;}' "$method"
+  eval "$statement"
+done
+unset -v method statement
+
 # vim: ft=sh
