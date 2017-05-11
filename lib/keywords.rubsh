@@ -1,6 +1,6 @@
 [[ -v __features && -n ${__features[keywords]:-} ]] && return
 
-unset -v __features
+unset   -v  __features
 declare -Ag __features=([keywords]=1)
 
 require () {
@@ -76,6 +76,7 @@ def () {
   local class=$__class
 
   __method_bodyh[$class#$method]=$body
+  __methodsh[$class]+=" $method"
   __=nil
 }
 
@@ -146,6 +147,7 @@ class Class
     eval "$statement"
     __classh[$id]=$class
     __localh[$var]=$id
+    __typeh[$id]=object
     __=$id
   end
 rubend

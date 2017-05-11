@@ -18,6 +18,7 @@ TrueClass   () { __dispatch "$@" ;}
 
 declare -Ag __localh=()
 declare -Ag __method_bodyh=()
+declare -Ag __methodsh=()
 
 declare -Ag __constanth=(
   [Class]=class

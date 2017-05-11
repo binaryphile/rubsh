@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
-RUBSH_LIB=$(dirname "$(readlink -f "$BASH_SOURCE")")
-export RUBSH_PATH=$RUBSH_LIB${RUBSH_PATH:+:}${RUBSH_PATH:-}:.
-source "$RUBSH_LIB"/keywords.rubsh
-unset -v RUBSH_LIB
-
-$(require util)
+rubsh_lib=$(dirname "$(readlink -f "$BASH_SOURCE")")
+export RUBSH_PATH=$rubsh_lib${RUBSH_PATH:+:}${RUBSH_PATH:-}:.
+source "$rubsh_lib"/keywords.rubsh
+unset -v rubsh_lib
 
 strict_mode on
 glob off
