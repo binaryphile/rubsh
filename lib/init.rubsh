@@ -20,6 +20,8 @@ TrueClass   () { local self=true_class  ; __dispatch "$@" ;}
 declare -Ag __localh=()
 declare -Ag __method_bodyh=()
 declare -Ag __methodsh=()
+declare -Ag __self_methodsh=()
+__method_stack=()
 
 declare -Ag __constanth=(
   [Class]=class
