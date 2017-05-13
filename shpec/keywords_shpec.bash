@@ -157,13 +157,11 @@ describe class
 end
 
 describe def
-  it "records the method name in __<class>_methodsh"; (
+  it "records the method name in __methodsh"; (
     _shpec_failures=0
     class Sample
-      def sample example
-    rubend
-    [[ -n __sample_methodsh[sample] ]]
-    assert equal 0 $?
+    def example example
+    assert equal ' example' "${__methodsh[sample]}"
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
 
