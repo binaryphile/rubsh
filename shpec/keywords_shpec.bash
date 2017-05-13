@@ -127,22 +127,31 @@ describe class
 
   it "removes the current method functions"; (
     _shpec_failures=0
+    __self_methodsh[sample]=1
+    sample () { :;}
     class Sample
     stop_on_error off
-    function? methods
+    function? sample
     assert unequal 0 $?
     stop_on_error
+    return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
+  end
+
+  it "puts the old methods on the stack"; (
+    _shpec_failures=0
+    __self_methodsh[sample]=1
+    class Sample
+    assert equal '([sample]="1" )' "${__method_stack[*]}"
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
 
   it "adds the method functions to __self_methods"; (
     _shpec_failures=0
     __classh[sample]=sample_singleton
-    __superh[sample_singleton]=''
     __method_bodyh[sample#example]='echo hello'
     __methodsh[sample]=example
     class Sample
-    assert equal example "${!__self_methodsh[@]}"
+    assert equal example "${!__self_methodsh[*]}"
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
 end
