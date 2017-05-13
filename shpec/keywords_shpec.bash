@@ -134,6 +134,17 @@ describe class
     stop_on_error
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
+
+  it "adds the method functions to __self_methods"; (
+    _shpec_failures=0
+    __classh[sample]=sample_singleton
+    __superh[sample_singleton]=''
+    __method_bodyh[sample#example]='echo hello'
+    __methodsh[sample]=example
+    class Sample
+    assert equal example "${!__self_methodsh[@]}"
+    return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
+  end
 end
 
 describe def
@@ -153,6 +164,16 @@ describe def
       def sample example
     rubend
     assert equal example "${__method_bodyh[sample#sample]}"
+    return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
+  end
+
+  it "adds a self function for the method"; (
+    _shpec_failures=0
+    class Sample
+      def sample example
+      function? sample
+      assert equal 0 $?
+    rubend
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
 end

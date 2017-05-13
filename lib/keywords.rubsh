@@ -74,6 +74,7 @@ class () {
     [[ $method == 'class' ]] && continue
     printf -v statement 'function %s { local self=$self; __dispatch "$@" ;}' "$method"
     eval "$statement"
+    __self_methodsh[$method]=1
   done
   __=nil
 }
@@ -84,6 +85,8 @@ def () {
 
   __method_bodyh[$self#$method]=$body
   __methodsh[$self]+=" $method"
+  printf -v statement 'function %s { local self=$self; __dispatch "$@" ;}' "$method"
+  eval "$statement"
   __=nil
 }
 
