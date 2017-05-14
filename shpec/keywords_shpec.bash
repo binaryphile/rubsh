@@ -141,7 +141,7 @@ describe class
     _shpec_failures=0
     __self_methodsh[sample]=1
     class Sample
-    assert equal '([sample]="1" )' "${__method_stack[*]}"
+    assert equal '([sample]="1" )' "${__methods_stack[*]}"
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
 
@@ -176,10 +176,9 @@ describe def
   it "adds a self function for the method"; (
     _shpec_failures=0
     class Sample
-      def sample example
-      function? sample
-      assert equal 0 $?
-    rubend
+    def sample example
+    function? sample
+    assert equal 0 $?
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
 end

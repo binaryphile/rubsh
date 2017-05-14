@@ -53,6 +53,15 @@ class () {
     [[ -z ${__classesh[$self]:-} ]] || return
     [[ -n ${__classesh[$super]:-} ]] || return
   }
+  unset -f "${!__self_methodsh[@]}"
+  __inspect __self_methodsh
+  __methods_stack+=( "$__" )
+  for method in ${__methodsh[$self]:-}; do
+    [[ $method == 'class' ]] && continue
+    printf -v statement 'function %s { local self=$self; __dispatch "$@" ;}' "$method"
+    eval "$statement"
+    __self_methodsh[$method]=1
+  done
   [[ -n ${__classesh[$self]:-} ]] && { __=nil; return ;}
   __superh[$self]=$super
   __superh["$self"_singleton]="$super"_singleton
@@ -67,15 +76,6 @@ class () {
   __singletonh["$self"_singleton]=1
   __ivarh[$self.name]=$1
   __ivarh["$self"_singleton.attached]=$self
-  unset -f "${!__self_methodsh[@]}"
-  __inspect __self_methodsh
-  __method_stack+=( "$__" )
-  for method in ${__methodsh[$self]:-}; do
-    [[ $method == 'class' ]] && continue
-    printf -v statement 'function %s { local self=$self; __dispatch "$@" ;}' "$method"
-    eval "$statement"
-    __self_methodsh[$method]=1
-  done
   __=nil
 }
 
@@ -108,7 +108,8 @@ __dispatch () {
 
 rubend () {
   self=${__stack[-1]}
-  unset -v __stack[-1]
+  eval __self_methodsh="${__methods_stack[-1]}"
+  unset -v __stack[-1] __methods_stack[-1]
 }
 
 class Class

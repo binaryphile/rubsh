@@ -21,7 +21,7 @@ declare -Ag __localh=()
 declare -Ag __method_bodyh=()
 declare -Ag __methodsh=()
 declare -Ag __self_methodsh=()
-__method_stack=()
+__methods_stack=()
 
 declare -Ag __constanth=(
   [Class]=class
