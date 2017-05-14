@@ -168,9 +168,8 @@ describe def
   it "stores the body in __method_bodyh"; (
     _shpec_failures=0
     class Sample
-      def sample example
-    rubend
-    assert equal example "${__method_bodyh[sample#sample]}"
+    def example example
+    assert equal example "${__method_bodyh[sample#example]}"
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
 
