@@ -3,6 +3,7 @@ export RUBSH_VERSION=$(<"$RUBSH_ROOT"/VERSION)
 
 __stack=()
 self=top_self
+self () { local self=$self; __dispatch "$@" ;}
 
 # values are object ids (the keys used in the following hashes)
 __class=object

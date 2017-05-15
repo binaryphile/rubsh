@@ -38,25 +38,33 @@ $(require init)
 $(require util)
 
 class () {
+  local class
+  local method
+  local methods=()
+  local statement
+  local super
+
   __stack+=( "$self" ) # not local
   __id_from_constant "$1"
   self=$__   # not local
   __id_from_constant "${3:-Object}"
-  local super=$__
-  local id
-  local method
-  local statement
-  local super_id
-
+  super=$__
   [[ -z ${2:-} || $2 == ':' ]] || return
   [[ -n ${2:-} ]] && {
-    [[ -z ${__classesh[$self]:-} ]] || return
+    [[ -z ${__classesh[$self]:-}  ]] || return
     [[ -n ${__classesh[$super]:-} ]] || return
   }
   unset -f "${!__self_methodsh[@]}"
   __inspect __self_methodsh
   __methods_stack+=( "$__" )
-  for method in ${__methodsh[$self]:-}; do
+  [[ -n ${__classesh["$self"_singleton]:-} ]] && class="$self"_singleton || class=class
+  methods=( ${__methodsh[$class]:-} )
+  while [[ -n ${__superh[$class]:-} ]]; do
+    class=${__superh[$class]}
+    methods+=( ${__methodsh[$class]:-} )
+  done
+  for method in "${methods[@]:-}"; do
+    [[ -n $method         ]] || break
     [[ $method == 'class' ]] && continue
     printf -v statement 'function %s { local self=$self; __dispatch "$@" ;}' "$method"
     eval "$statement"
@@ -108,8 +116,15 @@ __dispatch () {
 
 rubend () {
   self=${__stack[-1]}
+  unset -v __stack[-1]
+  unset -f "${!__self_methodsh[@]}"
   eval __self_methodsh="${__methods_stack[-1]}"
-  unset -v __stack[-1] __methods_stack[-1]
+  unset -v  __methods_stack[-1]
+  for method in "${!__self_methodsh[@]}"; do
+    [[ $method == 'class' ]] && continue
+    printf -v statement 'function %s { local self=$self; __dispatch "$@" ;}' "$method"
+    eval "$statement"
+  done
 }
 
 class Class

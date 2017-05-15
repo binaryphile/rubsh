@@ -125,13 +125,13 @@ describe class
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
 
-  it "removes the current method functions"; (
+  it "removes the current self method functions"; (
     _shpec_failures=0
-    __self_methodsh[sample]=1
-    sample () { :;}
+    __self_methodsh[example]=1
+    example () { :;}
     class Sample
     stop_on_error off
-    function? sample
+    function? example
     assert unequal 0 $?
     stop_on_error
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
@@ -139,17 +139,25 @@ describe class
 
   it "puts the old methods on the stack"; (
     _shpec_failures=0
-    __self_methodsh[sample]=1
+    __self_methodsh[example]=1
     class Sample
-    assert equal '([sample]="1" )' "${__methods_stack[*]}"
+    assert equal '([example]="1" )' "${__methods_stack[*]}"
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
 
-  it "adds the method functions to __self_methods"; (
+  it "adds the method functions names to __self_methods"; (
     _shpec_failures=0
-    __classh[sample]=sample_singleton
-    __method_bodyh[sample#example]='echo hello'
-    __methodsh[sample]=example
+    __method_bodyh[class#example]='echo hello'
+    __methodsh[class]=' example'
+    class Sample
+    assert equal example "${!__self_methodsh[*]}"
+    return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
+  end
+
+  it "implements the method functions"; (
+    _shpec_failures=0
+    __method_bodyh[class#example]='echo hello'
+    __methodsh[class]=' example'
     class Sample
     assert equal example "${!__self_methodsh[*]}"
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
@@ -181,6 +189,14 @@ describe def
     assert equal 0 $?
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
+
+  it "records the method name in __self_methodsh"; (
+    _shpec_failures=0
+    class Sample
+    def example example
+    assert equal ' example' "${__methodsh[sample]}"
+    return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
+  end
 end
 
 describe __dispatch
@@ -196,79 +212,19 @@ describe __dispatch
     assert equal hello "$(example .sample)"
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
+end
 
-  # it "allows a literal String object"; (
-  #   _shpec_failures=0
-  #   String "an example" .class
-  #   assert equal '"String"' "$__"
-  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  # end
-  #
-  # it "calls #inspect on a bare object literal"; (
-  #   _shpec_failures=0
-  #   String "an example"
-  #   assert equal '"an example"' "$__"
-  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  # end
-  #
-  # it "allows a literal Array object"; (
-  #   _shpec_failures=0
-  #   Array '( zero one )' .class
-  #   assert equal '"Array"' "$__"
-  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  # end
-  #
-  # it "allows a literal Hash object"; (
-  #   _shpec_failures=0
-  #   Hash '( [zero]=0 [one]=1 )' .class
-  #   assert equal '"Hash"' "$__"
-  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  # end
-  #
-  # it "implicitly calls #inspect"; (
-  #   _shpec_failures=0
-  #   String .new sample "an example"
-  #   sample
-  #   assert equal '"an example"' "$__"
-  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  # end
-  #
-  # it "allows a bare = on .= calls"; (
-  #   _shpec_failures=0
-  #   String .new sample "an example"
-  #   sample = "a result"
-  #   assert equal "a result" "$sample"
-  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  # end
-  #
-  # it "allows braces on method calls"; (
-  #   _shpec_failures=0
-  #   unset -v sample
-  #   unset -f sample
-  #   String .new { sample "an example" }
-  #   is_function sample
-  #   assert equal 0 $?
-  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  # end
-  #
-  # it "does basic method chaining with braces"; (
-  #   _shpec_failures=0
-  #   Array .new samples '( one two )'
-  #   samples .join { - } .class
-  #   assert equal '"String"' "$__"
-  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  # end
-  #
-  # it "sets self"; (
-  #   _shpec_failures=0
-  #   class Sample; {
-  #     def self <<'      end'
-  #       __=\"$self\"
-  #     end
-  #   }
-  #   Sample .new sample
-  #   sample .self
-  #   assert equal '"sample"' "$__"
-  #   return "$_shpec_failures" ); (( _shpec_failures += $? )) ||:
-  # end
+describe rubend
+  it "removes a self function"; (
+    _shpec_failures=0
+    class Sample
+      function? new
+      assert equal 0 $?
+    rubend
+    stop_on_error off
+    function? new
+    assert unequal 0 $?
+    stop_on_error
+    return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
+  end
 end
