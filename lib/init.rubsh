@@ -97,6 +97,4 @@ declare -Ag __ivarh=(
   [true_class.name]=TrueClass
 )
 
-__=''
-
 # vim: ft=sh
