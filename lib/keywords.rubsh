@@ -38,17 +38,25 @@ $(require init)
 $(require util)
 
 class () {
+  local body
   local class
   local method
   local methods=()
   local statement
+  local self
   local super
 
-  __stack+=( "$self" ) # not local
-  __id_from_constant "$1"
-  self=$__   # not local
-  __id_from_constant "${3:-Object}"
-  super=$__
+  __inspect __localh
+  __stack+=( "$__" )
+  if [[ $1 == '«' ]]; then
+    self=${__localh[$2]}_singleton
+    super=${__superh[$self]}
+  else
+    __id_from_constant "$1"
+    self=$__   # not local
+    __id_from_constant "${3:-Object}"
+    super=$__
+  fi
   [[ -z ${2:-} || $2 == ':' ]] || return
   [[ -n ${2:-} ]] && {
     [[ -z ${__classesh[$self]:-}  ]] || return
@@ -90,7 +98,9 @@ class () {
 def () {
   local method=$1
   local body=${2:-$(</dev/stdin)}
+  local self
 
+  self=${__localh[self]}
   __method_bodyh[$self#$method]=$body
   __methodsh[$self]+=" $method"
   printf -v statement 'function %s { local self=$self; __dispatch "$@" ;}' "$method"
@@ -115,7 +125,7 @@ __dispatch () {
 }
 
 rubend () {
-  self=${__stack[-1]}
+  eval __localh="${__stack[-1]}"
   unset -v __stack[-1]
   unset -f "${!__self_methodsh[@]}"
   eval __self_methodsh="${__methods_stack[-1]}"

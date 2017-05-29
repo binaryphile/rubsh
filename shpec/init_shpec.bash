@@ -49,6 +49,13 @@ describe false
   end
 end
 
+describe __localh
+  it "is a variable"
+    variable? __localh
+    assert equal 0 $?
+  end
+end
+
 describe nil
   it "is a variable with an id value of 'nil'"
     assert equal nil "$nil"
@@ -64,8 +71,8 @@ describe nil
 end
 
 describe self
-  it "is a variable with an id value of 'top_self'"
-    assert equal top_self "$self"
+  it "is a local variable with an id value of 'top_self'"
+    assert equal top_self "${__localh[self]}"
   end
 end
 

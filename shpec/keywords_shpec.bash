@@ -17,10 +17,10 @@ function? () { declare -f "$1" >/dev/null 2>&1 ;}
 variable? () { declare -p "$1" >/dev/null 2>&1 ;}
 
 describe class
-  it "pushes self onto __stack"; (
+  it "pushes __localh onto __stack"; (
     _shpec_failures=0
     class Sample
-    assert equal top_self "${__stack[*]}"
+    assert equal '([self]="top_self" )' "${__stack[*]}"
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
 
@@ -160,6 +160,27 @@ describe class
     __methodsh[class]=' example'
     class Sample
     assert equal example "${!__self_methodsh[*]}"
+    return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
+  end
+
+  it "shovels the singleton class of self"; (
+    _shpec_failures=0
+    stop_on_error off
+    class Sample
+    class « self
+    assert equal sample_singleton "$self"
+    return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
+  end
+
+  it "sets self to the singleton class without arguments"; (
+    _shpec_failures=0
+    stop_on_error off
+    class Sample
+      class <<'      self'
+        result=$self
+      self
+    rubend
+    assert equal 2 "$result"
     return "$_shpec_failures" ); : $(( _shpec_failures += $? ))
   end
 end

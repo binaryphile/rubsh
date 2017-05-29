@@ -1,10 +1,6 @@
 export RUBSH_ROOT=$(dirname "$(dirname "$(readlink -f "$BASH_SOURCE")")")
 export RUBSH_VERSION=$(<"$RUBSH_ROOT"/VERSION)
 
-__stack=()
-self=top_self
-self () { local self=$self; __dispatch "$@" ;}
-
 # values are object ids (the keys used in the following hashes)
 __class=object
 false=false
@@ -18,11 +14,14 @@ NilClass    () { local self=nil_class   ; __dispatch "$@" ;}
 Object      () { local self=object      ; __dispatch "$@" ;}
 TrueClass   () { local self=true_class  ; __dispatch "$@" ;}
 
-declare -Ag __localh=()
+__methods_stack=()
+__stack=()
+declare -Ag __localh=( [self]=top_self )
 declare -Ag __method_bodyh=()
 declare -Ag __methodsh=()
 declare -Ag __self_methodsh=()
-__methods_stack=()
+
+self () { local self=$self; __dispatch "$@" ;}
 
 declare -Ag __constanth=(
   [Class]=class
